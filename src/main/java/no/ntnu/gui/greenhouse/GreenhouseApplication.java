@@ -6,7 +6,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import no.ntnu.greenhouse.GreenhouseSimulator;
-import no.ntnu.greenhouse.Node;
+import no.ntnu.greenhouse.tcp.Node;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.tools.Logger;
 

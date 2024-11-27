@@ -1,6 +1,6 @@
 package no.ntnu.listeners.greenhouse;
 
-import no.ntnu.greenhouse.Node;
+import no.ntnu.greenhouse.tcp.Node;
 
 /**
  * Listener which receives node lifecycle events.

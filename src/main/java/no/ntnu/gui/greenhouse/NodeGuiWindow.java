@@ -7,7 +7,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.Sensor;
-import no.ntnu.greenhouse.Node;
+import no.ntnu.greenhouse.tcp.Node;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
 import no.ntnu.listeners.common.ActuatorListener;

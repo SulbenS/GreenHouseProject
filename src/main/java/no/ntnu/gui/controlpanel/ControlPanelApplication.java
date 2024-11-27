@@ -65,7 +65,6 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
               "No communication channel. See the README on how to use fake event spawner!"
       );
     }
-
     stage.setMinWidth(WIDTH);
     stage.setMinHeight(HEIGHT);
     stage.setTitle("Control panel");

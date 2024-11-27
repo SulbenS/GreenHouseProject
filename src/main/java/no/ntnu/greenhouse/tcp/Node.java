@@ -1,4 +1,4 @@
-package no.ntnu.greenhouse;
+package no.ntnu.greenhouse.tcp;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,11 +10,14 @@ import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import no.ntnu.greenhouse.Actuator;
+import no.ntnu.greenhouse.ActuatorCollection;
+import no.ntnu.greenhouse.Sensor;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.CommunicationChannelListener;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.listeners.greenhouse.SensorListener;
-import no.ntnu.greenhouse.tcp.Server;
 import no.ntnu.tools.Logger;
 
 /**
@@ -32,7 +35,7 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
   private final List<ActuatorListener> actuatorListeners = new LinkedList<>();
   private final List<NodeStateListener> stateListeners = new LinkedList<>();
 
-  Timer sensorReadingTimer;
+  private Timer sensorReadingTimer;
 
   private boolean running;
   private final Random random = new Random();
@@ -49,13 +52,6 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
    * @param id A unique ID of the node
    */
   public Node(int id) {
-    try {
-      this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-      this.writer = new PrintWriter(this.socket.getOutputStream(), true);
-    } catch (IOException e) {
-      System.out.println("Could not create the reader/writer.");
-      System.out.println(e.getMessage());
-    }
     this.running = false;
     this.id = id;
   }
@@ -66,23 +62,37 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
    * @return true if the connection was successful, false otherwise
    */
   public boolean establishConnection() {
-    String rawMessage;
     try {
       this.socket = new Socket("localhost", Server.TCP_PORT);
     } catch (IOException e) {
       System.out.println("Could not connect to the server.");
       System.out.println(e.getMessage());
       return false;
+    } try {
+      this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+      this.writer = new PrintWriter(this.socket.getOutputStream(), true);
+    } catch (IOException e) {
+      System.out.println("Could not create the reader/writer.");
+      System.out.println(e.getMessage());
+      return false;
     }
+    return true;
+  }
+
+  /**
+   * Returns the message from the server.
+   *
+   * @return The message from the server.
+   */
+  public String readMessage() {
+    String rawMessage = "";
     try {
       rawMessage = this.reader.readLine();
     } catch (IOException e) {
       System.out.println("Could not read the message.");
       System.out.println(e.getMessage());
-      return false;
     }
-    executeCommand(rawMessage);
-    return true;
+    return rawMessage;
   }
 
   /**
@@ -177,6 +187,10 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
    */
   public void start() {
     if (!running) {
+      if (!establishConnection()) {
+        Logger.error("Could not establish connection to the server");
+        throw new IllegalArgumentException("Could not establish connection to the server");
+      }
       startPeriodicSensorReading();
       running = true;
       notifyStateChanges(true);
@@ -284,7 +298,6 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
       listener.actuatorUpdated(id, actuator);
     }
   }
-
 
   /**
    * Notify the listeners that the state of this node has changed.

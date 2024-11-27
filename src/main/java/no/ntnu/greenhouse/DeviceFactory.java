@@ -1,6 +1,6 @@
 package no.ntnu.greenhouse;
 
-import java.io.IOException;
+import no.ntnu.greenhouse.tcp.Node;
 
 /**
  * A factory for producing sensors and actuators of specific types.

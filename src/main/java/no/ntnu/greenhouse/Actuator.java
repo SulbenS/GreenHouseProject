@@ -2,6 +2,8 @@ package no.ntnu.greenhouse;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import no.ntnu.greenhouse.tcp.Node;
 import no.ntnu.listeners.common.ActuatorListener;
 
 /**

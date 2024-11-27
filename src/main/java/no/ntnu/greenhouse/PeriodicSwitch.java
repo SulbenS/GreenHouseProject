@@ -2,6 +2,8 @@ package no.ntnu.greenhouse;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import no.ntnu.greenhouse.tcp.Node;
 import no.ntnu.tools.Logger;
 
 /**
