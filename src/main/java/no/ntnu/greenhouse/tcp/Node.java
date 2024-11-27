@@ -79,6 +79,19 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
     return true;
   }
 
+  private void disconnectFromServer() {
+    try {
+      if (socket != null) {
+        socket.close();
+        socket = null;
+        reader = null;
+        writer = null;
+      }
+    } catch (IOException e) {
+      System.err.println("Node " + id + ": Error disconnecting from server: " + e.getMessage());
+    }
+  }
+
   /**
    * Returns the message from the server.
    *
@@ -206,6 +219,7 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
       stopPeriodicSensorReading();
       running = false;
       notifyStateChanges(false);
+      disconnectFromServer();
     }
   }
 

@@ -1,13 +1,15 @@
 package no.ntnu.controlpanel;
 
 import no.ntnu.tools.Logger;
+import java.io.*;
+import java.net.*;
 
 /**
  * A communication channel for disseminating control commands to the sensor nodes
  * (sending commands to the server) and receiving notifications about events.
  */
 public class RealCommunicationChannel implements CommunicationChannel {
-  private final ControlPanelLogic logic;
+  private ControlPanelLogic logic;
 
   /**
    * Create a new real communication channel.
@@ -16,6 +18,41 @@ public class RealCommunicationChannel implements CommunicationChannel {
    */
   public RealCommunicationChannel(ControlPanelLogic logic) {
     this.logic = logic;
+  }
+
+  private Socket socket;
+  private BufferedReader in;
+  private PrintWriter out;
+
+  // Constructor for client-side communication
+  public RealCommunicationChannel(String host, int port) throws IOException {
+    this.socket = new Socket(host, port);
+    this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    this.out = new PrintWriter(socket.getOutputStream(), true);
+  }
+
+  // Constructor for server-side communication (pass the accepted socket)
+  public RealCommunicationChannel(Socket socket) throws IOException {
+    this.socket = socket;
+    this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    this.out = new PrintWriter(socket.getOutputStream(), true);
+  }
+
+  // Send a message
+  public void sendMessage(String message) {
+    out.println(message);
+  }
+
+  // Receive a message
+  public String receiveMessage() throws IOException {
+    return in.readLine();
+  }
+
+  // Close the channel
+  public void close() throws IOException {
+    in.close();
+    out.close();
+    socket.close();
   }
 
   /**
