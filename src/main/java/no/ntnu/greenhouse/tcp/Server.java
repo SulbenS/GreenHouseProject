@@ -1,4 +1,4 @@
-package no.ntnu.tcp;
+package no.ntnu.greenhouse.tcp;
 
 import java.io.IOException;
 import java.net.ServerSocket;

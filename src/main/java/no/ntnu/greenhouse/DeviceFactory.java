@@ -1,5 +1,7 @@
 package no.ntnu.greenhouse;
 
+import java.io.IOException;
+
 /**
  * A factory for producing sensors and actuators of specific types.
  */
@@ -35,6 +37,9 @@ public class DeviceFactory {
   public static Node createNode(int temperatureSensorCount, int humiditySensorCount,
                                 int windowCount, int fanCount, int heaterCount) {
     Node node = new Node(generateUniqueNodeId());
+    if (!node.establishConnection()) {
+      throw new IllegalStateException("Could not establish connection to the node");
+    }
     if (temperatureSensorCount > 0) {
       node.addSensors(DeviceFactory.createTemperatureSensor(), temperatureSensorCount);
     }

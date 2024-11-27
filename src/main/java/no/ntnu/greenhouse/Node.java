@@ -1,5 +1,10 @@
 package no.ntnu.greenhouse;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -9,6 +14,7 @@ import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.CommunicationChannelListener;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.listeners.greenhouse.SensorListener;
+import no.ntnu.greenhouse.tcp.Server;
 import no.ntnu.tools.Logger;
 
 /**
@@ -31,6 +37,11 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
   private boolean running;
   private final Random random = new Random();
 
+  private Socket socket;
+
+  private BufferedReader reader;
+  private PrintWriter writer;
+
   /**
    * Create a sensor/actuator node. Note: the node itself does not check whether the ID is unique.
    * This is done at the greenhouse-level.
@@ -38,17 +49,58 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
    * @param id A unique ID of the node
    */
   public Node(int id) {
-    this.id = id;
+    try {
+      this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+      this.writer = new PrintWriter(this.socket.getOutputStream(), true);
+    } catch (IOException e) {
+      System.out.println("Could not create the reader/writer.");
+      System.out.println(e.getMessage());
+    }
     this.running = false;
+    this.id = id;
   }
 
   /**
-   * Get the unique ID of the node.
+   * Establishes a connection to the server.
    *
-   * @return the ID
+   * @return true if the connection was successful, false otherwise
    */
-  public int getId() {
-    return id;
+  public boolean establishConnection() {
+    String rawMessage;
+    try {
+      this.socket = new Socket("localhost", Server.TCP_PORT);
+    } catch (IOException e) {
+      System.out.println("Could not connect to the server.");
+      System.out.println(e.getMessage());
+      return false;
+    }
+    try {
+      rawMessage = this.reader.readLine();
+    } catch (IOException e) {
+      System.out.println("Could not read the message.");
+      System.out.println(e.getMessage());
+      return false;
+    }
+    executeCommand(rawMessage);
+    return true;
+  }
+
+  /**
+   * Sends a message to the server.
+   *
+   * @param message The message to send.
+   */
+  public void sendMessage(String message) {
+    this.writer.println(message);
+  }
+
+  /**
+   * Executes a command based on the message given.
+   *
+   * @param rawMessage The message given.
+   */
+  public void executeCommand(String rawMessage) {
+    throw new IllegalArgumentException("Not implemented yet");
   }
 
   /**
@@ -311,5 +363,14 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
     for (Actuator actuator : actuators) {
       actuator.set(on);
     }
+  }
+
+  /**
+   * Get the unique ID of the node.
+   *
+   * @return the ID
+   */
+  public int getId() {
+    return id;
   }
 }
