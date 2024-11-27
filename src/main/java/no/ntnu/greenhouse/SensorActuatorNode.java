@@ -120,7 +120,6 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
     }
   }
 
-
   /**
    * Start simulating the sensor node's operation.
    */

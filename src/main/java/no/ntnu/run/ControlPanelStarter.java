@@ -3,6 +3,7 @@ package no.ntnu.run;
 import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
 import no.ntnu.controlpanel.FakeCommunicationChannel;
+import no.ntnu.controlpanel.RealCommunicationChannel;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
 import no.ntnu.tools.Logger;
 
@@ -12,6 +13,7 @@ import no.ntnu.tools.Logger;
  * debugger (JavaFX modules not found)
  */
 public class ControlPanelStarter {
+
   private final boolean fake;
 
   public ControlPanelStarter(boolean fake) {
@@ -37,14 +39,14 @@ public class ControlPanelStarter {
 
   private void start() {
     ControlPanelLogic logic = new ControlPanelLogic();
-    CommunicationChannel channel = initiateCommunication(logic, fake);
+    CommunicationChannel channel = initiateCommunication(logic);
     ControlPanelApplication.startApp(logic, channel);
     // This code is reached only after the GUI-window is closed
     Logger.info("Exiting the control panel application");
     stopCommunication();
   }
 
-  private CommunicationChannel initiateCommunication(ControlPanelLogic logic, boolean fake) {
+  private CommunicationChannel initiateCommunication(ControlPanelLogic logic) {
     CommunicationChannel channel;
     if (fake) {
       channel = initiateFakeSpawner(logic);
@@ -56,9 +58,9 @@ public class ControlPanelStarter {
 
   private CommunicationChannel initiateSocketCommunication(ControlPanelLogic logic) {
     // TODO - here you initiate TCP/UDP socket communication
-    // You communication class(es) may want to get reference to the logic and call necessary
-    // logic methods when events happen (for example, when sensor data is received)
-    return null;
+    RealCommunicationChannel channel = new RealCommunicationChannel(logic);
+    logic.setCommunicationChannel(channel);
+    return channel;
   }
 
   private CommunicationChannel initiateFakeSpawner(ControlPanelLogic logic) {

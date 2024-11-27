@@ -13,7 +13,7 @@ public class SensorReading {
   /**
    * Create a new sensor reading.
    *
-   * @param type  The type of sensor being red
+   * @param type  The type of sensor being read
    * @param value The current value of the sensor
    * @param unit  The unit, for example: %, lux
    */

@@ -62,7 +62,8 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   public void start(Stage stage) {
     if (channel == null) {
       throw new IllegalStateException(
-          "No communication channel. See the README on how to use fake event spawner!");
+              "No communication channel. See the README on how to use fake event spawner!"
+      );
     }
 
     stage.setMinWidth(WIDTH);
