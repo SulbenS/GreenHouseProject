@@ -1,5 +1,10 @@
 package no.ntnu.greenhouse;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -31,6 +36,11 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
   private boolean running;
   private final Random random = new Random();
 
+  // Networking components
+  private Socket socket;
+  private PrintWriter socketWriter;
+  private BufferedReader socketReader;
+
   /**
    * Create a sensor/actuator node. Note: the node itself does not check whether the ID is unique.
    * This is done at the greenhouse-level.
@@ -40,6 +50,52 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
   public SensorActuatorNode(int id) {
     this.id = id;
     this.running = false;
+  }
+
+  /**
+   * Connect the node to a server.
+   *
+   * @param host The server's host address
+   * @param port The server's port
+   */
+  public void connectToServer(String host, int port) {
+    try {
+      socket = new Socket(host, port);
+      socketWriter = new PrintWriter(socket.getOutputStream(), true);
+      socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+      System.out.println("Node " + id + " connected to server at " + host + ":" + port);
+
+      // Start listening for server commands
+      new Thread(this::listenForCommands).start();
+    } catch (IOException e) {
+      System.err.println("Node " + id + ": Failed to connect to server: " + e.getMessage());
+    }
+  }
+
+  private void listenForCommands() {
+    try {
+      String command;
+      while ((command = socketReader.readLine()) != null) {
+        System.out.println("Node " + id + " received command: " + command);
+      }
+    } catch (IOException e) {
+      System.err.println("Node " + id + ": Error receiving server commands: " + e.getMessage());
+    }
+  }
+
+
+
+  private void disconnectFromServer() {
+    try {
+      if (socket != null) {
+        socket.close();
+        socket = null;
+        socketReader = null;
+        socketWriter = null;
+      }
+    } catch (IOException e) {
+      System.err.println("Node " + id + ": Error disconnecting from server: " + e.getMessage());
+    }
   }
 
   /**
@@ -141,6 +197,7 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
       stopPeriodicSensorReading();
       running = false;
       notifyStateChanges(false);
+      disconnectFromServer();
     }
   }
 
