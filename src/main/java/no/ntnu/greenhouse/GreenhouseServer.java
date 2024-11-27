@@ -11,10 +11,10 @@ public class GreenhouseServer {
   private List<ClientHandler> clientHandlers; // Track connected clients
 
   public GreenhouseServer() {
-    this.clientHandlers = new ArrayList<>(); // Initialize the list
-    isTcpServerRunning = true;
-    System.out.println("Greenhouse Server initialized on port " + PORT_NUMBER);
-
+      this.clientHandlers = new ArrayList<>(); // Initialize the list
+      isTcpServerRunning = true;
+      System.out.println("Greenhouse Server initialized on port " + PORT_NUMBER);
+      GreenhouseSimulator greenhouseSimulator = new GreenhouseSimulator(false);
   }
 
   // Starts the server and listens for connections

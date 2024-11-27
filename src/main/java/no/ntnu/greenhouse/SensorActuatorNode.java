@@ -69,6 +69,7 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
       new Thread(this::listenForCommands).start();
     } catch (IOException e) {
       System.err.println("Node " + id + ": Failed to connect to server: " + e.getMessage());
+      e.printStackTrace();
     }
   }
 
