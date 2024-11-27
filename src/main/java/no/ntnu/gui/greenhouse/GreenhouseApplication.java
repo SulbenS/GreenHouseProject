@@ -26,8 +26,8 @@ public class GreenhouseApplication extends Application implements NodeStateListe
     mainStage.setMinHeight(MainGreenhouseGuiWindow.HEIGHT);
     mainStage.setTitle("Greenhouse simulator");
     mainStage.show();
-    Logger.info("GUI subscribes to lifecycle events");
     simulator.initialize();
+    Logger.info("GUI subscribes to lifecycle events");
     simulator.subscribeToLifecycleUpdates(this);
     mainStage.setOnCloseRequest(event -> closeApplication());
     simulator.start();

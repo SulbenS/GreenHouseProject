@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import no.ntnu.greenhouse.tcp.Node;
+import no.ntnu.greenhouse.tcp.Server;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.tools.Logger;
 
@@ -74,7 +75,8 @@ public class GreenhouseSimulator {
   }
 
   private void initiateRealCommunication() {
-    // TODO - here you can set up the TCP or UDP communication
+    Server server = new Server();
+    server.establishConnection();
   }
 
   private void initiateFakePeriodicSwitches() {
