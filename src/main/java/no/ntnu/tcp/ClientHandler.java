@@ -32,6 +32,7 @@ public class ClientHandler extends Thread {
   /**
    * Runs the client handler.
    */
+  @Override
   public void run() {
     try {
       while (true) {

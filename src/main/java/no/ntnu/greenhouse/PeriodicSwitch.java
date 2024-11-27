@@ -10,7 +10,7 @@ import no.ntnu.tools.Logger;
  */
 public class PeriodicSwitch {
   private final Timer timer;
-  private final SensorActuatorNode node;
+  private final Node node;
   private final int actuatorId;
   private final long delay;
   private final String name;
@@ -23,7 +23,7 @@ public class PeriodicSwitch {
    * @param actuatorId The ID of the actuator
    * @param m          The actuator will be turned on and off every m milliseconds
    */
-  public PeriodicSwitch(String name, SensorActuatorNode node, int actuatorId, long m) {
+  public PeriodicSwitch(String name, Node node, int actuatorId, long m) {
     this.node = node;
     this.actuatorId = actuatorId;
     this.delay = m;

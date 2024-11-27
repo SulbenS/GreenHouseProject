@@ -55,7 +55,6 @@ public class Server {
       System.out.println("Could not start the server.");
       System.out.println(e.getMessage());
     }
-
   }
 
   /**
