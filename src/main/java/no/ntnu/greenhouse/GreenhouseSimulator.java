@@ -40,13 +40,10 @@ public class GreenhouseSimulator {
   }
 
   private void createNode(int temperature, int humidity, int windows, int fans, int heaters) {
-    Node node;
-    try {
-      node = DeviceFactory.createNode(
+    Node node = DeviceFactory.createNode(
               temperature, humidity, windows, fans, heaters);
-    } catch (IllegalStateException e) {
-      Logger.error("Could not create a node: " + e.getMessage());
-      return;
+    if (!node.establishConnection()) {
+      throw new IllegalStateException("Could not establish connection to the node");
     }
     nodes.put(node.getId(), node);
   }
