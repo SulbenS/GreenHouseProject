@@ -2,8 +2,8 @@ package no.ntnu.controlpanel;
 
 import java.util.LinkedList;
 import java.util.List;
-import no.ntnu.greenhouse.Actuator;
-import no.ntnu.greenhouse.SensorReading;
+import no.ntnu.greenhouse.node.Actuator;
+import no.ntnu.greenhouse.node.SensorReading;
 import no.ntnu.greenhouse.tcp.Node;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.CommunicationChannelListener;

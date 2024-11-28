@@ -1,5 +1,7 @@
 package no.ntnu.greenhouse;
 
+import no.ntnu.greenhouse.node.Actuator;
+import no.ntnu.greenhouse.node.Sensor;
 import no.ntnu.greenhouse.tcp.Node;
 
 /**

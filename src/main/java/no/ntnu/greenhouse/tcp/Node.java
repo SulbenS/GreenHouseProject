@@ -11,9 +11,9 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import no.ntnu.greenhouse.Actuator;
-import no.ntnu.greenhouse.ActuatorCollection;
-import no.ntnu.greenhouse.Sensor;
+import no.ntnu.greenhouse.node.Actuator;
+import no.ntnu.greenhouse.node.ActuatorCollection;
+import no.ntnu.greenhouse.node.Sensor;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.CommunicationChannelListener;
 import no.ntnu.listeners.greenhouse.NodeStateListener;

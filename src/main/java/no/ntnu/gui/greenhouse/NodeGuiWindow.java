@@ -5,8 +5,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import no.ntnu.greenhouse.Actuator;
-import no.ntnu.greenhouse.Sensor;
+import no.ntnu.greenhouse.node.Actuator;
+import no.ntnu.greenhouse.node.Sensor;
 import no.ntnu.greenhouse.tcp.Node;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
@@ -22,8 +22,6 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
   private static final double WINDOW_WIDTH = 300;
   private static final double WINDOW_HEIGHT = 300;
   private final Node node;
-
-
   private ActuatorPane actuatorPane;
   private SensorPane sensorPane;
 

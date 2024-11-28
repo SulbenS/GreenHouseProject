@@ -8,8 +8,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
-import no.ntnu.greenhouse.Sensor;
-import no.ntnu.greenhouse.SensorReading;
+import no.ntnu.greenhouse.node.Sensor;
+import no.ntnu.greenhouse.node.SensorReading;
 
 /**
  * A section of GUI displaying sensor data.

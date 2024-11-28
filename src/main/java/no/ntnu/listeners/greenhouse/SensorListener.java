@@ -1,7 +1,7 @@
 package no.ntnu.listeners.greenhouse;
 
 import java.util.List;
-import no.ntnu.greenhouse.Sensor;
+import no.ntnu.greenhouse.node.Sensor;
 
 /**
  * Listener for sensor update events.
