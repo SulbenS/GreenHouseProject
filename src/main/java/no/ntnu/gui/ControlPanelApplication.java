@@ -24,7 +24,7 @@ public class ControlPanelApplication extends Application {
     // Create the scene with the TabPane
     Scene scene = new Scene(tabPane, 400, 400);
     primaryStage.setScene(scene);
-    primaryStage.setTitle("Control Panel with Server");
+    primaryStage.setTitle("Greenhouse!");
     primaryStage.show();
   }
 

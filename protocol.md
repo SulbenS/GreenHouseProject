@@ -1,74 +1,178 @@
-# Communication protocol
+# Communication Protocol
 
-This document describes the protocol used for communication between the different nodes of the
-distributed application.
+This document describes the protocol used for communication between the different nodes of the distributed application.
+
+---
 
 ## Terminology
 
-* Sensor - a device which senses the environment and describes it with a value (an integer value in
-  the context of this project). Examples: temperature sensor, humidity sensor.
-* Actuator - a device which can influence the environment. Examples: a fan, a window opener/closer,
-  door opener/closer, heater.
-* Sensor and actuator node - a computer which has direct access to a set of sensors, a set of
-  actuators and is connected to the Internet.
-* Control-panel node - a device connected to the Internet which visualizes status of sensor and
-  actuator nodes and sends control commands to them.
-* Graphical User Interface (GUI) - A graphical interface where users of the system can interact with
-  it.
+- **Sensor**: A device that senses the environment and provides a value (e.g., an integer value in this project).  
+  Examples: temperature sensor, humidity sensor.
 
-## The underlying transport protocol
+- **Actuator**: A device that influences the environment.  
+  Examples: a fan, a window opener/closer, door opener/closer, heater.
 
-TODO - what transport-layer protocol do you use? TCP? UDP? What port number(s)? Why did you 
-choose this transport layer protocol?
+- **Sensor and Actuator Node**: A computer that has direct access to a set of sensors and actuators and is connected to the Internet.
 
-## The architecture
+- **Control-Panel Node**: A device connected to the Internet that visualizes the status of sensor and actuator nodes and sends control commands to them.
 
-TODO - show the general architecture of your network. Which part is a server? Who are clients? 
-Do you have one or several servers? Perhaps include a picture here. 
+- **Graphical User Interface (GUI)**: A graphical interface where users can interact with the system.
+
+---
+
+## The Underlying Transport Protocol
+
+- **Protocol**: TCP (Transmission Control Protocol).
+- **Port Number**: 12345.
+- **Reason for Choosing TCP**:
+    - TCP ensures reliable communication, maintaining the order of packets and preventing data loss.
+    - Ideal for real-time state synchronization and consistent communication between nodes and clients.
+
+---
+
+## The Architecture
+
+### Overview
+
+- **Server**: The central hub that maintains the global state, processes commands, and broadcasts updates.
+- **Clients**:
+    - **Sensor and Actuator Nodes**: Devices that send sensor data to the server and receive actuator commands.
+    - **Control-Panel Nodes**: Devices that display sensor and actuator statuses and allow users to send control commands.
+
+### Diagram
+
+![Network Architecture](network_architecture_placeholder.png)  
+*(Replace with an actual diagram.)*
+
+---
+
+## The Flow of Information and Events
+
+### Sensor and Actuator Nodes
+
+1. **Startup**:
+    - Connect to the server.
+    - Send an initial state update.
+
+2. **Periodic Events**:
+    - Periodically send sensor data to the server.
+    - React to incoming actuator commands by updating local actuators.
+
+### Control-Panel Nodes
+
+1. **Startup**:
+    - Connect to the server.
+    - Request and display the current state of all sensor/actuator nodes.
+
+2. **User Actions**:
+    - Send commands (e.g., turn actuators on/off) to the server when users interact with the GUI.
+
+### Server
+
+1. **Startup**:
+    - Initialize the state for all connected nodes.
+    - Accept connections from clients.
+
+2. **Event Handling**:
+    - Relay sensor updates from sensor/actuator nodes to all control-panel nodes.
+    - Process commands from control-panel nodes and update the corresponding actuator states.
+
+---
+
+## Connection and State
+
+- **Connection-Oriented Protocol**:  
+  The communication is connection-oriented, relying on TCP to establish a persistent connection between clients and the server.
+
+- **Stateful Communication**:  
+  The server maintains the state of all connected nodes, including sensor readings and actuator statuses.
+
+---
+
+## Types and Constants
+
+- **Message Types**:
+    - `UPDATE`: Sent by the server to broadcast sensor data and actuator states to clients.
+    - `COMMAND`: Sent by control-panel nodes to instruct sensor/actuator nodes to change actuator states.
+
+- **Value Types**:
+    - **Temperature**: A floating-point value in Celsius (e.g., `25.5`).
+    - **Humidity**: A floating-point value in percentage (e.g., `60.0`).
+    - **Actuator States**: Strings (`on` or `off`).
+
+---
+
+## Message Format
+
+### General Format
+
+- Messages are delimited by the `|` symbol.
+- Format: `MESSAGE_TYPE|key=value|key=value|...`
+
+### Message Types
+
+1. **UPDATE**:  
+   Sent by the server to broadcast the current state of a sensor/actuator node.  
+ 
+        Format:   UPDATE|node_id=1|temperature=25.5|humidity=60.0|fan=on|window=off
+
+        Example:  UPDATE|nodeId=1|temperature=25.50|humidity=50.00|heater=off|window=off|fan=on
+   
+
+2. **COMMAND**:  
+   Sent by a control-panel node to instruct a specific actuator to change its state.
+
+        Format:   COMMAND|nodeId=<id>|<actuator>=<state>
+
+        Example:  COMMAND|nodeId=1|heater=on
 
 
-## The flow of information and events
+---
 
-TODO - describe what each network node does and when. Some periodic events? Some reaction on 
-incoming packets? Perhaps split into several subsections, where each subsection describes one 
-node type (For example: one subsection for sensor/actuator nodes, one for control panel nodes).
+## Error Messages
 
-## Connection and state
+- **`ERROR|reason=<description>`**  
+  Sent by the server or a node when a problem occurs.  
+  
+        Example:  ERROR|reason=Invalid node ID
 
-TODO - is your communication protocol connection-oriented or connection-less? Is it stateful or 
-stateless? 
 
-## Types, constants
+---
 
-TODO - Do you have some specific value types you use in several messages? They you can describe 
-them here.
+## An Example Scenario
 
-## Message format
+1. A sensor/actuator node with `ID=1` starts, featuring a temperature sensor, a humidity sensor, and a window actuator.
+2. A sensor/actuator node with `ID=2` starts, featuring a temperature sensor, a fan, and a heater actuator.
+3. A control-panel node starts and connects to the server.
+4. Another control-panel node starts and connects to the server.
+5. A sensor/actuator node with `ID=3` starts, featuring two temperature sensors but no actuators.
+6. All three sensor/actuator nodes periodically send sensor data to the server.
+7. The first control-panel node sends a `COMMAND` to turn the fan on for node `ID=2`.  
+   
+         Example:  COMMAND|nodeId=2|fan=on
 
-TODO - describe the general format of all messages. Then describe specific format for each 
-message type in your protocol.
+8. The second control-panel node sends a `COMMAND` to turn off all actuators for node `ID=1`.  
+   
+         Example:  COMMAND|nodeId=1|heater=off|window=off
 
-### Error messages
+9. The server processes the commands and broadcasts the updated state of the nodes to all clients.
 
-TODO - describe the possible error messages that nodes can send in your system.
+---
 
-## An example scenario
+## Reliability and Security
 
-TODO - describe a typical scenario. How would it look like from communication perspective? When 
-are connections established? Which packets are sent? How do nodes react on the packets? An 
-example scenario could be as follows:
-1. A sensor node with ID=1 is started. It has a temperature sensor, two humidity sensors. It can
-   also open a window.
-2. A sensor node with ID=2 is started. It has a single temperature sensor and can control two fans
-   and a heater.
-3. A control panel node is started.
-4. Another control panel node is started.
-5. A sensor node with ID=3 is started. It has a two temperature sensors and no actuators.
-6. After 5 seconds all three sensor/actuator nodes broadcast their sensor data.
-7. The user of the first-control panel presses on the button "ON" for the first fan of
-   sensor/actuator node with ID=2.
-8. The user of the second control-panel node presses on the button "turn off all actuators".
+- **Reliability**:
+- TCP ensures reliable data delivery and correct ordering of messages.
+- The server broadcasts periodic updates to maintain consistent state across clients.
 
-## Reliability and security
+- **Security**:
+- No authentication is currently implemented (optional future improvement).
+- Network communication could be encrypted using TLS to prevent eavesdropping or tampering.
 
-TODO - describe the reliability and security mechanisms your solution supports.
+---
+
+This protocol ensures seamless interaction between all nodes, maintaining state synchronization and providing a robust foundation for the distributed system.
+
+
+
+
