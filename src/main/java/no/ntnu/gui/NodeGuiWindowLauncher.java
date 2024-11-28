@@ -14,7 +14,7 @@ public class NodeGuiWindowLauncher extends Application {
     SensorActuatorNode node = new SensorActuatorNode(1);
 
     // Create a Client instance for this node
-    Client client = new Client("127.0.0.1", 12345); // Server IP and port
+    Client client = new Client("127.0.0.1", 12345);
 
     // Create the NodeGuiWindow with the node and client
     NodeGuiWindow nodeGuiWindow = new NodeGuiWindow(node, client);

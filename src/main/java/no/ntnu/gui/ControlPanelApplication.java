@@ -7,12 +7,13 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 import no.ntnu.nodes.SensorActuatorNode;
+import no.ntnu.server.Server;
 
 public class ControlPanelApplication extends Application {
 
   @Override
   public void start(Stage primaryStage) {
-    // Start the server in the background(if needed)
+    // Start the server in the background
     startServerInBackground();
 
     // Create a TabPane to hold all node tabs
@@ -28,12 +29,11 @@ public class ControlPanelApplication extends Application {
     primaryStage.setScene(scene);
     primaryStage.setTitle("Control Panel with Server");
     primaryStage.show();
-
   }
 
   private void addNodeTab(TabPane tabPane, SensorActuatorNode node) {
     // Create a Client instance for this node
-    Client client = new Client("127.0.0.1", 12345); // Replace with your server's IP and port
+    Client client = new Client("127.0.0.1", 12345);
 
     // Create the NodeGuiWindow with the node and client
     NodeGuiWindow nodeGui = new NodeGuiWindow(node, client);
@@ -44,13 +44,12 @@ public class ControlPanelApplication extends Application {
   }
 
   private void startServerInBackground() {
-    // Optional: Start a server thread if needed
     new Thread(() -> {
       System.out.println("Server is running...");
       try {
-        Thread.sleep(Long.MAX_VALUE); // Simulate a running server
-      } catch (InterruptedException e) {
-        System.err.println("Server interrupted.");
+        new Server().start(); // Replace with actual server start logic
+      } catch (Exception e) {
+        System.err.println("Server failed to start: " + e.getMessage());
       }
     }).start();
   }

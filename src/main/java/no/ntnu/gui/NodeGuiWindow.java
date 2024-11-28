@@ -1,4 +1,5 @@
 package no.ntnu.gui;
+
 import no.ntnu.client.Client;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -11,64 +12,55 @@ public class NodeGuiWindow extends VBox {
   private final Label temperatureLabel;
   private final Label humidityLabel;
   private final Client client;
-  private VBox actuatorPane;
+  private final VBox actuatorPane;
   private final Map<String, CheckBox> actuatorToggles = new HashMap<>();
-
 
   public NodeGuiWindow(SensorActuatorNode node, Client client) {
     this.node = node;
     this.client = client;
 
-    // Initialize actuatorPane
     actuatorPane = new VBox();
     actuatorPane.setSpacing(10);
 
-    // Display sensors
+    // Sensor display
     temperatureLabel = new Label("temperature: " + node.getFormattedTemperature());
     humidityLabel = new Label("humidity: " + node.getFormattedHumidity());
     VBox sensorBox = new VBox(temperatureLabel, humidityLabel);
-
     TitledPane sensorsPane = new TitledPane("Sensors", sensorBox);
 
     // Actuator controls
-    VBox actuatorPane = new VBox();
     for (String actuator : node.getActuators().keySet()) {
       CheckBox toggle = new CheckBox(actuator + ": off");
+      actuatorToggles.put(actuator, toggle);
       toggle.setOnAction(event -> {
         boolean isOn = toggle.isSelected();
         node.getActuators().put(actuator, isOn);
         toggle.setText(actuator + ": " + (isOn ? "on" : "off"));
 
-        // Send actuator state to the server
+        // Send actuator state to server
         client.sendCommand("COMMAND|" + node.getId() + "|" + actuator + "=" + (isOn ? "on" : "off"));
       });
       actuatorPane.getChildren().add(toggle);
     }
-
     TitledPane actuatorsPane = new TitledPane("Actuators", actuatorPane);
 
     getChildren().addAll(sensorsPane, actuatorsPane);
 
-    // Register for sensor updates
     client.setListener(update -> {
-      System.out.println("Client received update: " + update); // Debug log
-
       if (update.contains("nodeId=" + node.getId())) {
         String[] parts = update.split("\\|");
         for (String part : parts) {
-          if (part.contains("=")) {
-            String[] keyValue = part.split("=");
-            if (keyValue.length == 2) {
-              String key = keyValue[0];
-              String value = keyValue[1].replace(",", ".");
-              if (key.equals("temperature")) {
-                node.setTemperature(Double.parseDouble(value));
-              } else if (key.equals("humidity")) {
-                node.setHumidity(Double.parseDouble(value));
-              } else { // Handle actuator updates
-                boolean state = value.equalsIgnoreCase("on");
-                node.setActuatorState(key, state);
-              }
+          String[] keyValue = part.split("=");
+          if (keyValue.length == 2) {
+            String key = keyValue[0];
+            String value = keyValue[1];
+            if (key.equals("temperature")) {
+              node.setTemperature(Double.parseDouble(value.replace(",", ".")));
+            } else if (key.equals("humidity")) {
+              node.setHumidity(Double.parseDouble(value.replace(",", ".")));
+            } else {
+              boolean state = value.equalsIgnoreCase("on");
+              node.setActuatorState(key, state);
             }
           }
         }
@@ -78,14 +70,12 @@ public class NodeGuiWindow extends VBox {
   }
 
   private void refreshDisplay() {
-    System.out.println("Refreshing GUI with node state: " + node.getActuators()); // Debug log
     temperatureLabel.setText("temperature: " + node.getFormattedTemperature());
     humidityLabel.setText("humidity: " + node.getFormattedHumidity());
-
     for (String actuator : node.getActuators().keySet()) {
-      boolean state = node.getActuators().get(actuator);
       CheckBox toggle = actuatorToggles.get(actuator);
       if (toggle != null) {
+        boolean state = node.getActuators().get(actuator);
         toggle.setSelected(state);
         toggle.setText(actuator + ": " + (state ? "on" : "off"));
       }

@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.Locale;
 
 public class Server {
   private static final int PORT = 12345;
@@ -22,9 +21,6 @@ public class Server {
     sensorStates.put(2, new SensorState(2, 22.0, 60.0));
     sensorStates.put(3, new SensorState(3, 28.0, 40.0));
 
-    // Start periodic updates
-    startSensorUpdates();
-
     try (ServerSocket serverSocket = new ServerSocket(PORT)) {
       System.out.println("Server is running on port " + PORT);
 
@@ -40,14 +36,11 @@ public class Server {
     }
   }
 
-
   private void broadcastUpdate(String message) {
-    System.out.println("Sending to all clients: " + message); // Debug log
     for (ClientHandler client : clients) {
       client.sendMessage(message);
     }
   }
-
 
   private class ClientHandler implements Runnable {
     private final Socket socket;
@@ -59,12 +52,10 @@ public class Server {
 
     @Override
     public void run() {
-      try (
-          BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-      ) {
+      try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
         out = new PrintWriter(socket.getOutputStream(), true);
 
-        // Send initial sensor states to the client
+        // Send initial sensor states
         synchronized (sensorStates) {
           for (SensorState state : sensorStates.values()) {
             out.println(state.toUpdateMessage());
@@ -74,9 +65,6 @@ public class Server {
         // Handle incoming commands
         String message;
         while ((message = in.readLine()) != null) {
-          System.out.println("Received: " + message);
-
-          // Process command and update sensor state
           if (message.startsWith("COMMAND|")) {
             processCommand(message);
           }
@@ -89,8 +77,6 @@ public class Server {
     }
 
     private void processCommand(String command) {
-      System.out.println("Processing command: " + command); // Debug log
-
       String[] parts = command.split("\\|");
       if (parts.length < 3) return;
 
@@ -100,22 +86,18 @@ public class Server {
         String actuator = actuatorUpdate[0];
         boolean state = actuatorUpdate[1].equalsIgnoreCase("on");
 
-        // Update the actuator state on the server
         SensorState sensorState = sensorStates.get(nodeId);
         if (sensorState != null) {
           sensorState.setActuatorState(actuator, state);
-          System.out.println("Updated actuator state for node " + nodeId + ": " + actuator + " -> " + state);
 
           // Broadcast updated state to all clients
           String updateMessage = sensorState.toUpdateMessage();
-          System.out.println("Broadcasting update: " + updateMessage);
           broadcastUpdate(updateMessage);
         }
       }
     }
 
-
-    private void send(String message) {
+    private void sendMessage(String message) {
       if (out != null) {
         out.println(message);
       }
@@ -129,13 +111,8 @@ public class Server {
         System.err.println("Error closing client socket: " + e.getMessage());
       }
     }
-
-    public void sendMessage(String message) {
-      send(message);
-    }
   }
 
-  // Maintain sensor state globally in the server
   private static class SensorState {
     private final int nodeId;
     private double temperature;
@@ -146,50 +123,23 @@ public class Server {
       this.nodeId = nodeId;
       this.temperature = temperature;
       this.humidity = humidity;
-      this.actuators = new ConcurrentHashMap<>();
-      // Initialize actuators with default states
+      this.actuators = new HashMap<>();
       actuators.put("heater", false);
-      actuators.put("fan", false);
       actuators.put("window", false);
+      actuators.put("fan", false);
     }
+
     public synchronized void setActuatorState(String actuator, boolean state) {
       actuators.put(actuator, state);
     }
-    public synchronized boolean getActuatorState(String actuator) {
-      return actuators.getOrDefault(actuator, false);
+
+    public String toUpdateMessage() {
+      return "UPDATE|nodeId=" + nodeId +
+          "|temperature=" + String.format("%.2f", temperature) +
+          "|humidity=" + String.format("%.2f", humidity) +
+          "|heater=" + (actuators.get("heater") ? "on" : "off") +
+          "|window=" + (actuators.get("window") ? "on" : "off") +
+          "|fan=" + (actuators.get("fan") ? "on" : "off");
     }
-    public synchronized void updateRandomly() {
-      // Simulate sensor value changes
-      temperature += (Math.random() - 0.5); // Change temperature slightly
-      humidity += (Math.random() - 0.5);   // Change humidity slightly
-      temperature = Math.max(15, Math.min(35, temperature)); // Clamp to realistic range
-      humidity = Math.max(20, Math.min(80, humidity));       // Clamp to realistic range
-    }
-
-    public synchronized String toUpdateMessage() {
-      StringBuilder builder = new StringBuilder();
-      builder.append(String.format(Locale.US, "UPDATE|nodeId=%d|temperature=%.2f|humidity=%.2f",
-          nodeId, temperature, humidity));
-
-      for (Map.Entry<String, Boolean> entry : actuators.entrySet()) {
-        builder.append("|").append(entry.getKey()).append("=")
-            .append(entry.getValue() ? "on" : "off");
-      }
-
-      return builder.toString();
-    }
-  }
-
-  // Periodically update sensor values and notify clients
-  private void startSensorUpdates() {
-    Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
-      synchronized (sensorStates) {
-        for (SensorState state : sensorStates.values()) {
-          state.updateRandomly(); // Simulate changes
-          String updateMessage = state.toUpdateMessage();
-          broadcastUpdate(updateMessage); // Send to all clients
-        }
-      }
-    }, 0, 1, TimeUnit.SECONDS);
   }
 }

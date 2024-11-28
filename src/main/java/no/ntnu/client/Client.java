@@ -31,10 +31,10 @@ public class Client {
           String message;
           while ((message = in.readLine()) != null) {
             System.out.println("Received: " + message);
-            if (listener != null && message.startsWith("UPDATE|")) {
-              final String finalMessage = message;
-              Platform.runLater(() -> listener.onUpdateReceived(finalMessage));
-            }
+            final String finalMessage = message;
+            Platform.runLater(() -> {
+              if (listener != null) listener.onUpdateReceived(finalMessage);
+            });
           }
         } catch (IOException e) {
           System.err.println("Error reading from server: " + e.getMessage());
