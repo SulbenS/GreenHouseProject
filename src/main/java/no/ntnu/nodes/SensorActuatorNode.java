@@ -44,10 +44,11 @@ public class SensorActuatorNode {
   public void setActuatorState(String actuator, boolean state) {
     if (actuators.containsKey(actuator)) {
       actuators.put(actuator, state);
-    } else {
+    } else if (!"nodeId".equals(actuator)) { // Ignore "nodeId"
       System.err.println("Actuator not found: " + actuator);
     }
   }
+
 
   public boolean getActuatorState(String actuator) {
     return actuators.getOrDefault(actuator, false);

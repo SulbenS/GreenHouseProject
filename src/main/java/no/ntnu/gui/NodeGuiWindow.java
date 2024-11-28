@@ -47,26 +47,32 @@ public class NodeGuiWindow extends VBox {
     getChildren().addAll(sensorsPane, actuatorsPane);
 
     client.setListener(update -> {
+      System.out.println("Client received update: " + update); // Debugging log
+
       if (update.contains("nodeId=" + node.getId())) {
         String[] parts = update.split("\\|");
         for (String part : parts) {
-          String[] keyValue = part.split("=");
-          if (keyValue.length == 2) {
-            String key = keyValue[0];
-            String value = keyValue[1];
-            if (key.equals("temperature")) {
-              node.setTemperature(Double.parseDouble(value.replace(",", ".")));
-            } else if (key.equals("humidity")) {
-              node.setHumidity(Double.parseDouble(value.replace(",", ".")));
-            } else {
-              boolean state = value.equalsIgnoreCase("on");
-              node.setActuatorState(key, state);
+          if (part.contains("=")) {
+            String[] keyValue = part.split("=");
+            if (keyValue.length == 2) {
+              String key = keyValue[0];
+              String value = keyValue[1];
+
+              switch (key) {
+                case "temperature" -> node.setTemperature(Double.parseDouble(value.replace(",", ".")));
+                case "humidity" -> node.setHumidity(Double.parseDouble(value.replace(",", ".")));
+                default -> { // Assume it's an actuator
+                  boolean state = value.equalsIgnoreCase("on");
+                  node.setActuatorState(key, state);
+                }
+              }
             }
           }
         }
-        refreshDisplay();
+        refreshDisplay(); // Trigger the GUI update
       }
     });
+
   }
 
   private void refreshDisplay() {

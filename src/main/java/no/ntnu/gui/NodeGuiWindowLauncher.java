@@ -20,7 +20,7 @@ public class NodeGuiWindowLauncher extends Application {
     NodeGuiWindow nodeGuiWindow = new NodeGuiWindow(node, client);
 
     // Wrap NodeGuiWindow in a Scene and set it in the Stage
-    Scene scene = new Scene(nodeGuiWindow, 400, 400); // Adjust dimensions as needed
+    Scene scene = new Scene(nodeGuiWindow, 100, 100);
     primaryStage.setScene(scene);
     primaryStage.setTitle("Node " + node.getId());
     primaryStage.show();

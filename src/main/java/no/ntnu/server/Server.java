@@ -17,9 +17,12 @@ public class Server {
 
   public void start() {
     // Initialize some sample sensor states
-    sensorStates.put(1, new SensorState(1, 25.0, 50.0));
-    sensorStates.put(2, new SensorState(2, 22.0, 60.0));
-    sensorStates.put(3, new SensorState(3, 28.0, 40.0));
+    sensorStates.put(1, new SensorState(1));
+    sensorStates.put(2, new SensorState(2));
+    sensorStates.put(3, new SensorState(3));
+
+    // Start periodic sensor updates
+    startSensorUpdates();
 
     try (ServerSocket serverSocket = new ServerSocket(PORT)) {
       System.out.println("Server is running on port " + PORT);
@@ -36,7 +39,20 @@ public class Server {
     }
   }
 
+  private void startSensorUpdates() {
+    Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
+      synchronized (sensorStates) {
+        for (SensorState state : sensorStates.values()) {
+          state.updateRandomly(); // Simulate random updates
+          String updateMessage = state.toUpdateMessage();
+          broadcastUpdate(updateMessage); // Send updates to all clients
+        }
+      }
+    }, 0, 1, TimeUnit.SECONDS); // Adjust interval as needed
+  }
+
   private void broadcastUpdate(String message) {
+    System.out.println("Broadcasting to all clients: " + message);
     for (ClientHandler client : clients) {
       client.sendMessage(message);
     }
@@ -55,7 +71,7 @@ public class Server {
       try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
         out = new PrintWriter(socket.getOutputStream(), true);
 
-        // Send initial sensor states
+        // Send initial sensor states to the client
         synchronized (sensorStates) {
           for (SensorState state : sensorStates.values()) {
             out.println(state.toUpdateMessage());
@@ -65,6 +81,8 @@ public class Server {
         // Handle incoming commands
         String message;
         while ((message = in.readLine()) != null) {
+          System.out.println("Received: " + message);
+
           if (message.startsWith("COMMAND|")) {
             processCommand(message);
           }
@@ -89,6 +107,7 @@ public class Server {
         SensorState sensorState = sensorStates.get(nodeId);
         if (sensorState != null) {
           sensorState.setActuatorState(actuator, state);
+          System.out.println("Updated actuator state for node " + nodeId + ": " + actuator + " -> " + state);
 
           // Broadcast updated state to all clients
           String updateMessage = sensorState.toUpdateMessage();
@@ -97,7 +116,7 @@ public class Server {
       }
     }
 
-    private void sendMessage(String message) {
+    private void send(String message) {
       if (out != null) {
         out.println(message);
       }
@@ -111,6 +130,10 @@ public class Server {
         System.err.println("Error closing client socket: " + e.getMessage());
       }
     }
+
+    public void sendMessage(String message) {
+      send(message);
+    }
   }
 
   private static class SensorState {
@@ -119,10 +142,10 @@ public class Server {
     private double humidity;
     private final Map<String, Boolean> actuators;
 
-    public SensorState(int nodeId, double temperature, double humidity) {
+    public SensorState(int nodeId) {
       this.nodeId = nodeId;
-      this.temperature = temperature;
-      this.humidity = humidity;
+      this.temperature = 25.0; // Default temperature
+      this.humidity = 50.0; // Default humidity
       this.actuators = new HashMap<>();
       actuators.put("heater", false);
       actuators.put("window", false);
@@ -133,7 +156,53 @@ public class Server {
       actuators.put(actuator, state);
     }
 
-    public String toUpdateMessage() {
+    public synchronized boolean getActuatorState(String actuator) {
+      return actuators.getOrDefault(actuator, false);
+    }
+
+    public synchronized void updateRandomly() {
+      // Indoor baseline conditions
+      double indoorBaselineTemp = 22.0; // Comfortable indoor temperature
+      double indoorBaselineHumidity = 50.0; // Comfortable indoor humidity
+
+      // Outdoor influence (weaker indoors due to insulation)
+      double outdoorTemperature = 15.0; // Example outdoor temperature
+      double outdoorHumidity = 60.0; // Example outdoor humidity
+
+      // Simulate temperature changes
+      if (actuators.get("heater")) {
+        // Heater gradually increases temperature
+        temperature += 0.1 + Math.random() * 0.05; // Small, steady increments
+      } else if (actuators.get("window")) {
+        // Open windows cause temperature to drift toward outdoor temperature
+        temperature += (outdoorTemperature - temperature) * 0.05; // Slow convergence
+      } else {
+        // Natural cooling toward indoor baseline
+        temperature += (indoorBaselineTemp - temperature) * 0.02;
+      }
+
+      // Simulate humidity changes
+      if (actuators.get("window")) {
+        // Open windows lower humidity towards outdoor levels
+        humidity += (outdoorHumidity - humidity) * 0.1; // Faster convergence
+      } else if (actuators.get("fan")) {
+        // Fan lowers humidity toward the indoor baseline
+        humidity += (indoorBaselineHumidity - humidity) * 0.05;
+      } else {
+        // Gradual return to baseline
+        humidity += (indoorBaselineHumidity - humidity) * 0.01;
+      }
+
+      // Add minor natural fluctuations
+      temperature += (Math.random() - 0.5) * 0.05; // Very slight random noise
+      humidity += (Math.random() - 0.5) * 0.1; // Slight random noise
+
+      // Clamp values to realistic ranges
+      temperature = Math.max(15, Math.min(30, temperature)); // Indoors: 15°C to 30°C
+      humidity = Math.max(30, Math.min(70, humidity));       // Indoors: 30% to 70%
+    }
+
+    public synchronized String toUpdateMessage() {
       return "UPDATE|nodeId=" + nodeId +
           "|temperature=" + String.format("%.2f", temperature) +
           "|humidity=" + String.format("%.2f", humidity) +

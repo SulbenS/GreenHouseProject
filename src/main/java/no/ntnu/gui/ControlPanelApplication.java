@@ -25,7 +25,7 @@ public class ControlPanelApplication extends Application {
     addNodeTab(tabPane, new SensorActuatorNode(3));
 
     // Create the scene with the TabPane
-    Scene scene = new Scene(tabPane, 800, 600);
+    Scene scene = new Scene(tabPane, 400, 400);
     primaryStage.setScene(scene);
     primaryStage.setTitle("Control Panel with Server");
     primaryStage.show();
