@@ -1,12 +1,12 @@
 package no.ntnu.gui;
 
-import client.Client;
+import no.ntnu.client.Client;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
-import nodes.SensorActuatorNode;
+import no.ntnu.nodes.SensorActuatorNode;
 
 public class ControlPanelApplication extends Application {
 

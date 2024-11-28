@@ -1,8 +1,8 @@
 package no.ntnu.gui;
-import client.Client;
+import no.ntnu.client.Client;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import nodes.SensorActuatorNode;
+import no.ntnu.nodes.SensorActuatorNode;
 import java.util.HashMap;
 import java.util.Map;
 
