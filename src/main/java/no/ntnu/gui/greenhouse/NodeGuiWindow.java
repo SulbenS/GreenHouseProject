@@ -23,6 +23,7 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
   private static final double WINDOW_HEIGHT = 300;
   private final Node node;
 
+
   private ActuatorPane actuatorPane;
   private SensorPane sensorPane;
 
@@ -60,8 +61,12 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
 
   private Parent createContent() {
     actuatorPane = new ActuatorPane(node.getActuators());
+    actuatorPane.getStyleClass().add("actuator-pane");
     sensorPane = new SensorPane(node.getSensors());
-    return new VBox(sensorPane, actuatorPane);
+    sensorPane.getStyleClass().add("sensor-pane");
+    VBox vbox = new VBox(sensorPane, actuatorPane);
+    vbox.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+    return vbox;
   }
 
 

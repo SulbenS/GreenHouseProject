@@ -21,6 +21,7 @@ public class GreenhouseApplication extends Application implements NodeStateListe
   private int width = 300;
   private int height = 300;
 
+
   public GreenhouseApplication() {
     this.simulator = new Simulator();
   }
@@ -33,11 +34,13 @@ public class GreenhouseApplication extends Application implements NodeStateListe
     launch();
   }
 
+
   @Override
   public void start(Stage stage) {
     this.stage = stage;
     this.tabPane = new TabPane();
     this.scene = new Scene(this.tabPane, width, height);
+    this.scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
     this.stage.setScene(scene);
     this.stage.setTitle("Greenhouse simulator");
     this.stage.show();

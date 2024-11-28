@@ -1,0 +1,48 @@
+/* styles.css */
+.label {
+    -fx-font-size: 16px;
+    -fx-font-family: "Lucida Sans Unicode";
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-background-color: radial-gradient(center 50% 50%, radius 100%, rgba(0, 0, 0, 1), transparent);
+}
+
+.title {
+    -fx-font-size: 24px;
+    -fx-font-family: "Lucida Sans Unicode";
+    -fx-text-fill: #ff0000;
+    -fx-font-style: bold;
+
+}
+
+.check-box {
+    -fx-font-size: 16px;
+    -fx-font-family: "Garamond";
+    -fx-text-fill: #333333;
+    -fx-font-weight: bold;
+    -fx-border-width: 2;
+    -fx-border-color: radial-gradient(center 50% 50%, radius 100%, rgba(0, 0, 0, 1), transparent);
+}
+
+.check-box:selected .box .mark {
+    -fx-mark-color: #338833; /* Green color when selected */
+
+}
+
+.sensor-pane {
+    -fx-background-color: #333333;
+}
+
+.actuator-pane {
+    -fx-background-color: #333333;
+}
+
+.actuator-vbox {
+    -fx-background-image: url('/Images/greenhouse.jpg');
+    -fx-background-size: cover; /* Adjust the size of the background image */
+    -fx-background-position: center;
+}
+
+.sensor-vbox {
+    -fx-background-color: #333333; /* Change this to your desired color */
+}
