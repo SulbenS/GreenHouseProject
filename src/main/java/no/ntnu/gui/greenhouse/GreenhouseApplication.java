@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.greenhouse.SensorActuatorNode;
@@ -16,12 +17,14 @@ import no.ntnu.tools.Logger;
 public class GreenhouseApplication extends Application implements NodeStateListener {
   private static GreenhouseSimulator simulator;
   private final Map<SensorActuatorNode, NodeGuiWindow> nodeWindows = new HashMap<>();
-  private Stage mainStage;
+  private MainGreenhouseGuiWindow mainWindow;
+  private TabPane tabPane;
 
   @Override
   public void start(Stage mainStage) {
-    this.mainStage = mainStage;
-    mainStage.setScene(new MainGreenhouseGuiWindow());
+    tabPane = new TabPane();
+    mainWindow = new MainGreenhouseGuiWindow(tabPane);
+    mainStage.setScene(mainWindow);
     mainStage.setMinWidth(MainGreenhouseGuiWindow.WIDTH);
     mainStage.setMinHeight(MainGreenhouseGuiWindow.HEIGHT);
     mainStage.setTitle("Greenhouse simulator");
@@ -59,17 +62,20 @@ public class GreenhouseApplication extends Application implements NodeStateListe
     Logger.info("Starting window for node " + node.getId());
     NodeGuiWindow window = new NodeGuiWindow(node);
     nodeWindows.put(node, window);
-    window.show();
+    Platform.runLater(() -> mainWindow.addNodeTab(node.getId(), window.getScene().getRoot()));
   }
 
   @Override
   public void onNodeStopped(SensorActuatorNode node) {
     NodeGuiWindow window = nodeWindows.remove(node);
     if (window != null) {
-      Platform.runLater(window::close);
-      if (nodeWindows.isEmpty()) {
-        Platform.runLater(mainStage::close);
-      }
+      Platform.runLater(() -> {
+        mainWindow.removeNodeTab(node.getId());
+        window.close();
+        if (nodeWindows.isEmpty()) {
+          Platform.runLater(mainWindow.getWindow()::hide);
+        }
+      });
     }
   }
 }
