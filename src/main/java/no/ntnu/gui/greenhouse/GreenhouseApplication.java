@@ -7,7 +7,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 import no.ntnu.greenhouse.Simulator;
-import no.ntnu.listeners.greenhouse.NodeStateListener;
+import no.ntnu.listeners.node.NodeStateListener;
 
 /**
  * Run a greenhouse simulation with a graphical user interface (GUI), with JavaFX.
@@ -62,7 +62,7 @@ public class GreenhouseApplication extends Application implements NodeStateListe
   @Override
   public void onNodeReady(int nodeId) {
     System.out.println("Starting window for node " + nodeId);
-    NodeGuiWindow window = new NodeGuiWindow(this.simulator.getNode(nodeId));
+    NodeTab window = new NodeTab(this.simulator.getNode(nodeId));
     Platform.runLater(() ->
             this.tabPane.getTabs().add(new Tab("Node " + nodeId, window.getScene().getRoot()))
     );

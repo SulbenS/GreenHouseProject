@@ -1,7 +1,7 @@
 package no.ntnu.listeners.controlpanel;
 
 import java.util.List;
-import no.ntnu.greenhouse.tcp.Node;
+import no.ntnu.greenhouse.node.Node;
 import no.ntnu.greenhouse.node.SensorReading;
 
 /**

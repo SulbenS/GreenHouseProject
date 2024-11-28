@@ -7,30 +7,31 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import no.ntnu.greenhouse.node.Actuator;
 import no.ntnu.greenhouse.node.Sensor;
-import no.ntnu.greenhouse.tcp.Node;
+import no.ntnu.greenhouse.node.Node;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
-import no.ntnu.listeners.common.ActuatorListener;
-import no.ntnu.listeners.greenhouse.SensorListener;
+import no.ntnu.listeners.node.ActuatorListener;
+import no.ntnu.listeners.node.NodeStateListener;
+import no.ntnu.listeners.node.SensorListener;
 
 /**
  * Window with GUI for overview and control of one specific sensor/actuator node.
  */
-public class NodeGuiWindow extends Stage implements SensorListener, ActuatorListener {
+public class NodeTab extends Stage implements SensorListener, ActuatorListener {
   private static final double VERTICAL_OFFSET = 50;
   private static final double HORIZONTAL_OFFSET = 150;
   private static final double WINDOW_WIDTH = 300;
   private static final double WINDOW_HEIGHT = 300;
-  private final Node node;
   private ActuatorPane actuatorPane;
   private SensorPane sensorPane;
+  private final Node node;
 
   /**
    * Create a GUI window for a specific node.
    *
    * @param node The node which will be handled in this window.
    */
-  public NodeGuiWindow(Node node) {
+  public NodeTab(Node node) {
     this.node = node;
     Scene scene = new Scene(createContent(), WINDOW_WIDTH, WINDOW_HEIGHT);
     setScene(scene);

@@ -1,11 +1,14 @@
-package no.ntnu.controlpanel;
+package no.ntnu;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import no.ntnu.communication.CommunicationChannel;
 import no.ntnu.greenhouse.node.Actuator;
 import no.ntnu.greenhouse.node.SensorReading;
-import no.ntnu.greenhouse.tcp.Node;
-import no.ntnu.listeners.common.ActuatorListener;
+import no.ntnu.greenhouse.node.Node;
+import no.ntnu.listeners.node.ActuatorListener;
 import no.ntnu.listeners.common.CommunicationChannelListener;
 import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
 
@@ -19,12 +22,21 @@ import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
  * be placed inside a GUI class (JavaFX classes). Therefore, we use proper structure here, even
  * though you may have no real control-panel logic in your projects.
  */
-public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListener,
+public class ControlPanel implements GreenhouseEventListener, ActuatorListener,
     CommunicationChannelListener {
   private final List<GreenhouseEventListener> listeners = new LinkedList<>();
 
   private CommunicationChannel communicationChannel;
   private CommunicationChannelListener communicationChannelListener;
+
+  private List<Node> nodes = new ArrayList<>();
+
+  /**
+   * Create a control panel.
+   */
+  public ControlPanel() {
+
+  }
 
   /**
    * Set the channel over which control commands will be sent to sensor/actuator nodes.

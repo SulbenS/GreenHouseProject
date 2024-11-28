@@ -1,4 +1,4 @@
-package no.ntnu.greenhouse.tcp;
+package no.ntnu.greenhouse.node;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,13 +11,11 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import no.ntnu.greenhouse.node.Actuator;
-import no.ntnu.greenhouse.node.ActuatorCollection;
-import no.ntnu.greenhouse.node.Sensor;
-import no.ntnu.listeners.common.ActuatorListener;
+import no.ntnu.greenhouse.tcp.Server;
+import no.ntnu.listeners.node.ActuatorListener;
 import no.ntnu.listeners.common.CommunicationChannelListener;
-import no.ntnu.listeners.greenhouse.NodeStateListener;
-import no.ntnu.listeners.greenhouse.SensorListener;
+import no.ntnu.listeners.node.NodeStateListener;
+import no.ntnu.listeners.node.SensorListener;
 
 /**
  * Represents one node with sensors and actuators.

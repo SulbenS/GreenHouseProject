@@ -1,4 +1,4 @@
-package no.ntnu.listeners.common;
+package no.ntnu.listeners.node;
 
 import no.ntnu.greenhouse.node.Actuator;
 

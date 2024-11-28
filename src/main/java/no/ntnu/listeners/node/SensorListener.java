@@ -1,4 +1,4 @@
-package no.ntnu.listeners.greenhouse;
+package no.ntnu.listeners.node;
 
 import java.util.List;
 import no.ntnu.greenhouse.node.Sensor;

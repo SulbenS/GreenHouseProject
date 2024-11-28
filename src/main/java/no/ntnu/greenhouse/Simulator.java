@@ -2,8 +2,8 @@ package no.ntnu.greenhouse;
 
 import java.util.HashMap;
 import java.util.Map;
-import no.ntnu.greenhouse.tcp.Node;
-import no.ntnu.listeners.greenhouse.NodeStateListener;
+import no.ntnu.greenhouse.node.Node;
+import no.ntnu.listeners.node.NodeStateListener;
 
 public class Simulator {
   private final Map<Integer, Node> nodes = new HashMap<>();

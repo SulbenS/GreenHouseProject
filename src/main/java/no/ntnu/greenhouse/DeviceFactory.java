@@ -2,7 +2,7 @@ package no.ntnu.greenhouse;
 
 import no.ntnu.greenhouse.node.Actuator;
 import no.ntnu.greenhouse.node.Sensor;
-import no.ntnu.greenhouse.tcp.Node;
+import no.ntnu.greenhouse.node.Node;
 
 /**
  * A factory for producing sensors and actuators of specific types.

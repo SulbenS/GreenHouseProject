@@ -3,14 +3,13 @@ package no.ntnu.greenhouse.node;
 import java.util.HashMap;
 import java.util.Map;
 
-import no.ntnu.greenhouse.tcp.Node;
-import no.ntnu.listeners.common.ActuatorListener;
+import no.ntnu.listeners.node.ActuatorListener;
 
 /**
  * An actuator that can change the environment in a way. The actuator will make impact on the
  * sensors attached to this same node.
  */
-public class Actuator {
+public class Actuator implements ActuatorListener {
   private static int nextId = 1;
   private final String type;
   private final int nodeId;
@@ -184,5 +183,16 @@ public class Actuator {
     } else {
       turnOff();
     }
+  }
+
+  /**
+   * An event that is fired every time an actuator changes state.
+   *
+   * @param nodeId   ID of the node on which this actuator is placed
+   * @param actuator The actuator that has changed its state
+   */
+  @Override
+  public void actuatorUpdated(int nodeId, Actuator actuator) {
+
   }
 }
