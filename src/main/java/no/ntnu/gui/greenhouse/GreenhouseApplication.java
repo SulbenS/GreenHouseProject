@@ -21,12 +21,15 @@ public class GreenhouseApplication extends Application implements NodeStateListe
   private int width = 300;
   private int height = 300;
 
+  public GreenhouseApplication() {
+    this.simulator = new Simulator();
+  }
+
   /**
    * Start the GUI Application.
    */
   public void startApp() {
     System.out.println("Running greenhouse simulator with JavaFX GUI...");
-    this.simulator = new Simulator();
     launch();
   }
 
