@@ -13,9 +13,6 @@ public class ControlPanelApplication extends Application {
 
   @Override
   public void start(Stage primaryStage) {
-    // Start the server in the background
-    startServerInBackground();
-
     // Create a TabPane to hold all node tabs
     TabPane tabPane = new TabPane();
 
