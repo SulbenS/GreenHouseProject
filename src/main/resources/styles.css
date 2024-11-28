@@ -40,7 +40,7 @@
 .actuator-vbox {
     -fx-background-image: url('/Images/greenhouse.jpg');
     -fx-background-size: cover; /* Adjust the size of the background image */
-    -fx-background-position: center;
+    -fx-background-position: bottom;
 }
 
 .sensor-vbox {

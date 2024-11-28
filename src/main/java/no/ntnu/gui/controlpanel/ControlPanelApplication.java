@@ -144,6 +144,12 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     }
   }
 
+  @Override
+  public void onCommunicationChannelClosed() {
+    System.out.println("Communication closed, closing the GUI");
+    Platform.runLater(Platform::exit);
+  }
+
   private Actuator getStoredActuator(int nodeId, int actuatorId) {
     Actuator actuator = null;
     Node nodeInfo = nodes.get(nodeId);
@@ -191,11 +197,5 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
   private static SensorPane createEmptySensorPane() {
     return new SensorPane();
-  }
-
-  @Override
-  public void onCommunicationChannelClosed() {
-    System.out.println("Communication closed, closing the GUI");
-    Platform.runLater(Platform::exit);
   }
 }

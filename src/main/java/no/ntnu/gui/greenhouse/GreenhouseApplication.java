@@ -33,8 +33,7 @@ public class GreenhouseApplication extends Application implements NodeStateListe
     System.out.println("Running greenhouse simulator with JavaFX GUI...");
     launch();
   }
-
-
+  
   @Override
   public void start(Stage stage) {
     this.stage = stage;
