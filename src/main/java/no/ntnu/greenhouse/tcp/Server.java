@@ -16,11 +16,6 @@ public class Server {
   private ServerSocket serverSocket;
   private List<ClientHandler> clients;
 
-  public static void main(String[] args) {
-    Server server = new Server();
-    server.run();
-  }
-
   /**
    * Constructor for the class.
    */

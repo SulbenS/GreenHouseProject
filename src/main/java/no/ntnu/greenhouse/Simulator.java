@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import no.ntnu.greenhouse.tcp.Node;
-import no.ntnu.greenhouse.tcp.Server;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 
 public class Simulator {
@@ -29,25 +28,15 @@ public class Simulator {
   }
 
   public void start() {
-    initiateCommunication();
     for (Node node : nodes.values()) {
       node.start();
     }
   }
 
-  private void initiateCommunication() {
-    Server server = new Server();
-    server.establishConnection();
-  }
-
   public void stop() {
-    stopCommunication();
     for (Node node : nodes.values()) {
       node.stop();
     }
-  }
-
-  private void stopCommunication() {
   }
 
   /**
@@ -59,5 +48,15 @@ public class Simulator {
     for (Node node : nodes.values()) {
       node.addStateListener(listener);
     }
+  }
+
+  /**
+   * Return a specific node by its ID.
+   *
+   * @param nodeId The ID of the node to get
+   * @return The node with the given ID, or null if no such node exists
+   */
+  public Node getNode(int nodeId) {
+    return nodes.get(nodeId);
   }
 }

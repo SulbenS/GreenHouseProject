@@ -318,9 +318,9 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
     System.out.println("Notify state changes for node " + id);
     for (NodeStateListener listener : stateListeners) {
       if (isReady) {
-        listener.onNodeReady(this);
+        listener.onNodeReady(this.id);
       } else {
-        listener.onNodeStopped(this);
+        listener.onNodeStopped(this.id);
       }
     }
   }
