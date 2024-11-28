@@ -22,7 +22,6 @@ import no.ntnu.greenhouse.ActuatorCollection;
 public class ActuatorPane extends TitledPane {
   private final Map<Actuator, SimpleStringProperty> actuatorValue = new HashMap<>();
   private final Map<Actuator, SimpleBooleanProperty> actuatorActive = new HashMap<>();
-
   /**
    * Create an actuator pane.
    *
@@ -33,10 +32,12 @@ public class ActuatorPane extends TitledPane {
     setText("Actuators");
     VBox vbox = new VBox();
     vbox.setSpacing(10);
+    vbox.getStyleClass().add("actuator-vbox");
+    vbox.getStyleClass().add("vignette"); // Add vignette effect
     setContent(vbox);
     addActuatorControls(actuators, vbox);
+    vbox.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
     this.setPrefHeight(5000);
-
   }
 
   private void addActuatorControls(ActuatorCollection actuators, Pane parent) {
@@ -48,6 +49,7 @@ public class ActuatorPane extends TitledPane {
   private Node createActuatorGui(Actuator actuator) {
     HBox actuatorGui = new HBox(createActuatorLabel(actuator), createActuatorCheckbox(actuator));
     actuatorGui.setSpacing(5);
+    actuatorGui.getStyleClass().add("actuator-gui");
     return actuatorGui;
   }
 
@@ -63,6 +65,7 @@ public class ActuatorPane extends TitledPane {
         actuator.turnOff();
       }
     });
+    checkbox.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
     return checkbox;
   }
 

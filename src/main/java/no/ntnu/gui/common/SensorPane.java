@@ -33,6 +33,7 @@ public class SensorPane extends TitledPane {
     sensors.forEach(sensor ->
         contentBox.getChildren().add(createAndRememberSensorLabel(sensor))
     );
+    contentBox.getStyleClass().add("sensor-vbox");
     setContent(contentBox);
   }
 
