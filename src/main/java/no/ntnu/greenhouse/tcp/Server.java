@@ -1,7 +1,5 @@
 package no.ntnu.greenhouse.tcp;
 
-import no.ntnu.tools.Logger;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
@@ -39,7 +37,7 @@ public class Server {
    */
   public void run() {
     establishConnection();
-    Logger.info("Server started on port " + TCP_PORT);
+    System.out.println("Server started on port " + TCP_PORT);
     while (this.isRunning) {
       ClientHandler client = connectClient();
       client.start();
@@ -73,7 +71,7 @@ public class Server {
         this.clients.add(client);
         return client;
       } catch (IOException e) {
-        Logger.error("Could not connect a client: " + e.getMessage());
+        System.out.println("Could not connect a client: " + e.getMessage());
       }
     }
     return null;

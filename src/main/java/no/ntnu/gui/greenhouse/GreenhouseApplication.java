@@ -5,41 +5,39 @@ import java.util.Map;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import no.ntnu.greenhouse.GreenhouseSimulator;
+import no.ntnu.greenhouse.Simulator;
 import no.ntnu.greenhouse.tcp.Node;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
-import no.ntnu.tools.Logger;
 
 /**
  * Run a greenhouse simulation with a graphical user interface (GUI), with JavaFX.
  */
 public class GreenhouseApplication extends Application implements NodeStateListener {
-  private static GreenhouseSimulator simulator;
+  private static Simulator simulator;
   private final Map<Node, NodeGuiWindow> nodeWindows = new HashMap<>();
-  private Stage mainStage;
+  private Stage stage;
 
   @Override
   public void start(Stage mainStage) {
-    this.mainStage = mainStage;
+    this.stage = mainStage;
     mainStage.setScene(new MainGreenhouseGuiWindow());
     mainStage.setMinWidth(MainGreenhouseGuiWindow.WIDTH);
     mainStage.setMinHeight(MainGreenhouseGuiWindow.HEIGHT);
     mainStage.setTitle("Greenhouse simulator");
     mainStage.show();
     simulator.initialize();
-    Logger.info("GUI subscribes to lifecycle events");
     simulator.subscribeToLifecycleUpdates(this);
     mainStage.setOnCloseRequest(event -> closeApplication());
     simulator.start();
   }
 
   private void closeApplication() {
-    Logger.info("Closing Greenhouse application...");
+    System.out.println("Closing Greenhouse application...");
     simulator.stop();
     try {
       stop();
     } catch (Exception e) {
-      Logger.error("Could not stop the application: " + e.getMessage());
+      System.out.println("Could not stop the application: " + e.getMessage());
     }
   }
 
@@ -47,14 +45,14 @@ public class GreenhouseApplication extends Application implements NodeStateListe
    * Start the GUI Application.
    */
   public static void startApp() {
-    Logger.info("Running greenhouse simulator with JavaFX GUI...");
-    simulator = new GreenhouseSimulator();
+    System.out.println("Running greenhouse simulator with JavaFX GUI...");
+    simulator = new Simulator();
     launch();
   }
 
   @Override
   public void onNodeReady(Node node) {
-    Logger.info("Starting window for node " + node.getId());
+    System.out.println("Starting window for node " + node.getId());
     NodeGuiWindow window = new NodeGuiWindow(node);
     nodeWindows.put(node, window);
     window.show();
@@ -66,7 +64,7 @@ public class GreenhouseApplication extends Application implements NodeStateListe
     if (window != null) {
       Platform.runLater(window::close);
       if (nodeWindows.isEmpty()) {
-        Platform.runLater(mainStage::close);
+        Platform.runLater(stage::close);
       }
     }
   }

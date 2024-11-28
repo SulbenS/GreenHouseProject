@@ -1,10 +1,8 @@
 package no.ntnu.run;
 
-import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
-import no.ntnu.controlpanel.RealCommunicationChannel;
+import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
-import no.ntnu.tools.Logger;
 
 /**
  * Starter class for the control panel.
@@ -29,13 +27,13 @@ public class ControlPanelStarter {
     CommunicationChannel channel = initiateCommunication(logic);
     ControlPanelApplication.startApp(logic, channel);
     // This code is reached only after the GUI-window is closed
-    Logger.info("Exiting the control panel application");
+    System.out.println("Exiting the control panel application");
     stopCommunication();
   }
 
   private CommunicationChannel initiateCommunication(ControlPanelLogic logic) {
     // TODO - here you initiate TCP/UDP socket communication
-    RealCommunicationChannel channel = new RealCommunicationChannel(logic);
+    CommunicationChannel channel = new CommunicationChannel(logic);
     logic.setCommunicationChannel(channel);
     return channel;
   }

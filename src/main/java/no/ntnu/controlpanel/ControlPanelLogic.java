@@ -8,7 +8,6 @@ import no.ntnu.greenhouse.tcp.Node;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.CommunicationChannelListener;
 import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
-import no.ntnu.tools.Logger;
 
 /**
  * The central logic of a control panel node. It uses a communication channel to send commands
@@ -88,7 +87,6 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
 
   @Override
   public void onCommunicationChannelClosed() {
-    Logger.info("Communication closed, updating logic...");
     if (communicationChannelListener != null) {
       communicationChannelListener.onCommunicationChannelClosed();
     }

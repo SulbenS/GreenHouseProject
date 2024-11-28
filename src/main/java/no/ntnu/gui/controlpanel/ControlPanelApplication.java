@@ -21,7 +21,6 @@ import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
 import no.ntnu.listeners.common.CommunicationChannelListener;
 import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
-import no.ntnu.tools.Logger;
 
 /**
  * Run a control panel with a graphical user interface (GUI), with JavaFX.
@@ -54,7 +53,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     }
     ControlPanelApplication.logic = logic;
     ControlPanelApplication.channel = channel;
-    Logger.info("Running control panel GUI...");
+    System.out.println("Running control panel GUI...");
     launch();
   }
 
@@ -100,9 +99,9 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
           removeNodeTabPane();
         }
       });
-      Logger.info("Node " + nodeId + " removed");
+      System.out.println("Node " + nodeId + " removed");
     } else {
-      Logger.error("Can't remove node " + nodeId + ", there is no Tab for it");
+      System.out.println("Can't remove node " + nodeId + ", there is no Tab for it");
     }
   }
 
@@ -113,19 +112,19 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
   @Override
   public void onSensorData(int nodeId, List<SensorReading> sensors) {
-    Logger.info("Sensor data from node " + nodeId);
+    System.out.println("Sensor data from node " + nodeId);
     SensorPane sensorPane = sensorPanes.get(nodeId);
     if (sensorPane != null) {
       sensorPane.update(sensors);
     } else {
-      Logger.error("No sensor section for node " + nodeId);
+      System.out.println("No sensor section for node " + nodeId);
     }
   }
 
   @Override
   public void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn) {
     String state = isOn ? "ON" : "off";
-    Logger.info("actuator[" + actuatorId + "] on node " + nodeId + " is " + state);
+    System.out.println("actuator[" + actuatorId + "] on node " + nodeId + " is " + state);
     ActuatorPane actuatorPane = actuatorPanes.get(nodeId);
     if (actuatorPane != null) {
       Actuator actuator = getStoredActuator(nodeId, actuatorId);
@@ -137,10 +136,10 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         }
         actuatorPane.update(actuator);
       } else {
-        Logger.error(" actuator not found");
+        System.out.println(" actuator not found");
       }
     } else {
-      Logger.error("No actuator section for node " + nodeId);
+      System.out.println("No actuator section for node " + nodeId);
     }
   }
 
@@ -174,7 +173,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
       nodes.put(node.getId(), node);
       nodeTabPane.getTabs().add(createNodeTab(node));
     } else {
-      Logger.info("Duplicate node spawned, ignore it");
+      System.out.println("Duplicate node spawned, ignore it");
     }
   }
 
@@ -195,7 +194,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
   @Override
   public void onCommunicationChannelClosed() {
-    Logger.info("Communication closed, closing the GUI");
+    System.out.println("Communication closed, closing the GUI");
     Platform.runLater(Platform::exit);
   }
 }

@@ -18,7 +18,6 @@ import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.CommunicationChannelListener;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.listeners.greenhouse.SensorListener;
-import no.ntnu.tools.Logger;
 
 /**
  * Represents one node with sensors and actuators.
@@ -159,7 +158,7 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
   public void addActuator(Actuator actuator) {
     actuator.setListener(this);
     actuators.add(actuator);
-    Logger.info("Created " + actuator.getType() + "[" + actuator.getId() + "] on node " + id);
+    System.out.println("Created " + actuator.getType() + "[" + actuator.getId() + "] on node " + id);
   }
 
   /**
@@ -201,7 +200,6 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
   public void start() {
     if (!running) {
       if (!establishConnection()) {
-        Logger.error("Could not establish connection to the server");
         throw new IllegalArgumentException("Could not establish connection to the server");
       }
       startPeriodicSensorReading();
@@ -215,7 +213,7 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
    */
   public void stop() {
     if (running) {
-      Logger.info("-- Stopping simulation of node " + id);
+      System.out.println("-- Stopping simulation of node " + id);
       stopPeriodicSensorReading();
       running = false;
       notifyStateChanges(false);
@@ -254,7 +252,6 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
    * Generate new sensor values and send a notification to all listeners.
    */
   public void generateNewSensorValues() {
-    Logger.infoNoNewline("Node #" + id);
     addRandomNoiseToSensors();
     notifySensorChanges();
     debugPrint();
@@ -268,11 +265,9 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
 
   private void debugPrint() {
     for (Sensor sensor : sensors) {
-      Logger.infoNoNewline(" " + sensor.getReading().getFormatted());
+      System.out.println(" " + sensor.getReading().getFormatted());
     }
-    Logger.infoNoNewline(" :");
     actuators.debugPrint();
-    Logger.info("");
   }
 
   /**
@@ -307,7 +302,7 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
 
   private void notifyActuatorChange(Actuator actuator) {
     String onOff = actuator.isOn() ? "ON" : "off";
-    Logger.info(" => " + actuator.getType() + " on node " + id + " " + onOff);
+    System.out.println(" => " + actuator.getType() + " on node " + id + " " + onOff);
     for (ActuatorListener listener : actuatorListeners) {
       listener.actuatorUpdated(id, actuator);
     }
@@ -320,7 +315,7 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
    *                when false - that this node is shut down
    */
   private void notifyStateChanges(boolean isReady) {
-    Logger.info("Notify state changes for node " + id);
+    System.out.println("Notify state changes for node " + id);
     for (NodeStateListener listener : stateListeners) {
       if (isReady) {
         listener.onNodeReady(this);
@@ -364,7 +359,7 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
 
   @Override
   public void onCommunicationChannelClosed() {
-    Logger.info("Communication channel closed for node " + id);
+    System.out.println("Communication channel closed for node " + id);
     stop();
   }
 

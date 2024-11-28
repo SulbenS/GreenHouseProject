@@ -14,7 +14,6 @@ public class GreenhouseServer {
       this.clientHandlers = new ArrayList<>(); // Initialize the list
       isTcpServerRunning = true;
       System.out.println("Greenhouse Server initialized on port " + PORT_NUMBER);
-      GreenhouseSimulator greenhouseSimulator = new GreenhouseSimulator();
   }
 
   // Starts the server and listens for connections

@@ -6,7 +6,13 @@ public class Command {
   private int actuatorId; // Optional (e.g., 3)
   private String action; // "On" or "Off"
 
-  // Constructor for specific actuator commands
+  /**
+   * Constructor for actuator commands with a specific actuator ID.
+   *
+   * @param nodeId     ID of the node to which the actuator is attached
+   * @param actuatorId Node-wide unique ID of the actuator
+   * @param action     Action to perform on the actuator ("On" or "Off")
+   */
   public Command(int nodeId, int actuatorId, String action) {
     this.nodeId = nodeId;
     this.actuatorType = null;
@@ -14,7 +20,13 @@ public class Command {
     this.action = action;
   }
 
-  // Constructor for actuator type commands
+  /**
+   * Constructor for general actuator commands.
+   *
+   * @param nodeId      ID of the node to which the actuator is attached
+   * @param actuatorType Type of the actuator (e.g., "Fan")
+   * @param action      Action to perform on the actuator ("On" or "Off")
+   */
   public Command(int nodeId, String actuatorType, String action) {
     this.nodeId = nodeId;
     this.actuatorType = actuatorType;

@@ -35,7 +35,8 @@ public class ActuatorPane extends TitledPane {
     vbox.setSpacing(10);
     setContent(vbox);
     addActuatorControls(actuators, vbox);
-    GuiTools.stretchVertically(this);
+    this.setPrefHeight(5000);
+
   }
 
   private void addActuatorControls(ActuatorCollection actuators, Pane parent) {

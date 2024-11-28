@@ -10,7 +10,6 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
 import no.ntnu.greenhouse.Sensor;
 import no.ntnu.greenhouse.SensorReading;
-import no.ntnu.tools.Logger;
 
 /**
  * A section of GUI displaying sensor data.
@@ -93,7 +92,7 @@ public class SensorPane extends TitledPane {
       SimpleStringProperty props = sensorProps.get(index);
       Platform.runLater(() -> props.set(generateSensorText(sensor)));
     } else {
-      Logger.info("Adding sensor[" + index + "]");
+      System.out.println("Adding sensor[" + index + "]");
       Platform.runLater(() -> contentBox.getChildren().add(createAndRememberSensorLabel(sensor)));
     }
   }
