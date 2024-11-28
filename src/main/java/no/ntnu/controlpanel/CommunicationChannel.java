@@ -8,6 +8,11 @@ import java.net.*;
  * (sending commands to the server) and receiving notifications about events.
  */
 public class CommunicationChannel {
+  private Socket socket;
+
+  private BufferedReader reader;
+  private PrintWriter writer;
+
   private ControlPanelLogic logic;
 
   /**
@@ -19,38 +24,34 @@ public class CommunicationChannel {
     this.logic = logic;
   }
 
-  private Socket socket;
-  private BufferedReader in;
-  private PrintWriter out;
-
   // Constructor for client-side communication
   public CommunicationChannel(String host, int port) throws IOException {
     this.socket = new Socket(host, port);
-    this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-    this.out = new PrintWriter(socket.getOutputStream(), true);
+    this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    this.writer = new PrintWriter(socket.getOutputStream(), true);
   }
 
   // Constructor for server-side communication (pass the accepted socket)
   public CommunicationChannel(Socket socket) throws IOException {
     this.socket = socket;
-    this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-    this.out = new PrintWriter(socket.getOutputStream(), true);
+    this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    this.writer = new PrintWriter(socket.getOutputStream(), true);
   }
 
   // Send a message
   public void sendMessage(String message) {
-    out.println(message);
+    writer.println(message);
   }
 
   // Receive a message
   public String receiveMessage() throws IOException {
-    return in.readLine();
+    return reader.readLine();
   }
 
   // Close the channel
   public void close() throws IOException {
-    in.close();
-    out.close();
+    reader.close();
+    writer.close();
     socket.close();
   }
 

@@ -12,14 +12,14 @@ public interface NodeStateListener {
    * This event is fired when a sensor/actuator node has finished the starting procedure and
    * has entered the "ready" state.
    *
-   * @param node the node which is ready now
+   * @param nodeId the nodeId of the node which is ready now.
    */
-  void onNodeReady(Node node);
+  void onNodeReady(int nodeId);
 
   /**
-   * This event is fired when a sensor/actuator node has stopped (shut down_.
+   * This event is fired when a sensor/actuator node has stopped (shut down).
    *
-   * @param node The node which is stopped
+   * @param nodeId The nodeId of the node which is stopped.
    */
-  void onNodeStopped(Node node);
+  void onNodeStopped(int nodeId);
 }

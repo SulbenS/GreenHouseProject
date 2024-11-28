@@ -30,7 +30,7 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
   /**
    * Create a GUI window for a specific node.
    *
-   * @param node The node which will be handled in this window
+   * @param node The node which will be handled in this window.
    */
   public NodeGuiWindow(Node node) {
     this.node = node;

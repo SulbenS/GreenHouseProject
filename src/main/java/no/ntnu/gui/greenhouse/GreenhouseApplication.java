@@ -7,20 +7,32 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 import no.ntnu.greenhouse.Simulator;
-import no.ntnu.greenhouse.tcp.Node;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 
 /**
  * Run a greenhouse simulation with a graphical user interface (GUI), with JavaFX.
  */
 public class GreenhouseApplication extends Application implements NodeStateListener {
-  private static Simulator simulator;
+  private Simulator simulator;
   private Stage stage;
   private Scene scene;
   private TabPane tabPane;
 
   private int width = 300;
   private int height = 300;
+
+
+  public GreenhouseApplication() {
+    this.simulator = new Simulator();
+  }
+
+  /**
+   * Start the GUI Application.
+   */
+  public void startApp() {
+    System.out.println("Running greenhouse simulator with JavaFX GUI...");
+    launch();
+  }
 
 
   @Override
@@ -32,15 +44,15 @@ public class GreenhouseApplication extends Application implements NodeStateListe
     this.stage.setScene(scene);
     this.stage.setTitle("Greenhouse simulator");
     this.stage.show();
-    simulator.initialize();
-    simulator.subscribeToLifecycleUpdates(this);
+    this.simulator.initialize();
+    this.simulator.subscribeToLifecycleUpdates(this);
     this.stage.setOnCloseRequest(event -> closeApplication());
-    simulator.start();
+    this.simulator.start();
   }
 
   private void closeApplication() {
     System.out.println("Closing Greenhouse application...");
-    simulator.stop();
+    this.simulator.stop();
     try {
       stop();
     } catch (Exception e) {
@@ -48,28 +60,19 @@ public class GreenhouseApplication extends Application implements NodeStateListe
     }
   }
 
-  /**
-   * Start the GUI Application.
-   */
-  public static void startApp() {
-    System.out.println("Running greenhouse simulator with JavaFX GUI...");
-    simulator = new Simulator();
-    launch();
-  }
-
   @Override
-  public void onNodeReady(Node node) {
-    System.out.println("Starting window for node " + node.getId());
-    NodeGuiWindow window = new NodeGuiWindow(node);
+  public void onNodeReady(int nodeId) {
+    System.out.println("Starting window for node " + nodeId);
+    NodeGuiWindow window = new NodeGuiWindow(this.simulator.getNode(nodeId));
     Platform.runLater(() ->
-            this.tabPane.getTabs().add(new Tab("Node " + node.getId(), window.getScene().getRoot()))
+            this.tabPane.getTabs().add(new Tab("Node " + nodeId, window.getScene().getRoot()))
     );
   }
 
   @Override
-  public void onNodeStopped(Node node) {
+  public void onNodeStopped(int nodeId) {
     Platform.runLater(() -> {
-      tabPane.getTabs().removeIf(tab -> tab.getText().equals("Node " + node.getId()));
+      tabPane.getTabs().removeIf(tab -> tab.getText().equals("Node " + nodeId));
     });
   }
 }

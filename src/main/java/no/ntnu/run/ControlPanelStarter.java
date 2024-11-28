@@ -28,17 +28,14 @@ public class ControlPanelStarter {
     ControlPanelApplication.startApp(logic, channel);
     // This code is reached only after the GUI-window is closed
     System.out.println("Exiting the control panel application");
-    stopCommunication();
   }
 
   private CommunicationChannel initiateCommunication(ControlPanelLogic logic) {
-    // TODO - here you initiate TCP/UDP socket communication
     CommunicationChannel channel = new CommunicationChannel(logic);
     logic.setCommunicationChannel(channel);
     return channel;
   }
 
   private void stopCommunication() {
-    // TODO - here you stop the TCP/UDP socket communication
   }
 }
