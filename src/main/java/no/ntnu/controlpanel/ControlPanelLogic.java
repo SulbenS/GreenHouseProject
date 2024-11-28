@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.SensorReading;
+import no.ntnu.greenhouse.tcp.Node;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.CommunicationChannelListener;
 import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
@@ -56,8 +57,8 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
   }
 
   @Override
-  public void onNodeAdded(NodeInfo nodeInfo) {
-    listeners.forEach(listener -> listener.onNodeAdded(nodeInfo));
+  public void onNodeAdded(Node node) {
+    listeners.forEach(listener -> listener.onNodeAdded(node));
   }
 
   @Override

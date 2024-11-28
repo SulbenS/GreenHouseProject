@@ -14,7 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
-import no.ntnu.controlpanel.NodeInfo;
+import no.ntnu.greenhouse.tcp.Node;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.SensorReading;
 import no.ntnu.gui.common.ActuatorPane;
@@ -37,7 +37,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   private Scene mainScene;
   private final Map<Integer, SensorPane> sensorPanes = new HashMap<>();
   private final Map<Integer, ActuatorPane> actuatorPanes = new HashMap<>();
-  private final Map<Integer, NodeInfo> nodeInfos = new HashMap<>();
+  private final Map<Integer, Node> nodes = new HashMap<>();
   private final Map<Integer, Tab> nodeTabs = new HashMap<>();
 
   /**
@@ -85,8 +85,8 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   }
 
   @Override
-  public void onNodeAdded(NodeInfo nodeInfo) {
-    Platform.runLater(() -> addNodeTab(nodeInfo));
+  public void onNodeAdded(Node node) {
+    Platform.runLater(() -> addNodeTab(node));
   }
 
   @Override
@@ -96,7 +96,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
       Platform.runLater(() -> {
         removeNodeTab(nodeId, nodeTab);
         forgetNodeInfo(nodeId);
-        if (nodeInfos.isEmpty()) {
+        if (nodes.isEmpty()) {
           removeNodeTabPane();
         }
       });
@@ -146,7 +146,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
   private Actuator getStoredActuator(int nodeId, int actuatorId) {
     Actuator actuator = null;
-    NodeInfo nodeInfo = nodeInfos.get(nodeId);
+    Node nodeInfo = nodes.get(nodeId);
     if (nodeInfo != null) {
       actuator = nodeInfo.getActuator(actuatorId);
     }
@@ -156,7 +156,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   private void forgetNodeInfo(int nodeId) {
     sensorPanes.remove(nodeId);
     actuatorPanes.remove(nodeId);
-    nodeInfos.remove(nodeId);
+    nodes.remove(nodeId);
   }
 
   private void removeNodeTab(int nodeId, Tab nodeTab) {
@@ -164,28 +164,28 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     nodeTabs.remove(nodeId);
   }
 
-  private void addNodeTab(NodeInfo nodeInfo) {
+  private void addNodeTab(Node node) {
     if (nodeTabPane == null) {
       nodeTabPane = new TabPane();
       mainScene.setRoot(nodeTabPane);
     }
-    Tab nodeTab = nodeTabs.get(nodeInfo.getId());
+    Tab nodeTab = nodeTabs.get(node.getId());
     if (nodeTab == null) {
-      nodeInfos.put(nodeInfo.getId(), nodeInfo);
-      nodeTabPane.getTabs().add(createNodeTab(nodeInfo));
+      nodes.put(node.getId(), node);
+      nodeTabPane.getTabs().add(createNodeTab(node));
     } else {
       Logger.info("Duplicate node spawned, ignore it");
     }
   }
 
-  private Tab createNodeTab(NodeInfo nodeInfo) {
-    Tab tab = new Tab("Node " + nodeInfo.getId());
+  private Tab createNodeTab(Node node) {
+    Tab tab = new Tab("Node " + node.getId());
     SensorPane sensorPane = createEmptySensorPane();
-    sensorPanes.put(nodeInfo.getId(), sensorPane);
-    ActuatorPane actuatorPane = new ActuatorPane(nodeInfo.getActuators());
-    actuatorPanes.put(nodeInfo.getId(), actuatorPane);
+    sensorPanes.put(node.getId(), sensorPane);
+    ActuatorPane actuatorPane = new ActuatorPane(node.getActuators());
+    actuatorPanes.put(node.getId(), actuatorPane);
     tab.setContent(new VBox(sensorPane, actuatorPane));
-    nodeTabs.put(nodeInfo.getId(), tab);
+    nodeTabs.put(node.getId(), tab);
     return tab;
   }
 
