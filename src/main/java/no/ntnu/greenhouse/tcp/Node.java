@@ -284,20 +284,16 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
     actuator.toggle();
   }
 
-  public Actuator getActuator(int actuatorId) {
-    return actuators.get(actuatorId);
+  @Override
+  public void actuatorUpdated(int nodeId, Actuator actuator) {
+    actuator.applyImpact(this);
+    notifyActuatorChange(actuator);
   }
 
   private void notifySensorChanges() {
     for (SensorListener listener : sensorListeners) {
       listener.sensorsUpdated(sensors);
     }
-  }
-
-  @Override
-  public void actuatorUpdated(int nodeId, Actuator actuator) {
-    actuator.applyImpact(this);
-    notifyActuatorChange(actuator);
   }
 
   private void notifyActuatorChange(Actuator actuator) {
@@ -340,15 +336,6 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
   }
 
   /**
-   * Get all the sensors available on the device.
-   *
-   * @return List of all the sensors
-   */
-  public List<Sensor> getSensors() {
-    return sensors;
-  }
-
-  /**
    * Get all the actuators available on the node.
    *
    * @return A collection of the actuators
@@ -385,6 +372,19 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
     for (Actuator actuator : actuators) {
       actuator.set(on);
     }
+  }
+
+  public Actuator getActuator(int actuatorId) {
+    return actuators.get(actuatorId);
+  }
+
+  /**
+   * Get all the sensors available on the device.
+   *
+   * @return List of all the sensors
+   */
+  public List<Sensor> getSensors() {
+    return sensors;
   }
 
   /**

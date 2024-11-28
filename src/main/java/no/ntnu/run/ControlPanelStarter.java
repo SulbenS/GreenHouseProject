@@ -24,16 +24,10 @@ public class ControlPanelStarter {
 
   private void start() {
     ControlPanelLogic logic = new ControlPanelLogic();
-    CommunicationChannel channel = initiateCommunication(logic);
+    CommunicationChannel channel = new CommunicationChannel("localhost", 1238);
     ControlPanelApplication.startApp(logic, channel);
     // This code is reached only after the GUI-window is closed
     System.out.println("Exiting the control panel application");
-  }
-
-  private CommunicationChannel initiateCommunication(ControlPanelLogic logic) {
-    CommunicationChannel channel = new CommunicationChannel(logic);
-    logic.setCommunicationChannel(channel);
-    return channel;
   }
 
   private void stopCommunication() {

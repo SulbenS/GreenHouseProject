@@ -10,17 +10,17 @@ import java.util.List;
  */
 public class Server {
   public static final int TCP_PORT = 1238; //The port of the server.
+  private ServerSocket serverSocket;
 
   private boolean isRunning;
+  private List<ClientHandler> clientHandlers;
 
-  private ServerSocket serverSocket;
-  private List<ClientHandler> clients;
 
   /**
    * Constructor for the class.
    */
   public Server() {
-    this.clients = new ArrayList<>();
+    this.clientHandlers = new ArrayList<>();
     this.isRunning = false;
   }
 
@@ -34,9 +34,10 @@ public class Server {
     establishConnection();
     System.out.println("Server started on port " + TCP_PORT);
     while (this.isRunning) {
-      ClientHandler client = connectClient();
-      client.start();
-      this.clients.add(client);
+      ClientHandler clientHandler = connectClient();
+      if (clientHandler != null) {
+        this.clientHandlers.add(clientHandler);
+      }
     }
   }
 
@@ -61,10 +62,9 @@ public class Server {
   public ClientHandler connectClient() {
     if (this.isRunning) {
       try {
-        ClientHandler client = new ClientHandler(this, this.serverSocket.accept());
-        client.start();
-        this.clients.add(client);
-        return client;
+        ClientHandler clientHandler = new ClientHandler(this, this.serverSocket.accept());
+        clientHandler.start();
+        return clientHandler;
       } catch (IOException e) {
         System.out.println("Could not connect a client: " + e.getMessage());
       }
@@ -79,7 +79,7 @@ public class Server {
    */
   public void disconnectClient(ClientHandler client) {
     if (this.isRunning) {
-      this.clients.remove(client);
+      this.clientHandlers.remove(client);
     }
   }
 
@@ -89,6 +89,6 @@ public class Server {
    * @param message The message to broadcast.
    */
   public void broadcast(String message) {
-    this.clients.forEach(client -> client.transmit(message));
+    this.clientHandlers.forEach(client -> client.transmit(message));
   }
 }
