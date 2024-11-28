@@ -56,7 +56,7 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
   }
 
   @Override
-  public void onNodeAdded(SensorActuatorNodeInfo nodeInfo) {
+  public void onNodeAdded(NodeInfo nodeInfo) {
     listeners.forEach(listener -> listener.onNodeAdded(nodeInfo));
   }
 

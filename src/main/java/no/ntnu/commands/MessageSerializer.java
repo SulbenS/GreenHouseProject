@@ -1,13 +1,16 @@
-package no.ntnu.tools;
-
-import no.ntnu.commands.Command;
+package no.ntnu.commands;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class MessageSerializer {
 
-  // Serialize: Convert a Command object into a string
+  /**
+   * Serialize: Convert a Command object into a raw string
+   *
+   * @param command Command object to serialize
+   * @return Raw string representation of the Command object
+   */
   public static String serialize(Command command) {
     StringBuilder builder = new StringBuilder("Node=" + command.getNodeId() + ";");
     if (command.getActuatorType() != null) {
@@ -19,7 +22,12 @@ public class MessageSerializer {
     return builder.toString();
   }
 
-  // Deserialize: Convert a raw string into a Command object
+  /**
+   * Deserialize: Convert a raw string into a Command object
+   *
+   * @param rawMessage Raw string to deserialize
+   * @return Command object parsed from the raw string
+   */
   public static Command deserialize(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
     int nodeId = Integer.parseInt(fields.get("Node"));
@@ -36,7 +44,12 @@ public class MessageSerializer {
     throw new IllegalArgumentException("Invalid Command format");
   }
 
-  // Utility to parse key-value pairs from a raw message
+  /**
+   * Parse the fields of a raw message into a map
+   *
+   * @param rawMessage Raw message to parse
+   * @return Map of fields in the raw message
+   */
   private static Map<String, String> parseFields(String rawMessage) {
     Map<String, String> fields = new HashMap<>();
     String[] parts = rawMessage.split(";");

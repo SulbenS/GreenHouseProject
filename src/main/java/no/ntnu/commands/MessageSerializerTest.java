@@ -1,6 +1,4 @@
-package no.ntnu.tools;
-
-import no.ntnu.commands.Command;
+package no.ntnu.commands;
 
 public class MessageSerializerTest {
   public static void main(String[] args) {

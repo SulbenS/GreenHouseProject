@@ -7,12 +7,12 @@ import no.ntnu.greenhouse.ActuatorCollection;
  * Contains information about one sensor/actuator node. This is NOT the node itself, rather
  * an information that can be used on the control-panel side to represent the node.
  */
-public class SensorActuatorNodeInfo {
+public class NodeInfo {
 
   private final int nodeId;
   private final ActuatorCollection actuators = new ActuatorCollection();
 
-  public SensorActuatorNodeInfo(int nodeId) {
+  public NodeInfo(int nodeId) {
     this.nodeId = nodeId;
   }
 

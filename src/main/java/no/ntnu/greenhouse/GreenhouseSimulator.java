@@ -16,17 +16,10 @@ import no.ntnu.tools.Logger;
 public class GreenhouseSimulator {
   private final Map<Integer, Node> nodes = new HashMap<>();
 
-  private final List<PeriodicSwitch> periodicSwitches = new LinkedList<>();
-  private final boolean fake;
-
   /**
    * Create a greenhouse simulator.
-   *
-   * @param fake When true, simulate a fake periodic events instead of creating
-   *             socket communication
    */
-  public GreenhouseSimulator(boolean fake) {
-    this.fake = fake;
+  public GreenhouseSimulator() {
   }
 
   /**
@@ -56,29 +49,13 @@ public class GreenhouseSimulator {
     for (Node node : nodes.values()) {
       node.start();
     }
-    for (PeriodicSwitch periodicSwitch : periodicSwitches) {
-      periodicSwitch.start();
-    }
 
     Logger.info("Simulator started");
   }
 
   private void initiateCommunication() {
-    if (fake) {
-      initiateFakePeriodicSwitches();
-    } else {
-      initiateRealCommunication();
-    }
-  }
-
-  private void initiateRealCommunication() {
     Server server = new Server();
     server.establishConnection();
-  }
-
-  private void initiateFakePeriodicSwitches() {
-    periodicSwitches.add(new PeriodicSwitch("Window DJ", nodes.get(1), 2, 20000));
-    periodicSwitches.add(new PeriodicSwitch("Heater DJ", nodes.get(2), 7, 8000));
   }
 
   /**
@@ -92,13 +69,7 @@ public class GreenhouseSimulator {
   }
 
   private void stopCommunication() {
-    if (fake) {
-      for (PeriodicSwitch periodicSwitch : periodicSwitches) {
-        periodicSwitch.stop();
-      }
-    } else {
-      // TODO - here you stop the TCP/UDP communication
-    }
+    // TODO - here you stop the TCP/UDP communication
   }
 
   /**

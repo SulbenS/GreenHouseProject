@@ -14,7 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
-import no.ntnu.controlpanel.SensorActuatorNodeInfo;
+import no.ntnu.controlpanel.NodeInfo;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.SensorReading;
 import no.ntnu.gui.common.ActuatorPane;
@@ -37,7 +37,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   private Scene mainScene;
   private final Map<Integer, SensorPane> sensorPanes = new HashMap<>();
   private final Map<Integer, ActuatorPane> actuatorPanes = new HashMap<>();
-  private final Map<Integer, SensorActuatorNodeInfo> nodeInfos = new HashMap<>();
+  private final Map<Integer, NodeInfo> nodeInfos = new HashMap<>();
   private final Map<Integer, Tab> nodeTabs = new HashMap<>();
 
   /**
@@ -85,7 +85,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   }
 
   @Override
-  public void onNodeAdded(SensorActuatorNodeInfo nodeInfo) {
+  public void onNodeAdded(NodeInfo nodeInfo) {
     Platform.runLater(() -> addNodeTab(nodeInfo));
   }
 
@@ -146,7 +146,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
   private Actuator getStoredActuator(int nodeId, int actuatorId) {
     Actuator actuator = null;
-    SensorActuatorNodeInfo nodeInfo = nodeInfos.get(nodeId);
+    NodeInfo nodeInfo = nodeInfos.get(nodeId);
     if (nodeInfo != null) {
       actuator = nodeInfo.getActuator(actuatorId);
     }
@@ -164,7 +164,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     nodeTabs.remove(nodeId);
   }
 
-  private void addNodeTab(SensorActuatorNodeInfo nodeInfo) {
+  private void addNodeTab(NodeInfo nodeInfo) {
     if (nodeTabPane == null) {
       nodeTabPane = new TabPane();
       mainScene.setRoot(nodeTabPane);
@@ -178,7 +178,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     }
   }
 
-  private Tab createNodeTab(SensorActuatorNodeInfo nodeInfo) {
+  private Tab createNodeTab(NodeInfo nodeInfo) {
     Tab tab = new Tab("Node " + nodeInfo.getId());
     SensorPane sensorPane = createEmptySensorPane();
     sensorPanes.put(nodeInfo.getId(), sensorPane);

@@ -1,7 +1,7 @@
 package no.ntnu.listeners.controlpanel;
 
 import java.util.List;
-import no.ntnu.controlpanel.SensorActuatorNodeInfo;
+import no.ntnu.controlpanel.NodeInfo;
 import no.ntnu.greenhouse.SensorReading;
 
 /**
@@ -18,7 +18,7 @@ public interface GreenhouseEventListener {
    *
    * @param nodeInfo Information about the added node
    */
-  void onNodeAdded(SensorActuatorNodeInfo nodeInfo);
+  void onNodeAdded(NodeInfo nodeInfo);
 
   /**
    * This event is fired when a node is removed from the greenhouse.
