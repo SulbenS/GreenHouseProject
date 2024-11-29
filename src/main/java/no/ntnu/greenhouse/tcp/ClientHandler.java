@@ -15,6 +15,9 @@ public class ClientHandler extends Thread {
   private Server server;
   private Socket socket;
 
+  boolean shouldTransmit;
+  boolean shouldBroadcast;
+
   /**
    * Constructor for the class.
    *
@@ -27,6 +30,8 @@ public class ClientHandler extends Thread {
     this.writer = new PrintWriter(socket.getOutputStream(), true);
     this.server = server;
     this.socket = socket;
+    this.shouldTransmit = false;
+    this.shouldBroadcast = false;
   }
 
   /**
@@ -41,7 +46,14 @@ public class ClientHandler extends Thread {
           this.socket.close();
           return;
         }
-        this.server.broadcast(message);
+        if (this.shouldTransmit) {
+          this.transmit(message);
+          this.shouldTransmit = false;
+        }
+        if (this.shouldBroadcast) {
+          this.server.broadcast(message);
+          this.shouldBroadcast = false;
+        }
       }
     } catch (IOException e) {
       System.out.println("Could not read the message.");
@@ -66,5 +78,41 @@ public class ClientHandler extends Thread {
    */
   public void transmit(String message) {
     this.writer.println(message);
+  }
+
+  /**
+   * Sets the shouldTransmit variable.
+   *
+   * @param shouldTransmit The value to set.
+   */
+  public void setShouldTransmit(boolean shouldTransmit) {
+    this.shouldTransmit = shouldTransmit;
+  }
+
+  /**
+   * Sets the shouldBroadcast variable.
+   *
+   * @param shouldBroadcast The value to set.
+   */
+  public void setShouldBroadcast(boolean shouldBroadcast) {
+    this.shouldBroadcast = shouldBroadcast;
+  }
+
+  /**
+   * Return the shouldTransmit variable.
+   *
+   * @return The shouldTransmit variable.
+   */
+  public boolean getShouldTransmit() {
+    return this.shouldTransmit;
+  }
+
+  /**
+   * Return the shouldBroadcast variable.
+   *
+   * @return The shouldBroadcast variable.
+   */
+  public boolean getShouldBroadcast() {
+    return this.shouldBroadcast;
   }
 }
