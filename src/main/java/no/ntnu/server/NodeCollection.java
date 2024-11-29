@@ -12,36 +12,12 @@ import java.util.Map;
 public class NodeCollection implements NodeStateListener, GreenhouseEventListener {
   private final Map<Integer, Node> nodes = new HashMap<>();
 
-  public void initialize() {
-    System.out.println("Adding nodes to the greenhouse.");
-    createNode(1, 2, 1, 0, 0);
-    createNode(1, 0, 0, 2, 1);
-    createNode(2, 0, 0, 0, 0);
-  }
-
   private void createNode(int temperature, int humidity, int windows, int fans, int heaters) {
     Node node = DeviceFactory.createNode(
             temperature, humidity, windows, fans, heaters);
     node.addStateListener(this);
-    try {
-      node.establishConnection();
-    } catch (IllegalArgumentException e) {
-      System.out.println("Could not establish connection to node.");
-      System.out.println(e.getMessage());
-    }
+    node.start();
     this.nodes.put(node.getId(), node);
-  }
-
-  public void start() {
-    for (Node node : this.nodes.values()) {
-      node.start();
-    }
-  }
-
-  public void stop() {
-    for (Node node : this.nodes.values()) {
-      node.stop();
-    }
   }
 
   /**

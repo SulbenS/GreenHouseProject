@@ -3,23 +3,23 @@ package no.ntnu.tools;
 public class MessageSerializerTest {
   public static void main(String[] args) {
     // Test serialization for a specific actuator
-    Command command1 = new Command(7, 3, "On");
-    String serialized1 = MessageSerializer.serialize(command1);
+    ActuatorCommand actuatorCommand1 = new ActuatorCommand(7, 3, "On");
+    String serialized1 = MessageSerializer.serialize(actuatorCommand1);
     System.out.println("Serialized (specific actuator): " + serialized1);
 
-    // Deserialize the serialized string back into a Command object
-    Command deserialized1 = MessageSerializer.deserialize(serialized1);
+    // Deserialize the serialized string back into a ActuatorCommand object
+    ActuatorCommand deserialized1 = MessageSerializer.deserialize(serialized1);
     System.out.println("Deserialized Node ID: " + deserialized1.getNodeId());
     System.out.println("Deserialized Actuator ID: " + deserialized1.getActuatorId());
     System.out.println("Deserialized Action: " + deserialized1.getAction());
 
     // Test serialization for an actuator type
-    Command command2 = new Command(7, "Fan", "Off");
-    String serialized2 = MessageSerializer.serialize(command2);
+    ActuatorCommand actuatorCommand2 = new ActuatorCommand(7, "Fan", "Off");
+    String serialized2 = MessageSerializer.serialize(actuatorCommand2);
     System.out.println("Serialized (actuator type): " + serialized2);
 
-    // Deserialize the serialized string back into a Command object
-    Command deserialized2 = MessageSerializer.deserialize(serialized2);
+    // Deserialize the serialized string back into a ActuatorCommand object
+    ActuatorCommand deserialized2 = MessageSerializer.deserialize(serialized2);
     System.out.println("Deserialized Node ID: " + deserialized2.getNodeId());
     System.out.println("Deserialized Actuator Type: " + deserialized2.getActuatorType());
     System.out.println("Deserialized Action: " + deserialized2.getAction());

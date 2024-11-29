@@ -5,6 +5,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.IOException;
 import java.net.Socket;
+import no.ntnu.tools.ActuatorCommand;
+import no.ntnu.tools.MessageSerializer;
+import no.ntnu.tools.NodeCommand;
 
 /**
  * The client handler of the application.
@@ -15,9 +18,6 @@ public class ClientHandler extends Thread {
 
   private BufferedReader reader;
   private PrintWriter writer;
-
-  private boolean shouldTransmit;
-  private boolean shouldBroadcast;
 
   /**
    * Constructor for the class.
@@ -32,9 +32,6 @@ public class ClientHandler extends Thread {
 
     this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     this.writer = new PrintWriter(socket.getOutputStream(), true);
-
-    this.shouldTransmit = false;
-    this.shouldBroadcast = false;
   }
 
   /**
@@ -44,19 +41,12 @@ public class ClientHandler extends Thread {
   public void run() {
     try {
       while (true) {
-        String message = receive();
-        if (message == null) {
+        NodeCommand message = receive();
+        if (!(message instanceof ActuatorCommand) && message.getAction().equals("off")) {
           this.socket.close();
           return;
         }
-        if (this.shouldTransmit) {
-          this.transmit(message);
-          this.shouldTransmit = false;
-        }
-        if (this.shouldBroadcast) {
-          this.server.broadcast(message);
-          this.shouldBroadcast = false;
-        }
+        this.transmit(message);
       }
     } catch (IOException e) {
       System.out.println("Could not read the message.");
@@ -65,13 +55,13 @@ public class ClientHandler extends Thread {
   }
 
   /**
-   * Reads the message from the client.
+   * Returns the message from the client as a command.
    *
-   * @return The message from the client.
+   * @return The message from the client as a command.
    * @throws IOException If an I/O error occurs.
    */
-  public String receive() throws IOException {
-    return this.reader.readLine();
+  public NodeCommand receive() throws IOException {
+    return MessageSerializer.deserialize(this.reader.readLine());
   }
 
   /**
@@ -79,8 +69,8 @@ public class ClientHandler extends Thread {
    *
    * @param message The message to transmit.
    */
-  public void transmit(String message) {
-    this.writer.println(message);
+  public void transmit(NodeCommand message) {
+    this.writer.println(MessageSerializer.serialize(message));
   }
 
   /**
@@ -92,24 +82,6 @@ public class ClientHandler extends Thread {
     this.socket.close();
     this.reader.close();
     this.writer.close();
-  }
-
-  /**
-   * Sets the shouldTransmit variable.
-   *
-   * @param shouldTransmit The value to set.
-   */
-  public void setShouldTransmit(boolean shouldTransmit) {
-    this.shouldTransmit = shouldTransmit;
-  }
-
-  /**
-   * Sets the shouldBroadcast variable.
-   *
-   * @param shouldBroadcast The value to set.
-   */
-  public void setShouldBroadcast(boolean shouldBroadcast) {
-    this.shouldBroadcast = shouldBroadcast;
   }
 
   public void setServer(Server server) {
@@ -127,23 +99,5 @@ public class ClientHandler extends Thread {
 
   public Socket getSocket() {
     return this.socket;
-  }
-
-  /**
-   * Return the shouldTransmit variable.
-   *
-   * @return The shouldTransmit variable.
-   */
-  public boolean getShouldTransmit() {
-    return this.shouldTransmit;
-  }
-
-  /**
-   * Return the shouldBroadcast variable.
-   *
-   * @return The shouldBroadcast variable.
-   */
-  public boolean getShouldBroadcast() {
-    return this.shouldBroadcast;
   }
 }

@@ -1,8 +1,10 @@
 package no.ntnu.server;
 
+import no.ntnu.node.Node;
+import no.ntnu.tools.NodeCommand;
+
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,35 +36,13 @@ public class Server {
    * This client will be run in a new thread.
    */
   public void run() {
-    openSocket(); // Start the server socket
+    openSocket();
     System.out.println("Server started on port " + TCP_PORT);
-    this.isRunning = true; // Mark the server as running
-
     while (this.isRunning) {
-      try {
-        // Accept a new client connection
-        Socket clientSocket = this.serverSocket.accept();
-        System.out.println("New client connected: " + clientSocket.getInetAddress());
-
-        // Create a client handler for the connected client
-        ClientHandler clientHandler = new ClientHandler(this, clientSocket);
-
-        // Add the client handler to the list of active handlers
-        synchronized (this.clientHandlers) {
-          this.clientHandlers.add(clientHandler);
-        }
-
-        // Start the client handler in a new thread
-        new Thread(clientHandler).start();
-      } catch (IOException e) {
-        if (this.isRunning) {
-          System.out.println("Error accepting a new client: " + e.getMessage());
-        }
-      }
+      ClientHandler clientHandler = connectClient();
+      this.clientHandlers.add(clientHandler);
     }
-    // TODO: Add a way to stop the server
   }
-
 
   /**
    * Creates a port.
@@ -83,16 +63,18 @@ public class Server {
    * @return The client handler for the client.
    */
   public ClientHandler connectClient() {
-    if (this.isRunning) {
-      try {
-        ClientHandler clientHandler = new ClientHandler(this, this.serverSocket.accept());
+    ClientHandler clientHandler = null;
+    try {
+      if (this.isRunning) {
+        clientHandler = new ClientHandler(this, this.serverSocket.accept());
         clientHandler.start();
-        return clientHandler;
-      } catch (IOException e) {
-        System.out.println("Could not connect a client: " + e.getMessage());
+      } else {
+        throw new IllegalArgumentException("Server is not running.");
       }
+    } catch (IOException e) {
+      System.out.println("Could not connect a client: " + e.getMessage());
     }
-    return null;
+    return clientHandler;
   }
 
   /**
@@ -109,9 +91,28 @@ public class Server {
   /**
    * Broadcasts a message to all clients.
    *
-   * @param message The message to broadcast.
+   * @param message the message to broadcast.
    */
-  public void broadcast(String message) {
+  public void broadcast(NodeCommand message) {
     this.clientHandlers.forEach(client -> client.transmit(message));
+  }
+
+  /**
+   * Return the node collection.
+   *
+   * @return the node collection.
+   */
+  public NodeCollection getNodes() {
+    return this.nodes;
+  }
+
+  /**
+   * Return a specific node by its ID.
+   *
+   * @param nodeId The ID of the node to get
+   * @return The node with the given ID, or null if no such node exists
+   */
+  public Node getNode(int nodeId) {
+    return this.nodes.getNode(nodeId);
   }
 }

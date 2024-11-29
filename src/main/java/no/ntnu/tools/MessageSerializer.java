@@ -6,42 +6,52 @@ import java.util.Map;
 public class MessageSerializer {
 
   /**
-   * Serialize: Convert a Command object into a raw string
+   * Serialize: Convert a ActuatorCommand object into a raw string
    *
-   * @param command Command object to serialize
-   * @return Raw string representation of the Command object
+   * @param actuatorCommand ActuatorCommand object to serialize
+   * @return Raw string representation of the ActuatorCommand object
    */
-  public static String serialize(Command command) {
-    StringBuilder builder = new StringBuilder("Node=" + command.getNodeId() + ";");
-    if (command.getActuatorType() != null) {
-      builder.append("ActuatorType=").append(command.getActuatorType()).append(";");
-    } else if (command.getActuatorId() != 0) {
-      builder.append("Actuator=").append(command.getActuatorId()).append(";");
+  public static String serialize(ActuatorCommand actuatorCommand) {
+    StringBuilder builder = new StringBuilder("Node=" + actuatorCommand.getNodeId() + ";");
+    if (actuatorCommand.getActuatorType() != null) {
+      builder.append("ActuatorType=").append(actuatorCommand.getActuatorType()).append(";");
+    } else if (actuatorCommand.getActuatorId() != 0) {
+      builder.append("Actuator=").append(actuatorCommand.getActuatorId()).append(";");
     }
-    builder.append("Action=").append(command.getAction());
+    builder.append("Action=").append(actuatorCommand.getAction());
     return builder.toString();
   }
 
   /**
-   * Deserialize: Convert a raw string into a Command object
+   * Serialize: Convert a NodeCommand object into a raw string
+   *
+   * @param actuatorCommand NodeCommand object to serialize
+   * @return Raw string representation of the NodeCommand object
+   */
+  public static String serialize(NodeCommand actuatorCommand) {
+    return "Node=" + actuatorCommand.getNodeId() + ";" + "Action=" + actuatorCommand.getAction();
+  }
+
+  /**
+   * Deserialize: Convert a raw string into a ActuatorCommand object
    *
    * @param rawMessage Raw string to deserialize
-   * @return Command object parsed from the raw string
+   * @return ActuatorCommand object parsed from the raw string
    */
-  public static Command deserialize(String rawMessage) {
+  public static ActuatorCommand deserialize(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
     int nodeId = Integer.parseInt(fields.get("Node"));
     String action = fields.get("Action");
 
     if (fields.containsKey("Actuator")) {
       int actuatorId = Integer.parseInt(fields.get("Actuator"));
-      return new Command(nodeId, actuatorId, action);
+      return new ActuatorCommand(nodeId, actuatorId, action);
     } else if (fields.containsKey("ActuatorType")) {
       String actuatorType = fields.get("ActuatorType");
-      return new Command(nodeId, actuatorType, action);
+      return new ActuatorCommand(nodeId, actuatorType, action);
     }
 
-    throw new IllegalArgumentException("Invalid Command format");
+    throw new IllegalArgumentException("Invalid ActuatorCommand format");
   }
 
   /**
