@@ -38,9 +38,9 @@
 }
 
 .actuator-vbox {
-    -fx-background-image: url('/Images/greenhouse.jpg');
+    -fx-background-image: url('/Images/picsart_chuck.jpeg');
     -fx-background-size: cover; /* Adjust the size of the background image */
-    -fx-background-position: bottom;
+    -fx-background-position: center;
 }
 
 .sensor-vbox {
