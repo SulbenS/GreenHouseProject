@@ -11,7 +11,6 @@ import no.ntnu.greenhouse.node.Node;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
 import no.ntnu.listeners.node.ActuatorListener;
-import no.ntnu.listeners.node.NodeStateListener;
 import no.ntnu.listeners.node.SensorListener;
 
 /**

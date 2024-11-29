@@ -12,7 +12,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import no.ntnu.communication.CommunicationChannel;
 import no.ntnu.greenhouse.ControlPanel;
 import no.ntnu.greenhouse.node.Node;
 import no.ntnu.greenhouse.node.Actuator;
@@ -30,7 +29,6 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   private static ControlPanel logic;
   private static final int WIDTH = 500;
   private static final int HEIGHT = 400;
-  private static CommunicationChannel channel;
 
   private TabPane nodeTabPane;
   private Scene mainScene;
@@ -45,25 +43,18 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
    * We need to use another wrapper-class for the debugger to work.
    *
    * @param logic   The logic of the control panel node
-   * @param channel Communication channel for sending control commands and receiving events
    */
-  public static void startApp(ControlPanel logic, CommunicationChannel channel) {
+  public static void startApp(ControlPanel logic) {
     if (logic == null) {
       throw new IllegalArgumentException("Control panel logic can't be null");
     }
     ControlPanelApplication.logic = logic;
-    ControlPanelApplication.channel = channel;
     System.out.println("Running control panel GUI...");
     launch();
   }
 
   @Override
   public void start(Stage stage) {
-    if (channel == null) {
-      throw new IllegalStateException(
-              "No communication channel. See the README on how to use fake event spawner!"
-      );
-    }
     System.out.println("Creating stage for control panel");
     stage.setMinWidth(WIDTH);
     stage.setMinHeight(HEIGHT);
@@ -73,9 +64,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     stage.show();
     logic.addListener(this);
     logic.setCommunicationChannelListener(this);
-    if (!channel.open()) {
-      logic.onCommunicationChannelClosed();
-    }
+    logic.onCommunicationChannelClosed();
   }
 
   private static Label createEmptyContent() {

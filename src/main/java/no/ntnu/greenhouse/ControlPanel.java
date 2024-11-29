@@ -3,8 +3,6 @@ package no.ntnu.greenhouse;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
-import no.ntnu.communication.CommunicationChannel;
 import no.ntnu.greenhouse.node.Actuator;
 import no.ntnu.greenhouse.node.SensorReading;
 import no.ntnu.greenhouse.node.Node;
@@ -26,7 +24,6 @@ public class ControlPanel implements GreenhouseEventListener, ActuatorListener,
     CommunicationChannelListener {
   private final List<GreenhouseEventListener> listeners = new LinkedList<>();
 
-  private CommunicationChannel communicationChannel;
   private CommunicationChannelListener communicationChannelListener;
 
   private List<Node> nodes = new ArrayList<>();
@@ -36,15 +33,6 @@ public class ControlPanel implements GreenhouseEventListener, ActuatorListener,
    */
   public ControlPanel() {
 
-  }
-
-  /**
-   * Set the channel over which control commands will be sent to sensor/actuator nodes.
-   *
-   * @param communicationChannel The communication channel, the event sender
-   */
-  public void setCommunicationChannel(CommunicationChannel communicationChannel) {
-    this.communicationChannel = communicationChannel;
   }
 
   /**
@@ -89,9 +77,6 @@ public class ControlPanel implements GreenhouseEventListener, ActuatorListener,
 
   @Override
   public void actuatorUpdated(int nodeId, Actuator actuator) {
-    if (communicationChannel != null) {
-      communicationChannel.sendActuatorChange(nodeId, actuator.getId(), actuator.isOn());
-    }
     listeners.forEach(listener ->
         listener.onActuatorStateChanged(nodeId, actuator.getId(), actuator.isOn())
     );
@@ -102,5 +87,20 @@ public class ControlPanel implements GreenhouseEventListener, ActuatorListener,
     if (communicationChannelListener != null) {
       communicationChannelListener.onCommunicationChannelClosed();
     }
+  }
+
+  /**
+   * Request the server to close the application.
+   */
+  public void closeApplication() {
+    // TODO: Implement this method
+  }
+
+  /**
+   * Request the server to add a new node.
+   */
+  public Node requestNode(int nodeId) {
+    throw new UnsupportedOperationException("Not implemented yet");
+    // TODO: Implement this method
   }
 }

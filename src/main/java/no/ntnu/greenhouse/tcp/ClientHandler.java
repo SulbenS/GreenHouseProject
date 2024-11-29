@@ -10,13 +10,14 @@ import java.net.Socket;
  * The client handler of the application.
  */
 public class ClientHandler extends Thread {
-  private BufferedReader reader;
-  private PrintWriter writer;
   private Server server;
   private Socket socket;
 
-  boolean shouldTransmit;
-  boolean shouldBroadcast;
+  private BufferedReader reader;
+  private PrintWriter writer;
+
+  private boolean shouldTransmit;
+  private boolean shouldBroadcast;
 
   /**
    * Constructor for the class.
@@ -26,10 +27,12 @@ public class ClientHandler extends Thread {
    * @throws IOException If an I/O error occurs.
    */
   public ClientHandler(Server server, Socket socket) throws IOException {
-    this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-    this.writer = new PrintWriter(socket.getOutputStream(), true);
     this.server = server;
     this.socket = socket;
+
+    this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    this.writer = new PrintWriter(socket.getOutputStream(), true);
+
     this.shouldTransmit = false;
     this.shouldBroadcast = false;
   }
@@ -81,6 +84,17 @@ public class ClientHandler extends Thread {
   }
 
   /**
+   * Close the reader, writer, and socket.
+   *
+   * @throws IOException If an I/O error occurs when closing the channel
+   */
+  public void closeAll() throws IOException {
+    this.socket.close();
+    this.reader.close();
+    this.writer.close();
+  }
+
+  /**
    * Sets the shouldTransmit variable.
    *
    * @param shouldTransmit The value to set.
@@ -96,6 +110,23 @@ public class ClientHandler extends Thread {
    */
   public void setShouldBroadcast(boolean shouldBroadcast) {
     this.shouldBroadcast = shouldBroadcast;
+  }
+
+  public void setServer(Server server) {
+    this.server = server;
+  }
+
+  public void setSocket(Socket socket) {
+    this.socket = socket;
+  }
+
+
+  public Server getServer() {
+    return this.server;
+  }
+
+  public Socket getSocket() {
+    return this.socket;
   }
 
   /**

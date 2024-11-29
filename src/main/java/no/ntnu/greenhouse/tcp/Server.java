@@ -1,5 +1,10 @@
 package no.ntnu.greenhouse.tcp;
 
+import no.ntnu.greenhouse.DeviceFactory;
+import no.ntnu.greenhouse.node.Node;
+import no.ntnu.greenhouse.node.NodeCollection;
+import no.ntnu.listeners.node.NodeStateListener;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
@@ -12,15 +17,17 @@ public class Server {
   public static final int TCP_PORT = 1238; //The port of the server.
   private ServerSocket serverSocket;
 
-  private boolean isRunning;
   private List<ClientHandler> clientHandlers;
 
+  private NodeCollection nodes;
+  private boolean isRunning;
 
   /**
    * Constructor for the class.
    */
   public Server() {
     this.clientHandlers = new ArrayList<>();
+    this.nodes = new NodeCollection();
     this.isRunning = false;
   }
 
@@ -31,7 +38,9 @@ public class Server {
    * This client will be run in a new thread.
    */
   public void run() {
-    establishConnection();
+    openSocket();
+    this.nodes.initialize();
+    this.nodes.start();
     System.out.println("Server started on port " + TCP_PORT);
     while (this.isRunning) {
       ClientHandler clientHandler = connectClient();
@@ -42,9 +51,9 @@ public class Server {
   }
 
   /**
-   * Creates a port, and waits for a client to connect.
+   * Creates a port.
    */
-  public void establishConnection() {
+  public void openSocket() {
     try {
       this.serverSocket = new ServerSocket(TCP_PORT);
       this.isRunning = true;
