@@ -81,6 +81,7 @@ public class SensorPane extends TitledPane {
     sensorProps.add(props);
     Label label = new Label();
     label.textProperty().bind(props);
+    label.getStyleClass().add("sensor-label");
     return label;
   }
 

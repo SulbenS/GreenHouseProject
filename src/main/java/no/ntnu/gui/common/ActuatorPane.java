@@ -74,6 +74,7 @@ public class ActuatorPane extends TitledPane {
     actuatorValue.put(actuator, props);
     Label label = new Label();
     label.textProperty().bind(props);
+    label.getStyleClass().add("actuator-label");
     return label;
   }
 
