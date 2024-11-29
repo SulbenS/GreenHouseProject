@@ -17,8 +17,8 @@ public class GreenhouseApplication extends Application implements NodeStateListe
   private Scene scene;
   private TabPane tabPane;
 
-  private int width = 300;
-  private int height = 450;
+  private int width = 450;
+  private int height = 500;
 
   private ControlPanel controlPanel;
 
@@ -41,6 +41,10 @@ public class GreenhouseApplication extends Application implements NodeStateListe
     this.scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
     this.stage.setScene(scene);
     this.stage.setTitle("Greenhouse simulator");
+    this.stage.setMaxHeight(height);
+    this.stage.setMaxWidth(width);
+    this.stage.setMinHeight(height);
+    this.stage.setMinWidth(width);
     this.stage.show();
     this.stage.setOnCloseRequest(event -> this.controlPanel.closeApplication());
   }
