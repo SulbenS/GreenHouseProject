@@ -11,6 +11,7 @@ public class Server {
   private final Map<Integer, SensorState> sensorStates = new ConcurrentHashMap<>();
   private final List<ClientHandler> clients = Collections.synchronizedList(new ArrayList<>());
 
+
   public static void main(String[] args) {
     new Server().start();
   }
@@ -43,12 +44,12 @@ public class Server {
     Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
       synchronized (sensorStates) {
         for (SensorState state : sensorStates.values()) {
-          state.updateRandomly(); // Simulate random updates
+          state.updateRandomly(); // Simulate realistic updates
           String updateMessage = state.toUpdateMessage();
-          broadcastUpdate(updateMessage); // Send updates to all clients
+          broadcastUpdate(updateMessage); // Broadcast updates to all clients
         }
       }
-    }, 0, 1, TimeUnit.SECONDS); // Adjust interval as needed
+    }, 0, 1, TimeUnit.SECONDS);
   }
 
   private void broadcastUpdate(String message) {
@@ -95,25 +96,44 @@ public class Server {
 
     private void processCommand(String command) {
       String[] parts = command.split("\\|");
-      if (parts.length < 3) return;
+      if (parts.length < 3) {
+        System.err.println("Invalid command format: " + command);
+        return;
+      }
 
-      int nodeId = Integer.parseInt(parts[1]);
-      String[] actuatorUpdate = parts[2].split("=");
-      if (actuatorUpdate.length == 2) {
-        String actuator = actuatorUpdate[0];
-        boolean state = actuatorUpdate[1].equalsIgnoreCase("on");
+      int nodeId;
+      try {
+        nodeId = Integer.parseInt(parts[1]);
+      } catch (NumberFormatException e) {
+        System.err.println("Invalid node ID: " + parts[1]);
+        return;
+      }
 
-        SensorState sensorState = sensorStates.get(nodeId);
-        if (sensorState != null) {
+      SensorState sensorState = sensorStates.get(nodeId);
+      if (sensorState == null) {
+        System.err.println("Sensor node not found: " + nodeId);
+        return;
+      }
+
+      // Handle multiple actuator updates in one command
+      for (int i = 2; i < parts.length; i++) {
+        String[] actuatorUpdate = parts[i].split("=");
+        if (actuatorUpdate.length == 2) {
+          String actuator = actuatorUpdate[0];
+          boolean state = actuatorUpdate[1].equalsIgnoreCase("on");
           sensorState.setActuatorState(actuator, state);
           System.out.println("Updated actuator state for node " + nodeId + ": " + actuator + " -> " + state);
-
-          // Broadcast updated state to all clients
-          String updateMessage = sensorState.toUpdateMessage();
-          broadcastUpdate(updateMessage);
+        } else {
+          System.err.println("Invalid actuator command: " + parts[i]);
         }
       }
+
+      // Broadcast updated state to all clients
+      String updateMessage = sensorState.toUpdateMessage();
+      broadcastUpdate(updateMessage);
     }
+
+
 
     private void send(String message) {
       if (out != null) {
@@ -145,10 +165,10 @@ public class Server {
       this.nodeId = nodeId;
       this.temperature = 25.0; // Default temperature
       this.humidity = 50.0; // Default humidity
-      this.actuators = new HashMap<>();
+      this.actuators = new ConcurrentHashMap<>(); // Use ConcurrentHashMap for thread safety
       actuators.put("heater", false);
       actuators.put("window", false);
-      actuators.put("fan", false);
+      actuators.put("fan", false); // Ensure 'fan' is included
     }
 
     public synchronized void setActuatorState(String actuator, boolean state) {

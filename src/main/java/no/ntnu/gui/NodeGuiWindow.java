@@ -47,8 +47,6 @@ public class NodeGuiWindow extends VBox {
     getChildren().addAll(sensorsPane, actuatorsPane);
 
     client.setListener(update -> {
-      System.out.println("Client received update: " + update); // Debugging log
-
       if (update.contains("nodeId=" + node.getId())) {
         String[] parts = update.split("\\|");
         for (String part : parts) {
@@ -61,7 +59,7 @@ public class NodeGuiWindow extends VBox {
               switch (key) {
                 case "temperature" -> node.setTemperature(Double.parseDouble(value.replace(",", ".")));
                 case "humidity" -> node.setHumidity(Double.parseDouble(value.replace(",", ".")));
-                default -> { // Assume it's an actuator
+                default -> { // Actuator state
                   boolean state = value.equalsIgnoreCase("on");
                   node.setActuatorState(key, state);
                 }
@@ -69,10 +67,9 @@ public class NodeGuiWindow extends VBox {
             }
           }
         }
-        refreshDisplay(); // Trigger the GUI update
+        refreshDisplay();
       }
     });
-
   }
 
   private void refreshDisplay() {
@@ -87,4 +84,5 @@ public class NodeGuiWindow extends VBox {
       }
     }
   }
+
 }

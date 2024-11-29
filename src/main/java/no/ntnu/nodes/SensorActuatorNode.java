@@ -1,7 +1,7 @@
 package no.ntnu.nodes;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SensorActuatorNode {
   private final int id;
@@ -11,10 +11,10 @@ public class SensorActuatorNode {
 
   public SensorActuatorNode(int id) {
     this.id = id;
-    this.actuators = new HashMap<>();
+    this.actuators = new ConcurrentHashMap<>();
     actuators.put("heater", false);
     actuators.put("window", false);
-    actuators.put("fan", false);
+    actuators.put("fan", false); // Ensure 'fan' is included
   }
 
   public int getId() {
