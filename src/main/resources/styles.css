@@ -1,10 +1,24 @@
 /* styles.css */
-.label {
+.sensor-label {
     -fx-font-size: 16px;
     -fx-font-family: "Lucida Sans Unicode";
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-background-color: radial-gradient(center 50% 50%, radius 100%, rgba(0, 0, 0, 1), transparent);
+    -fx-background-color: #333333;
+}
+.actuator-label {
+    -fx-font-size: 16px;
+    -fx-font-family: "Lucida Sans Unicode";
+    -fx-text-fill: white; /* Red text for actuator labels */
+    -fx-font-weight: bold;
+    -fx-background-color: rgba(51, 51, 51, 0.7);
+    -fx-border-width: 1;
+    -fx-border-color: black;
+    -fx-padding: 2px 5px;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
 }
 
 .title {
@@ -21,11 +35,21 @@
     -fx-text-fill: #333333;
     -fx-font-weight: bold;
     -fx-border-width: 2;
-    -fx-border-color: radial-gradient(center 50% 50%, radius 100%, rgba(0, 0, 0, 1), transparent);
+    -fx-border-color: rgba(0,0,0,0);
+    -fx-background-insets: 5px;
+    -fx-padding: 2px 5px;
+    -fx-border-insets: 5px;
+}
+.check-box .box {
+    -fx-border-color: #000000; /* Border color of the checkbox */
+    -fx-border-width: 1px;
+    -fx-background-color: rgba(51, 51, 51, 0.7); /* Background color of the checkbox */
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
 }
 
 .check-box:selected .box .mark {
-    -fx-mark-color: #338833; /* Green color when selected */
+    -fx-mark-color: #ffffff; /* Green color when selected */
 
 }
 
@@ -38,9 +62,12 @@
 }
 
 .actuator-vbox {
-    -fx-background-image: url('/Images/greenhouse.jpg');
+
+    -fx-background-image: url('/Images/picsart_chuck.jpeg');
     -fx-background-size: cover; /* Adjust the size of the background image */
-    -fx-background-position: bottom;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-animated: cycle 0.5s;
 }
 
 .sensor-vbox {
