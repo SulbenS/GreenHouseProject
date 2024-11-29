@@ -13,7 +13,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import no.ntnu.communication.CommunicationChannel;
-import no.ntnu.ControlPanel;
+import no.ntnu.greenhouse.ControlPanel;
 import no.ntnu.greenhouse.node.Node;
 import no.ntnu.greenhouse.node.Actuator;
 import no.ntnu.greenhouse.node.SensorReading;
