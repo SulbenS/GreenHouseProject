@@ -9,8 +9,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import no.ntnu.gui.ControlPanel;
 import no.ntnu.node.Node;
@@ -18,19 +16,16 @@ import no.ntnu.node.Actuator;
 import no.ntnu.node.SensorReading;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
-import no.ntnu.listeners.common.CommunicationChannelListener;
-import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
+import no.ntnu.listeners.GreenhouseEventListener;
 
 /**
  * Run a control panel with a graphical user interface (GUI), with JavaFX.
  */
-public class ControlPanelApplication extends Application implements GreenhouseEventListener,
-    CommunicationChannelListener {
+public class ControlPanelApplication extends Application implements GreenhouseEventListener {
   private static ControlPanel logic;
   private static final int WIDTH = 500;
   private static final int HEIGHT = 400;
 
-  private TabPane nodeTabPane;
   private Scene mainScene;
   private final Map<Integer, SensorPane> sensorPanes = new HashMap<>();
   private final Map<Integer, ActuatorPane> actuatorPanes = new HashMap<>();
@@ -47,8 +42,6 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     stage.setScene(mainScene);
     stage.show();
     logic.addListener(this);
-    logic.setCommunicationChannelListener(this);
-    logic.onCommunicationChannelClosed();
   }
 
   private static Label createEmptyContent() {
@@ -81,7 +74,6 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
   private void removeNodeTabPane() {
     mainScene.setRoot(createEmptyContent());
-    nodeTabPane = null;
   }
 
   @Override
@@ -115,12 +107,6 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     } else {
       System.out.println("No actuator section for node " + nodeId);
     }
-  }
-
-  @Override
-  public void onCommunicationChannelClosed() {
-    System.out.println("Communication closed, closing the GUI");
-    Platform.runLater(Platform::exit);
   }
 
   private Actuator getStoredActuator(int nodeId, int actuatorId) {

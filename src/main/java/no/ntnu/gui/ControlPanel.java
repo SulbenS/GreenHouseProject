@@ -7,8 +7,7 @@ import no.ntnu.node.Actuator;
 import no.ntnu.node.SensorReading;
 import no.ntnu.node.Node;
 import no.ntnu.listeners.node.ActuatorListener;
-import no.ntnu.listeners.common.CommunicationChannelListener;
-import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
+import no.ntnu.listeners.GreenhouseEventListener;
 
 /**
  * The central logic of a control panel node. It uses a communication channel to send commands
@@ -20,11 +19,8 @@ import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
  * be placed inside a GUI class (JavaFX classes). Therefore, we use proper structure here, even
  * though you may have no real control-panel logic in your projects.
  */
-public class ControlPanel implements GreenhouseEventListener, ActuatorListener,
-    CommunicationChannelListener {
+public class ControlPanel implements GreenhouseEventListener, ActuatorListener {
   private final List<GreenhouseEventListener> listeners = new LinkedList<>();
-
-  private CommunicationChannelListener communicationChannelListener;
 
   private List<Node> nodes = new ArrayList<>();
 
@@ -33,15 +29,6 @@ public class ControlPanel implements GreenhouseEventListener, ActuatorListener,
    */
   public ControlPanel() {
 
-  }
-
-  /**
-   * Set listener which will get notified when communication channel is closed.
-   *
-   * @param listener The listener
-   */
-  public void setCommunicationChannelListener(CommunicationChannelListener listener) {
-    this.communicationChannelListener = listener;
   }
 
   /**
@@ -80,13 +67,6 @@ public class ControlPanel implements GreenhouseEventListener, ActuatorListener,
     listeners.forEach(listener ->
         listener.onActuatorStateChanged(nodeId, actuator.getId(), actuator.isOn())
     );
-  }
-
-  @Override
-  public void onCommunicationChannelClosed() {
-    if (communicationChannelListener != null) {
-      communicationChannelListener.onCommunicationChannelClosed();
-    }
   }
 
   /**

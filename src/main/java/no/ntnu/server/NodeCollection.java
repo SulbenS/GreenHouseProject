@@ -1,11 +1,10 @@
 package no.ntnu.server;
 
-import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
+import no.ntnu.listeners.GreenhouseEventListener;
+import no.ntnu.listeners.node.NodeStateListener;
 import no.ntnu.node.Node;
 import no.ntnu.node.SensorReading;
 import no.ntnu.tools.DeviceFactory;
-import no.ntnu.listeners.node.NodeStateListener;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,10 +13,10 @@ public class NodeCollection implements NodeStateListener, GreenhouseEventListene
   private final Map<Integer, Node> nodes = new HashMap<>();
 
   public void initialize() {
+    System.out.println("Adding nodes to the greenhouse.");
     createNode(1, 2, 1, 0, 0);
     createNode(1, 0, 0, 2, 1);
     createNode(2, 0, 0, 0, 0);
-    System.out.println("Added nodes to the simulator");
   }
 
   private void createNode(int temperature, int humidity, int windows, int fans, int heaters) {

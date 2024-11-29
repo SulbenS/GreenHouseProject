@@ -1,4 +1,4 @@
-package no.ntnu.listeners.controlpanel;
+package no.ntnu.listeners;
 
 import java.util.List;
 import no.ntnu.node.Node;

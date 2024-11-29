@@ -13,14 +13,13 @@ import java.util.TimerTask;
 
 import no.ntnu.server.Server;
 import no.ntnu.listeners.node.ActuatorListener;
-import no.ntnu.listeners.common.CommunicationChannelListener;
 import no.ntnu.listeners.node.NodeStateListener;
 import no.ntnu.listeners.node.SensorListener;
 
 /**
  * Represents one node with sensors and actuators.
  */
-public class Node implements ActuatorListener, CommunicationChannelListener {
+public class Node implements ActuatorListener {
   // How often to generate new sensor values, in seconds.
   private static final long SENSING_DELAY = 5000;
   private final int id;
@@ -340,12 +339,6 @@ public class Node implements ActuatorListener, CommunicationChannelListener {
    */
   public ActuatorCollection getActuators() {
     return actuators;
-  }
-
-  @Override
-  public void onCommunicationChannelClosed() {
-    System.out.println("Communication channel closed for node " + id);
-    stop();
   }
 
   /**
