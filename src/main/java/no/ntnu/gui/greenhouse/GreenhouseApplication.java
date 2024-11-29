@@ -19,7 +19,7 @@ public class GreenhouseApplication extends Application implements NodeStateListe
   private TabPane tabPane;
 
   private int width = 300;
-  private int height = 300;
+  private int height = 450;
 
 
   public GreenhouseApplication() {
