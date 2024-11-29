@@ -11,7 +11,6 @@ public class Server {
   private final Map<Integer, SensorState> sensorStates = new ConcurrentHashMap<>();
   private final List<ClientHandler> clients = Collections.synchronizedList(new ArrayList<>());
 
-
   public static void main(String[] args) {
     new Server().start();
   }
@@ -93,7 +92,6 @@ public class Server {
       }
     }
 
-
     private void processCommand(String command) {
       String[] parts = command.split("\\|");
       if (parts.length < 3) {
@@ -132,8 +130,6 @@ public class Server {
       String updateMessage = sensorState.toUpdateMessage();
       broadcastUpdate(updateMessage);
     }
-
-
 
     private void send(String message) {
       if (out != null) {

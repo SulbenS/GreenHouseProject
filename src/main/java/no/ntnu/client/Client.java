@@ -51,7 +51,6 @@ public class Client {
     }
   }
 
-
   public void sendCommand(String command) {
     if (out != null) {
       System.out.println("Sending command: " + command); // Debug statement
@@ -59,17 +58,6 @@ public class Client {
     } else {
       commandBuffer.add(command);
       System.err.println("Connection lost. Buffering command: " + command);
-    }
-  }
-
-
-  public void flushBuffer() {
-    while (!commandBuffer.isEmpty() && isConnected) {
-      String bufferedCommand = commandBuffer.poll();
-      if (bufferedCommand != null) {
-        out.println(bufferedCommand);
-        System.out.println("Flushed buffered command: " + bufferedCommand);
-      }
     }
   }
 

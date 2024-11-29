@@ -48,26 +48,4 @@ public class SensorActuatorNode {
       System.err.println("Actuator not found: " + actuator);
     }
   }
-
-
-  public boolean getActuatorState(String actuator) {
-    return actuators.getOrDefault(actuator, false);
-  }
-
-  public void updateSensorValues() {
-    if (actuators.get("heater")) {
-      temperature += 0.1;
-    } else {
-      temperature -= 0.1;
-    }
-    if (actuators.get("window")) {
-      humidity += 0.2;
-    } else {
-      humidity -= 0.1;
-    }
-
-    // Clamp values to realistic ranges
-    temperature = Math.max(15, Math.min(35, temperature));
-    humidity = Math.max(20, Math.min(80, humidity));
-  }
 }
