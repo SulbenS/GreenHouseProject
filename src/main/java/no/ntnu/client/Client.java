@@ -1,13 +1,17 @@
 package no.ntnu.client;
 
-import java.io.*;
-import java.net.*;
-import javafx.application.Platform;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.Queue;
+import java.util.LinkedList;
 
 public class Client {
   private final String host;
   private final int port;
   private PrintWriter out;
+  private Queue<String> commandBuffer = new LinkedList<>();
+  private boolean isConnected = false;
   private ClientListener listener;
 
   public Client(String host, int port) {
@@ -16,42 +20,41 @@ public class Client {
     connect();
   }
 
-  public void setListener(ClientListener listener) {
-    this.listener = listener;
-  }
-
   private void connect() {
     try {
       Socket socket = new Socket(host, port);
       out = new PrintWriter(socket.getOutputStream(), true);
+      isConnected = true;
 
-      // Start listening for updates
-      new Thread(() -> {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-          String message;
-          while ((message = in.readLine()) != null) {
-            System.out.println("Received: " + message);
-            final String finalMessage = message;
-            Platform.runLater(() -> {
-              if (listener != null) listener.onUpdateReceived(finalMessage);
-            });
-          }
-        } catch (IOException e) {
-          System.err.println("Error reading from server: " + e.getMessage());
-        }
-      }).start();
+      // Immediately flush the buffer upon connection
+      flushBuffer();
     } catch (IOException e) {
+      isConnected = false;
       System.err.println("Failed to connect to server: " + e.getMessage());
     }
   }
 
   public void sendCommand(String command) {
-    if (out != null) {
+    if (isConnected && out != null) {
       out.println(command);
+    } else {
+      // If not connected, buffer the command
+      commandBuffer.add(command);
+      System.err.println("Connection lost. Buffering command: " + command);
     }
   }
 
-  public interface ClientListener {
-    void onUpdateReceived(String update);
+  public void flushBuffer() {
+    while (!commandBuffer.isEmpty() && isConnected) {
+      String bufferedCommand = commandBuffer.poll();
+      if (bufferedCommand != null) {
+        out.println(bufferedCommand);
+        System.out.println("Flushed buffered command: " + bufferedCommand);
+      }
+    }
+  }
+
+  public void setListener(ClientListener listener) {
+    this.listener = listener;
   }
 }

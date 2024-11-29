@@ -78,11 +78,9 @@ public class Server {
           }
         }
 
-        // Handle incoming commands
         String message;
         while ((message = in.readLine()) != null) {
           System.out.println("Received: " + message);
-
           if (message.startsWith("COMMAND|")) {
             processCommand(message);
           }
@@ -93,6 +91,7 @@ public class Server {
         disconnect();
       }
     }
+
 
     private void processCommand(String command) {
       String[] parts = command.split("\\|");
