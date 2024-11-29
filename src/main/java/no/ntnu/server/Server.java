@@ -2,6 +2,7 @@ package no.ntnu.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,17 +34,35 @@ public class Server {
    * This client will be run in a new thread.
    */
   public void run() {
-    openSocket();
-    this.nodes.initialize();
-    this.nodes.start();
+    openSocket(); // Start the server socket
     System.out.println("Server started on port " + TCP_PORT);
+    this.isRunning = true; // Mark the server as running
+
     while (this.isRunning) {
-      ClientHandler clientHandler = connectClient();
-      if (clientHandler != null) {
-        this.clientHandlers.add(clientHandler);
+      try {
+        // Accept a new client connection
+        Socket clientSocket = this.serverSocket.accept();
+        System.out.println("New client connected: " + clientSocket.getInetAddress());
+
+        // Create a client handler for the connected client
+        ClientHandler clientHandler = new ClientHandler(this, clientSocket);
+
+        // Add the client handler to the list of active handlers
+        synchronized (this.clientHandlers) {
+          this.clientHandlers.add(clientHandler);
+        }
+
+        // Start the client handler in a new thread
+        new Thread(clientHandler).start();
+      } catch (IOException e) {
+        if (this.isRunning) {
+          System.out.println("Error accepting a new client: " + e.getMessage());
+        }
       }
     }
+    // TODO: Add a way to stop the server
   }
+
 
   /**
    * Creates a port.

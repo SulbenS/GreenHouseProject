@@ -54,25 +54,22 @@ public class Node implements ActuatorListener {
 
   /**
    * Establishes a connection to the server.
-   *
-   * @return true if the connection was successful, false otherwise
    */
-  public boolean establishConnection() {
+  public void establishConnection() {
     try {
       this.socket = new Socket("localhost", Server.TCP_PORT);
     } catch (IOException e) {
       System.out.println("Could not connect to the server.");
       System.out.println(e.getMessage());
-      return false;
+      throw new IllegalArgumentException("Could not connect to the server");
     } try {
       this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
       this.writer = new PrintWriter(this.socket.getOutputStream(), true);
     } catch (IOException e) {
       System.out.println("Could not create the reader/writer.");
       System.out.println(e.getMessage());
-      return false;
+      throw new IllegalArgumentException("Could not create the reader/writer");
     }
-    return true;
   }
 
   private void disconnectFromServer() {
@@ -196,8 +193,11 @@ public class Node implements ActuatorListener {
    */
   public void start() {
     if (!running) {
-      if (!establishConnection()) {
-        throw new IllegalArgumentException("Could not establish connection to the server");
+      try {
+        establishConnection();
+      } catch (IllegalArgumentException e) {
+        System.out.println("Could not establish connection to node.");
+        System.out.println(e.getMessage());
       }
       startPeriodicSensorReading();
       running = true;

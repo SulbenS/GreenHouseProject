@@ -23,8 +23,11 @@ public class NodeCollection implements NodeStateListener, GreenhouseEventListene
     Node node = DeviceFactory.createNode(
             temperature, humidity, windows, fans, heaters);
     node.addStateListener(this);
-    if (!node.establishConnection()) {
-      throw new IllegalStateException("Could not establish connection to the node");
+    try {
+      node.establishConnection();
+    } catch (IllegalArgumentException e) {
+      System.out.println("Could not establish connection to node.");
+      System.out.println(e.getMessage());
     }
     this.nodes.put(node.getId(), node);
   }
