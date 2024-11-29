@@ -1,4 +1,4 @@
-package no.ntnu.commands;
+package no.ntnu.tools;
 
 import java.util.HashMap;
 import java.util.Map;

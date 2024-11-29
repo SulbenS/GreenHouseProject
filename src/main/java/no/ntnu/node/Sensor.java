@@ -1,4 +1,4 @@
-package no.ntnu.greenhouse.node;
+package no.ntnu.node;
 
 /**
  * A sensor which can sense the environment in a specific way.

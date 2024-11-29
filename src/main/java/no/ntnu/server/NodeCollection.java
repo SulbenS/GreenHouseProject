@@ -1,12 +1,16 @@
-package no.ntnu.greenhouse.node;
+package no.ntnu.server;
 
-import no.ntnu.greenhouse.DeviceFactory;
+import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
+import no.ntnu.node.Node;
+import no.ntnu.node.SensorReading;
+import no.ntnu.tools.DeviceFactory;
 import no.ntnu.listeners.node.NodeStateListener;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class NodeCollection implements NodeStateListener {
+public class NodeCollection implements NodeStateListener, GreenhouseEventListener {
   private final Map<Integer, Node> nodes = new HashMap<>();
 
   public void initialize() {
@@ -66,6 +70,49 @@ public class NodeCollection implements NodeStateListener {
    */
   @Override
   public void onNodeStopped(int nodeId) {
+
+  }
+
+  /**
+   * This event is fired when a new node is added to the greenhouse.
+   *
+   * @param node the added node
+   */
+  @Override
+  public void onNodeAdded(Node node) {
+
+  }
+
+  /**
+   * This event is fired when a node is removed from the greenhouse.
+   *
+   * @param nodeId ID of the node which has disappeared (removed)
+   */
+  @Override
+  public void onNodeRemoved(int nodeId) {
+
+  }
+
+  /**
+   * This event is fired when new sensor data is received from a node.
+   *
+   * @param nodeId  ID of the node
+   * @param sensors List of all current sensor values
+   */
+  @Override
+  public void onSensorData(int nodeId, List<SensorReading> sensors) {
+
+  }
+
+  /**
+   * This event is fired when an actuator changes state.
+   *
+   * @param nodeId     ID of the node to which the actuator is attached
+   * @param actuatorId ID of the actuator
+   * @param isOn       When true, actuator is on; off when false.
+   */
+  @Override
+  public void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn) {
 
   }
 }

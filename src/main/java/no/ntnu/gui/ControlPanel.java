@@ -1,11 +1,11 @@
-package no.ntnu.greenhouse;
+package no.ntnu.gui;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import no.ntnu.greenhouse.node.Actuator;
-import no.ntnu.greenhouse.node.SensorReading;
-import no.ntnu.greenhouse.node.Node;
+import no.ntnu.node.Actuator;
+import no.ntnu.node.SensorReading;
+import no.ntnu.node.Node;
 import no.ntnu.listeners.node.ActuatorListener;
 import no.ntnu.listeners.common.CommunicationChannelListener;
 import no.ntnu.listeners.controlpanel.GreenhouseEventListener;

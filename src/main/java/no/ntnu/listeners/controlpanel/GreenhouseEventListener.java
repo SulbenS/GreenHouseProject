@@ -1,8 +1,8 @@
 package no.ntnu.listeners.controlpanel;
 
 import java.util.List;
-import no.ntnu.greenhouse.node.Node;
-import no.ntnu.greenhouse.node.SensorReading;
+import no.ntnu.node.Node;
+import no.ntnu.node.SensorReading;
 
 /**
  * Listener of events happening "inside a greenhouse", such as a node appearing, disappearing,

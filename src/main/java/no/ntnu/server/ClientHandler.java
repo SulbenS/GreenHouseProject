@@ -1,4 +1,4 @@
-package no.ntnu.greenhouse.tcp;
+package no.ntnu.server;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

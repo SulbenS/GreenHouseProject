@@ -1,6 +1,6 @@
 package no.ntnu.run;
 
-import no.ntnu.greenhouse.tcp.Server;
+import no.ntnu.server.Server;
 
 public class RunServer {
   public static void main(String[] args) {

@@ -1,9 +1,4 @@
-package no.ntnu.greenhouse.tcp;
-
-import no.ntnu.greenhouse.DeviceFactory;
-import no.ntnu.greenhouse.node.Node;
-import no.ntnu.greenhouse.node.NodeCollection;
-import no.ntnu.listeners.node.NodeStateListener;
+package no.ntnu.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;

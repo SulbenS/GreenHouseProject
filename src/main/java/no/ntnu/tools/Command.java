@@ -1,4 +1,4 @@
-package no.ntnu.commands;
+package no.ntnu.tools;
 
 public class Command {
   private int nodeId;

@@ -12,8 +12,8 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import no.ntnu.greenhouse.node.Actuator;
-import no.ntnu.greenhouse.node.ActuatorCollection;
+import no.ntnu.node.Actuator;
+import no.ntnu.node.ActuatorCollection;
 
 /**
  * A section of the GUI representing a list of actuators. Can be used both on the sensor/actuator

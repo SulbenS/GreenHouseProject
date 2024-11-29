@@ -1,4 +1,4 @@
-package no.ntnu.greenhouse.node;
+package no.ntnu.node;
 
 import java.util.HashMap;
 import java.util.Iterator;

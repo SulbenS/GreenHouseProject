@@ -1,6 +1,6 @@
 package no.ntnu.run;
 
-import no.ntnu.greenhouse.tcp.Server;
+import no.ntnu.server.Server;
 import no.ntnu.gui.greenhouse.GreenhouseApplication;
 
 public class RunGreenhouseApplication {

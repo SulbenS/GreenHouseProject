@@ -6,7 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
-import no.ntnu.greenhouse.ControlPanel;
+import no.ntnu.gui.ControlPanel;
 import no.ntnu.listeners.node.NodeStateListener;
 
 /**
