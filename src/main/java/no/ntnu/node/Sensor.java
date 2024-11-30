@@ -24,19 +24,6 @@ public class Sensor {
     ensureValueBoundsAndPrecision(current);
   }
 
-  public String getType() {
-    return reading.getType();
-  }
-
-  /**
-   * Get the current sensor reading.
-   *
-   * @return The current sensor reading (value)
-   */
-  public SensorReading getReading() {
-    return reading;
-  }
-
   /**
    * Create a clone of this sensor.
    *
@@ -89,5 +76,18 @@ public class Sensor {
   @Override
   public String toString() {
     return reading.toString();
+  }
+
+  public String getType() {
+    return reading.getType();
+  }
+
+  /**
+   * Get the current sensor reading.
+   *
+   * @return The current sensor reading (value)
+   */
+  public SensorReading getReading() {
+    return reading;
   }
 }

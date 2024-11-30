@@ -38,6 +38,14 @@ public class Server {
   public void run() {
     openSocket();
     System.out.println("Server started on port " + TCP_PORT);
+    new Thread(() -> {
+      try {
+        Thread.sleep(1000);
+        this.nodes.initialize();
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    }).start();
     while (this.isRunning) {
       ClientHandler clientHandler = connectClient();
       this.clientHandlers.add(clientHandler);

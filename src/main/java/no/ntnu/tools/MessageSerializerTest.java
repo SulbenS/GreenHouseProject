@@ -4,7 +4,7 @@ public class MessageSerializerTest {
   public static void main(String[] args) {
     // Test serialization for a specific actuator
     ActuatorCommand actuatorCommand1 = new ActuatorCommand(7, 3, "On");
-    String serialized1 = MessageSerializer.serialize(actuatorCommand1);
+    String serialized1 = MessageSerializer.serializeActuatorCommand(actuatorCommand1);
     System.out.println("Serialized (specific actuator): " + serialized1);
 
     // Deserialize the serialized string back into a ActuatorCommand object
@@ -15,7 +15,7 @@ public class MessageSerializerTest {
 
     // Test serialization for an actuator type
     ActuatorCommand actuatorCommand2 = new ActuatorCommand(7, "Fan", "Off");
-    String serialized2 = MessageSerializer.serialize(actuatorCommand2);
+    String serialized2 = MessageSerializer.serializeActuatorCommand(actuatorCommand2);
     System.out.println("Serialized (actuator type): " + serialized2);
 
     // Deserialize the serialized string back into a ActuatorCommand object

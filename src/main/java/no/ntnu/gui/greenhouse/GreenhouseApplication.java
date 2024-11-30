@@ -9,6 +9,8 @@ import javafx.stage.Stage;
 import no.ntnu.gui.ControlPanel;
 import no.ntnu.listeners.node.NodeStateListener;
 
+import java.util.Objects;
+
 /**
  * Run a greenhouse simulation with a graphical user interface (GUI), with JavaFX.
  */
@@ -38,7 +40,8 @@ public class GreenhouseApplication extends Application implements NodeStateListe
     this.stage = stage;
     this.tabPane = new TabPane();
     this.scene = new Scene(this.tabPane, width, height);
-    this.scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+    this.scene.getStylesheets().add(
+            Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
     this.stage.setScene(scene);
     this.stage.setTitle("Greenhouse simulator");
     this.stage.setMaxHeight(height);

@@ -20,6 +20,12 @@ public class NodeCollection implements NodeStateListener, GreenhouseEventListene
     this.nodes.put(node.getId(), node);
   }
 
+  public void initialize() {
+    createNode(20, 50, 2, 2, 2);
+    createNode(25, 60, 3, 3, 3);
+    createNode(30, 70, 4, 4, 4);
+  }
+
   /**
    * Return a specific node by its ID.
    *

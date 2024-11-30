@@ -5,9 +5,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.IOException;
 import java.net.Socket;
-import no.ntnu.tools.ActuatorCommand;
-import no.ntnu.tools.MessageSerializer;
-import no.ntnu.tools.NodeCommand;
+
+import no.ntnu.tools.*;
 
 /**
  * The client handler of the application.
@@ -41,17 +40,40 @@ public class ClientHandler extends Thread {
   public void run() {
     try {
       while (true) {
-        NodeCommand message = receive();
-        if (!(message instanceof ActuatorCommand) && message.getAction().equals("off")) {
-          this.socket.close();
-          return;
+        Data message = receive();
+        if (message instanceof NodeCommand nodeCommand && !(message instanceof ActuatorCommand)) {
+          if (nodeCommand.getAction().equals("off")) {
+            this.socket.close();
+            return;
+          }
         }
-        this.transmit(message);
+        if (message instanceof SensorReadingMessage) {
+          sendDataToServer(message);
+        } else if (message instanceof ActuatorCommand) {
+          sendActuatorCommandToServer(message);
+        } else if (message instanceof NodeCommand) {
+          sendNodeCommand(message);
+        }
       }
     } catch (IOException e) {
       System.out.println("Could not read the message.");
       System.out.println(e.getMessage());
     }
+  }
+
+  private void sendDataToServer(Data message) {
+    throw new UnsupportedOperationException("Not implemented yet.");
+    // TODO: Implement this method
+  }
+
+  private void sendActuatorCommandToServer(Data message) {
+    throw new UnsupportedOperationException("Not implemented yet.");
+    // TODO: Implement this method
+  }
+
+  private void sendNodeCommand(Data message) {
+    throw new UnsupportedOperationException("Not implemented yet.");
+    // TODO: Implement this method
   }
 
   /**
@@ -60,8 +82,17 @@ public class ClientHandler extends Thread {
    * @return The message from the client as a command.
    * @throws IOException If an I/O error occurs.
    */
-  public NodeCommand receive() throws IOException {
-    return MessageSerializer.deserialize(this.reader.readLine());
+  public Data receive() throws IOException {
+    String message = this.reader.readLine();
+    if (MessageSerializer.getDataType(message).equals("Reading")) {
+      return MessageSerializer.deserializeSensorReadingMessage(message);
+    } else if (MessageSerializer.getDataType(message).equals("Command")) {
+      return MessageSerializer.deserializeActuatorCommand(message);
+    } else if (MessageSerializer.getDataType(message).equals("NodeCommand")) {
+      return MessageSerializer.deserializeNodeCommand(message);
+    } else {
+      throw new IllegalArgumentException("Something really went wrong.");
+    }
   }
 
   /**
@@ -70,7 +101,7 @@ public class ClientHandler extends Thread {
    * @param message The message to transmit.
    */
   public void transmit(NodeCommand message) {
-    this.writer.println(MessageSerializer.serialize(message));
+    this.writer.println(MessageSerializer.serializeNodeCommand(message));
   }
 
   /**

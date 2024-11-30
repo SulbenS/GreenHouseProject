@@ -117,6 +117,7 @@ public class Node implements ActuatorListener {
    */
   public void executeCommand(String rawMessage) {
     throw new IllegalArgumentException("Not implemented yet");
+    // TODO: Implement this method
   }
 
   /**
@@ -199,9 +200,23 @@ public class Node implements ActuatorListener {
         System.out.println("Could not establish connection to node.");
         System.out.println(e.getMessage());
       }
-      startPeriodicSensorReading();
       running = true;
-      notifyStateChanges(true);
+      new Thread(() -> {
+        System.out.println("-- Starting simulation of node " + id);
+        notifyStateChanges(true);
+        run();
+      }).start();
+      startPeriodicSensorReading();
+    }
+  }
+
+  /**
+   * Run the node.
+   */
+  public void run() {
+    while (running) {
+      String rawMessage = readMessage();
+      executeCommand(rawMessage);
     }
   }
 
@@ -252,6 +267,9 @@ public class Node implements ActuatorListener {
     addRandomNoiseToSensors();
     notifySensorChanges();
     debugPrint();
+    for (Sensor sensor : sensors) {
+      sendMessage("" + sensor.getReading().toString());
+    }
   }
 
   private void addRandomNoiseToSensors() {

@@ -7,8 +7,8 @@ import java.util.Objects;
  */
 public class SensorReading {
   private final String type;
-  private double value;
   private final String unit;
+  private double value;
 
   /**
    * Create a new sensor reading.
@@ -19,29 +19,29 @@ public class SensorReading {
    */
   public SensorReading(String type, double value, String unit) {
     this.type = type;
-    this.value = value;
     this.unit = unit;
-  }
-
-  public String getType() {
-    return type;
-  }
-
-  public double getValue() {
-    return value;
-  }
-
-  public String getUnit() {
-    return unit;
+    this.value = value;
   }
 
   public void setValue(double newValue) {
     this.value = newValue;
   }
 
+  public String getType() {
+    return type;
+  }
+
+  public String getUnit() {
+    return unit;
+  }
+
+  public double getValue() {
+    return value;
+  }
+
   @Override
   public String toString() {
-    return "{ type=" + type + ", value=" + value + ", unit=" + unit + " }";
+    return "type=" + type + ", value=" + value + ", unit=" + unit;
   }
 
   /**
