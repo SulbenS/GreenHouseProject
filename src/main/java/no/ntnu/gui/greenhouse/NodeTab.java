@@ -1,30 +1,27 @@
 package no.ntnu.gui.greenhouse;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import no.ntnu.node.Actuator;
-import no.ntnu.node.Sensor;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
-import no.ntnu.listeners.node.ActuatorListener;
-import no.ntnu.listeners.node.SensorListener;
 
 /**
  * Window with GUI for overview and control of one specific sensor/actuator node.
  */
-public class NodeTab extends Stage implements SensorListener, ActuatorListener {
+public class NodeTab extends Stage {
   private static final double VERTICAL_OFFSET = 50;
   private static final double HORIZONTAL_OFFSET = 150;
   private static final double WINDOW_WIDTH = 300;
   private static final double WINDOW_HEIGHT = 300;
 
-  private ActuatorPane actuatorPane;
-  private SensorPane sensorPane;
+  private Pane contentBox;
+
+  private Map<Integer, ActuatorPane> actuatorPanes;
+  private Map<Integer, SensorPane> sensorPanes;
 
   private int nodeId;
 
@@ -33,10 +30,30 @@ public class NodeTab extends Stage implements SensorListener, ActuatorListener {
    */
   public NodeTab(int nodeId) {
     this.nodeId = nodeId;
-    Scene scene = new Scene(createContent(), WINDOW_WIDTH, WINDOW_HEIGHT);
+    this.contentBox = new VBox();
+    Scene scene = new Scene(this.contentBox, WINDOW_WIDTH, WINDOW_HEIGHT);
     setScene(scene);
     setTitle("Node " + this.nodeId);
     setPositionAndSize();
+  }
+
+  public void addActuatorPane(int actuatorId, String type) {
+    ActuatorPane actuatorPane = new ActuatorPane(actuatorId, type);
+    this.actuatorPanes.put(actuatorId, actuatorPane);
+    createContent(actuatorPane);
+  }
+
+  public void addSensorPane(int sensorId, String type) {
+    SensorPane sensorPane = new SensorPane(sensorId, type);
+    this.sensorPanes.put(sensorId, sensorPane);
+    createContent(sensorPane);
+  }
+
+  private void createContent(Pane pane) {
+    VBox ActuatorSensorPane = new VBox(pane);
+    ActuatorSensorPane.getStylesheets().add(
+            Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
+    this.contentBox.getChildren().add(ActuatorSensorPane);
   }
 
   private void setPositionAndSize() {
@@ -44,31 +61,5 @@ public class NodeTab extends Stage implements SensorListener, ActuatorListener {
     setY(this.nodeId * VERTICAL_OFFSET);
     setMinWidth(WINDOW_HEIGHT);
     setMinHeight(WINDOW_WIDTH);
-  }
-
-  private Parent createContent() {
-    //actuatorPane = new ActuatorPane(node.getActuators());
-    actuatorPane.getStyleClass().add("actuator-pane");
-    //sensorPane = new SensorPane(node.getSensors());
-    sensorPane.getStyleClass().add("sensor-pane");
-    VBox vbox = new VBox(sensorPane, actuatorPane);
-    vbox.getStylesheets().add(
-            Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
-    return vbox;
-  }
-
-
-  @Override
-  public void sensorsUpdated(List<Sensor> sensors) {
-    if (sensorPane != null) {
-      sensorPane.update(sensors);
-    }
-  }
-
-  @Override
-  public void actuatorUpdated(int nodeId, Actuator actuator) {
-    if (actuatorPane != null) {
-      actuatorPane.update(actuator);
-    }
   }
 }

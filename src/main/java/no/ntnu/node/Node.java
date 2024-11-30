@@ -55,6 +55,46 @@ public class Node implements ActuatorListener {
   }
 
   /**
+   * Start simulating the sensor node's operation.
+   */
+  public void start() {
+    if (!running) {
+      try {
+        establishConnection();
+        this.actuators.forEach(actuator ->
+                sendMessage(MessageSerializer.serializeActuatorInformation(actuator))
+        );
+        this.sensors.forEach(sensor ->
+                sendMessage(MessageSerializer.serializeSensorInformation(sensor))
+        );
+      } catch (IllegalArgumentException e) {
+        System.out.println("Could not establish connection to node.");
+        System.out.println(e.getMessage());
+      }
+      running = true;
+      new Thread(() -> {
+        System.out.println("-- Starting simulation of node " + id);
+        notifyStateChanges(true);
+        run();
+      }).start();
+      startPeriodicSensorReading();
+    }
+  }
+
+  /**
+   * Run the node.
+   */
+  public void run() {
+    while (running) {
+      String rawMessage = readMessage();
+      Data dataType = MessageSerializer.getData(rawMessage);
+      if (dataType instanceof NodeCommand) {
+        executeCommand(rawMessage);
+      }
+    }
+  }
+
+  /**
    * Establishes a connection to the server.
    */
   public void establishConnection() {
@@ -192,40 +232,6 @@ public class Node implements ActuatorListener {
   }
 
   /**
-   * Start simulating the sensor node's operation.
-   */
-  public void start() {
-    if (!running) {
-      try {
-        establishConnection();
-      } catch (IllegalArgumentException e) {
-        System.out.println("Could not establish connection to node.");
-        System.out.println(e.getMessage());
-      }
-      running = true;
-      new Thread(() -> {
-        System.out.println("-- Starting simulation of node " + id);
-        notifyStateChanges(true);
-        run();
-      }).start();
-      startPeriodicSensorReading();
-    }
-  }
-
-  /**
-   * Run the node.
-   */
-  public void run() {
-    while (running) {
-      String rawMessage = readMessage();
-      Data dataType = MessageSerializer.getDataType(rawMessage);
-      if (dataType instanceof NodeCommand) {
-        executeCommand(rawMessage);
-      }
-    }
-  }
-
-  /**
    * Stop simulating the sensor node's operation.
    */
   public void stop() {
@@ -273,7 +279,7 @@ public class Node implements ActuatorListener {
     notifySensorChanges();
     debugPrint();
     for (Sensor sensor : sensors) {
-      sendMessage("" + sensor.getReading().toString());
+      sendMessage(sensor.getReading().toString());
     }
   }
 

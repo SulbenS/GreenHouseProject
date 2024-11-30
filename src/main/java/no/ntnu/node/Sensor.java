@@ -4,9 +4,13 @@ package no.ntnu.node;
  * A sensor which can sense the environment in a specific way.
  */
 public class Sensor {
+  private static int nextId;
+
   private final SensorReading reading;
   private final double min;
   private final double max;
+
+  private final int id;
 
   /**
    * Create a sensor.
@@ -21,6 +25,7 @@ public class Sensor {
     this.reading = new SensorReading(type, current, unit);
     this.min = min;
     this.max = max;
+    this.id = generateUniqueId();
     ensureValueBoundsAndPrecision(current);
   }
 
@@ -73,21 +78,34 @@ public class Sensor {
     ensureValueBoundsAndPrecision(newValue);
   }
 
+  private static int generateUniqueId() {
+    return nextId++;
+  }
+
   @Override
   public String toString() {
-    return reading.toString();
+    return this.reading.toString();
   }
 
   public String getType() {
-    return reading.getType();
+    return this.reading.getType();
   }
 
   /**
-   * Get the current sensor reading.
+   * Return the current sensor reading.
    *
    * @return The current sensor reading (value)
    */
   public SensorReading getReading() {
-    return reading;
+    return this.reading;
+  }
+
+  /**
+   * Return the id of the sensor.
+   *
+   * @return the id of the sensor.
+   */
+  public int getSensorId() {
+    return this.id;
   }
 }

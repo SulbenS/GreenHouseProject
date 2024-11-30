@@ -4,8 +4,7 @@ package no.ntnu.commands;
  * Class representing the type of data being sent.
  */
 public class Data {
-  private String data; // Command - Reading
-  private String receiver; // Node - Control-Panel
+  private String data; // Command - Reading - Identifier
 
   /**
    * Constructor for the Data class.

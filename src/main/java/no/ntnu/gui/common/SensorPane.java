@@ -1,57 +1,39 @@
 package no.ntnu.gui.common;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TitledPane;
-import javafx.scene.layout.VBox;
-import no.ntnu.node.Sensor;
-import no.ntnu.node.SensorReading;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 
 /**
  * A section of GUI displaying sensor data.
  */
-public class SensorPane extends TitledPane {
-  private final List<SimpleStringProperty> sensorProps = new ArrayList<>();
-  private final VBox contentBox = new VBox();
+public class SensorPane extends Pane {
+  private int sensorId;
+  private String sensorType;
+  private int sensorValue;
 
-  /**
-   * Create a sensor pane.
-   *
-   * @param sensors The sensor data to be displayed on the pane.
-   */
-  public SensorPane(Iterable<SensorReading> sensors) {
-    super();
-    initialize(sensors);
-  }
+  private Label sensorLabel;
+  private CheckBox sensorCheckbox;
 
-  private void initialize(Iterable<SensorReading> sensors) {
-    setText("Sensors");
-    sensors.forEach(sensor ->
-        contentBox.getChildren().add(createAndRememberSensorLabel(sensor))
-    );
-    contentBox.getStyleClass().add("sensor-vbox");
-    setContent(contentBox);
-  }
-
-  /**
-   * Create an empty sensor pane, without any data.
-   */
-  public SensorPane() {
-    initialize(new LinkedList<>());
-  }
+  private final Pane contentBox;
 
   /**
    * Create a sensor pane.
    * Wrapper for the other constructor with SensorReading-iterable parameter
    *
-   * @param sensors The sensor data to be displayed on the pane.
+   * @param sensorId the id of the sensor.
+   * @param sensorType the type of the sensor.
    */
-  public SensorPane(List<Sensor> sensors) {
-    initialize(sensors.stream().map(Sensor::getReading).toList());
+  public SensorPane(int sensorId , String sensorType) {
+    this.contentBox = new HBox();
+    this.contentBox.getChildren().add(new Label(sensorType));
+    getStylesheets().add(
+            Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
+    setPrefHeight(5000);
   }
 
   /**
@@ -78,7 +60,7 @@ public class SensorPane extends TitledPane {
 
   private Label createAndRememberSensorLabel(SensorReading sensor) {
     SimpleStringProperty props = new SimpleStringProperty(generateSensorText(sensor));
-    sensorProps.add(props);
+    this.sensorProps.add(props);
     Label label = new Label();
     label.textProperty().bind(props);
     label.getStyleClass().add("sensor-label");
@@ -90,12 +72,12 @@ public class SensorPane extends TitledPane {
   }
 
   private void updateSensorLabel(SensorReading sensor, int index) {
-    if (sensorProps.size() > index) {
-      SimpleStringProperty props = sensorProps.get(index);
+    if (this.sensorProps.size() > index) {
+      SimpleStringProperty props = this.sensorProps.get(index);
       Platform.runLater(() -> props.set(generateSensorText(sensor)));
     } else {
       System.out.println("Adding sensor[" + index + "]");
-      Platform.runLater(() -> contentBox.getChildren().add(createAndRememberSensorLabel(sensor)));
+      Platform.runLater(() -> this.contentBox.getChildren().add(createAndRememberSensorLabel(sensor)));
     }
   }
 }

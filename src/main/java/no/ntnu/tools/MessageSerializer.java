@@ -1,21 +1,40 @@
 package no.ntnu.tools;
 
-import no.ntnu.commands.ActuatorCommand;
-import no.ntnu.commands.Data;
-import no.ntnu.commands.NodeCommand;
-import no.ntnu.commands.SensorReadingMessage;
+import no.ntnu.commands.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class MessageSerializer {
+  public static String serializeActuatorInformation(ActuatorIdentifier actuator) {
+    return "Data=Identifier;Actuator=" + actuator.getActuatorId() + ";Type=" + actuator.getType();
+  }
+
+  public static Data deserializeActuatorInformation(String rawMessage) {
+    Map<String, String> fields = parseFields(rawMessage);
+    int actuatorId = Integer.parseInt(fields.get("Actuator"));
+    String actuatorType = fields.get("Type");
+    String dataType = fields.get("Data");
+    return new ActuatorIdentifier(dataType, actuatorType, actuatorId);
+  }
+
+  public static String serializeSensorInformation(SensorIdentifier sensor) {
+    return "Data=Identifier;Sensor=" + sensor.getSensorId() + ";Type=" + sensor.getType();
+  }
+
+  public static Data deserializeSensorInformation(String rawMessage) {
+    Map<String, String> fields = parseFields(rawMessage);
+    int sensorId = Integer.parseInt(fields.get("Sensor"));
+    String sensorType = fields.get("Type");
+    String dataType = fields.get("Data");
+    return new SensorIdentifier(dataType, sensorType, sensorId);
+  }
 
   /**
-   * Serialize: Convert a ActuatorCommand object into a raw string
+   * Serialize: Convert an ActuatorCommand object into a raw string.
    *
-   * @param actuatorCommand ActuatorCommand object to serialize
-   * @return Raw string representation of the ActuatorCommand object
+   * @param actuatorCommand ActuatorCommand object to serialize.
+   * @return Raw string representation of the ActuatorCommand object.
    */
   public static String serializeActuatorCommand(ActuatorCommand actuatorCommand) {
     StringBuilder builder = new StringBuilder("Data=ActuatorCommand;");
@@ -30,16 +49,16 @@ public class MessageSerializer {
   }
 
   /**
-   * Deserialize: Convert a raw string into a Data object.
+   * Deserialize: Convert a raw string into an ActuatorCommand object.
    *
    * @param rawMessage Raw string to deserialize.
    * @return ActuatorCommand object parsed from the raw string.
    */
   public static ActuatorCommand deserializeActuatorCommand(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
+    String data = fields.get("Data");
     int nodeId = Integer.parseInt(fields.get("Node"));
     String action = fields.get("Action");
-    String data = fields.get("Data");
 
     if (fields.containsKey("Actuator")) {
       int actuatorId = Integer.parseInt(fields.get("Actuator"));
@@ -52,23 +71,35 @@ public class MessageSerializer {
   }
 
   /**
-   * Serialize: Convert a NodeCommand object into a raw string
+   * Serialize: Convert a NodeCommand object into a raw string.
    *
-   * @param actuatorCommand NodeCommand object to serialize
-   * @return Raw string representation of the NodeCommand object
+   * @param nodeCommand NodeCommand object to serialize.
+   * @return Raw string representation of the NodeCommand object.
    */
-  public static String serializeNodeCommand(NodeCommand actuatorCommand) {
-    return "Node=" + actuatorCommand.getNodeId() + ";" + "Action=" + actuatorCommand.getAction();
+  public static String serializeNodeCommand(NodeCommand nodeCommand) {
+    return "Node=" + nodeCommand.getNodeId() + ";" + "Action=" + nodeCommand.getAction();
   }
 
+  /**
+   * Deserialize: Convert a raw string into a NodeCommand object.
+   *
+   * @param rawMessage Raw string to deserialize.
+   * @return NodeCommand object parsed from the raw string.
+   */
   public static NodeCommand deserializeNodeCommand(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
+    String data = fields.get("Data");
     int nodeId = Integer.parseInt(fields.get("Node"));
     String action = fields.get("Action");
-    String data = fields.get("Data");
     return new NodeCommand(data, nodeId, action);
   }
 
+  /**
+   * Deserialize: Convert a raw string into a SensorReadingMessage object.
+   *
+   * @param rawMessage Raw string to deserialize.
+   * @return SensorReadingMessage object parsed from the raw string.
+   */
   public static SensorReadingMessage deserializeSensorReadingMessage(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
     int nodeId = Integer.parseInt(fields.get("Node"));
@@ -78,10 +109,10 @@ public class MessageSerializer {
   }
 
   /**
-   * Parse the fields of a raw message into a map
+   * Parse the fields of a raw message into a map.
    *
-   * @param rawMessage Raw message to parse
-   * @return Map of fields in the raw message
+   * @param rawMessage Raw message to parse.
+   * @return Map of fields in the raw message.
    */
   private static Map<String, String> parseFields(String rawMessage) {
     Map<String, String> fields = new HashMap<>();
@@ -103,7 +134,7 @@ public class MessageSerializer {
    * @param rawMessage to get the data type of.
    * @return the data type of the raw message.
    */
-  public static Data getDataType(String rawMessage) {
+  public static Data getData(String rawMessage) {
     Data result;
     Map<String, String> fields = parseFields(rawMessage);
     String dataType = fields.get("Data");
@@ -111,6 +142,15 @@ public class MessageSerializer {
       case "Reading" -> deserializeSensorReadingMessage(rawMessage);
       case "ActuatorCommand" -> deserializeActuatorCommand(rawMessage);
       case "NodeCommand" -> deserializeNodeCommand(rawMessage);
+      case "Identifier" -> {
+        if (fields.containsKey("Actuator")) {
+          yield deserializeActuatorInformation(rawMessage);
+        } else if (fields.containsKey("Sensor")) {
+          yield deserializeSensorInformation(rawMessage);
+        } else {
+          throw new IllegalArgumentException("Could not get the data type.");
+        }
+      }
       default -> throw new IllegalArgumentException("Could not get the data type.");
     };
     return result;

@@ -51,8 +51,8 @@ public class ControlPanel implements GreenhouseEventListener, ActuatorListener {
     }
     while (true) {
       String rawMessage = readMessage();
-      Data dataType = MessageSerializer.getDataType(rawMessage);
-      if (dataType instanceof SensorReadingMessage) {
+      Data data = MessageSerializer.getData(rawMessage);
+      if (data instanceof SensorReadingMessage) {
 
       }
     }

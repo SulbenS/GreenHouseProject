@@ -1,110 +1,83 @@
 package no.ntnu.gui.common;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import no.ntnu.node.Actuator;
-import no.ntnu.node.ActuatorCollection;
 
 /**
  * A section of the GUI representing a list of actuators. Can be used both on the sensor/actuator
  * node, and on a control panel node.
  */
-public class ActuatorPane extends TitledPane {
-  private final Map<Actuator, SimpleStringProperty> actuatorValue = new HashMap<>();
-  private final Map<Actuator, SimpleBooleanProperty> actuatorActive = new HashMap<>();
+public class ActuatorPane extends Pane {
+  private int actuatorId;
+  private String actuatorType;
+  private boolean actuatorState;
 
-  private Map<Integer, String> actuatorType = new HashMap<>();
-  private Map<Integer, Boolean> actuatorState = new HashMap<>();
+  private Label actuatorLabel;
+  private CheckBox actuatorCheckbox;
+
+  private final Pane contentBox;
 
   /**
    * Create an actuator pane.
    *
-   * @param actuators A list of actuators to display in the pane.
-   */
-  public ActuatorPane(ActuatorCollection actuators) {
-    super();
-    setText("Actuators");
-    VBox vbox = new VBox();
-    vbox.setSpacing(10);
-    vbox.getStyleClass().add("actuator-vbox");
-    vbox.getStyleClass().add("vignette"); // Add vignette effect
-    setContent(vbox);
-    addActuatorControls(actuators, vbox);
-    vbox.getStylesheets().add(
+   * @param actuatorId The ID of the actuator
+   * @param actuatorType The type of the actuator
+   **/
+  public ActuatorPane(int actuatorId, String actuatorType) {
+    this.actuatorType = actuatorType;
+    this.actuatorId = actuatorId;
+    this.actuatorState = false;
+
+    this.contentBox = new HBox();
+    this.actuatorLabel = new Label(generateActuatorText());
+    this.actuatorCheckbox = createActuatorCheckbox();
+    this.contentBox.getChildren().add(actuatorLabel);
+    this.contentBox.getChildren().add(actuatorCheckbox);
+    this.contentBox.getStylesheets().add(
             Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
     this.setPrefHeight(5000);
   }
 
-  private void addActuatorControls(ActuatorCollection actuators, Pane parent) {
-    actuators.forEach(actuator ->
-        parent.getChildren().add(createActuatorGui(actuator))
-    );
-  }
 
-  private Node createActuatorGui(Actuator actuator) {
-    HBox actuatorGui = new HBox(createActuatorLabel(actuator), createActuatorCheckbox(actuator));
-    actuatorGui.setSpacing(5);
-    actuatorGui.getStyleClass().add("actuator-gui");
-    return actuatorGui;
-  }
-
-  private CheckBox createActuatorCheckbox(Actuator actuator) {
+  private CheckBox createActuatorCheckbox() {
     CheckBox checkbox = new CheckBox();
-    SimpleBooleanProperty isSelected = new SimpleBooleanProperty(actuator.isOn());
-    actuatorActive.put(actuator, isSelected);
-    checkbox.selectedProperty().bindBidirectional(isSelected);
-    checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-      if (newValue != null && newValue) {
-        actuator.turnOn();
-      } else {
-        actuator.turnOff();
-      }
+    checkbox.setSelected(false);
+    checkbox.setOnAction(event -> {
+      this.actuatorState = checkbox.isSelected();
     });
+    // TODO: Add checkbox listener
     checkbox.getStylesheets().add(
             Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
     return checkbox;
   }
 
-  private Label createActuatorLabel(Actuator actuator) {
-    SimpleStringProperty props = new SimpleStringProperty(generateActuatorText(actuator));
-    actuatorValue.put(actuator, props);
-    Label label = new Label();
-    label.textProperty().bind(props);
-    label.getStyleClass().add("actuator-label");
-    return label;
-  }
-
-  private String generateActuatorText(Actuator actuator) {
-    String onOff = actuator.isOn() ? "ON" : "off";
-    return actuator.getType() + ": " + onOff;
+  private String generateActuatorText() {
+    return this.actuatorType + ": " + (this.actuatorState ? "ON" : "OFF");
   }
 
   /**
    * An actuator has been updated, update the corresponding GUI parts.
-   *
-   * @param actuator The actuator which has been updated
    */
-  public void update(Actuator actuator) {
-    SimpleStringProperty actuatorText = actuatorValue.get(actuator);
-    SimpleBooleanProperty actuatorSelected = actuatorActive.get(actuator);
-    if (actuatorText == null || actuatorSelected == null) {
-      throw new IllegalStateException("Can't update GUI for an unknown actuator: " + actuator);
-    }
-
+  public void update() {
     Platform.runLater(() -> {
-      actuatorText.set(generateActuatorText(actuator));
-      actuatorSelected.set(actuator.isOn());
+      this.actuatorCheckbox.setSelected(!actuatorCheckbox.isSelected());
     });
   }
+
+  public int getActuatorId() {
+    return actuatorId;
+  }
+
+  public String getActuatorType() {
+    return actuatorType;
+  }
+
+  public boolean getActuatorState() {
+    return actuatorState;
+  }
+
 }

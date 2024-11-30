@@ -5,11 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import no.ntnu.commands.ActuatorCommand;
-import no.ntnu.commands.Data;
+
+import no.ntnu.commands.*;
 import no.ntnu.tools.MessageSerializer;
-import no.ntnu.commands.NodeCommand;
-import no.ntnu.commands.SensorReadingMessage;
 
 /**
  * The client handler of the application.
@@ -49,7 +47,9 @@ public class ClientHandler extends Thread {
             return;
           }
         }
-        if (message instanceof SensorReadingMessage) {
+        if (message instanceof SensorReadingMessage
+                || message instanceof SensorIdentifier
+                || message instanceof ActuatorIdentifier) {
           sendDataToServer(message);
         } else if (message instanceof ActuatorCommand) {
           sendActuatorCommandToServer(message);
@@ -84,7 +84,7 @@ public class ClientHandler extends Thread {
    * @throws IOException If an I/O error occurs.
    */
   public Data receive() throws IOException {
-    return MessageSerializer.getDataType(this.reader.readLine());
+    return MessageSerializer.getData(this.reader.readLine());
   }
 
   /**
@@ -99,6 +99,10 @@ public class ClientHandler extends Thread {
       this.writer.println(MessageSerializer.serializeActuatorCommand((ActuatorCommand) message));
     } else if (message instanceof NodeCommand) {
       this.writer.println(MessageSerializer.serializeNodeCommand((NodeCommand) message));
+    } else if (message instanceof SensorIdentifier) {
+      this.writer.println(MessageSerializer.serializeSensorInformation((SensorIdentifier) message));
+    } else if (message instanceof ActuatorIdentifier) {
+      this.writer.println(MessageSerializer.serializeActuatorInformation((ActuatorIdentifier) message));
     } else {
       throw new IllegalArgumentException("Could not transmit the message.");
     }
