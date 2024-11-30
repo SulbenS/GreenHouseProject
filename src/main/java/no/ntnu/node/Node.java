@@ -15,7 +15,6 @@ import no.ntnu.server.Server;
 import no.ntnu.listeners.node.ActuatorListener;
 import no.ntnu.listeners.node.NodeStateListener;
 import no.ntnu.listeners.node.SensorListener;
-import no.ntnu.tools.ActuatorCommand;
 import no.ntnu.tools.Data;
 import no.ntnu.tools.MessageSerializer;
 import no.ntnu.tools.NodeCommand;
@@ -61,7 +60,7 @@ public class Node implements ActuatorListener {
    */
   public void establishConnection() {
     try {
-      this.socket = new Socket("localhost", Server.TCP_PORT);
+      this.socket = new Socket("localhost", 1238);
     } catch (IOException e) {
       System.out.println("Could not connect to the server.");
       System.out.println(e.getMessage());
@@ -358,9 +357,9 @@ public class Node implements ActuatorListener {
   }
 
   /**
-   * Get all the actuators available on the node.
+   * Returns all the actuators available on the node.
    *
-   * @return A collection of the actuators
+   * @return collection of the actuators
    */
   public ActuatorCollection getActuators() {
     return actuators;

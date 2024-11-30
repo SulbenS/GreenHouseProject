@@ -23,34 +23,9 @@ public class SensorReading {
     this.value = value;
   }
 
-  public void setValue(double newValue) {
-    this.value = newValue;
-  }
-
-  public String getType() {
-    return type;
-  }
-
-  public String getUnit() {
-    return unit;
-  }
-
-  public double getValue() {
-    return value;
-  }
-
   @Override
   public String toString() {
     return "type=" + type + ", value=" + value + ", unit=" + unit;
-  }
-
-  /**
-   * Get a human-readable (formatted) version of the current reading, including the unit.
-   *
-   * @return The sensor reading and the unit
-   */
-  public String getFormatted() {
-    return value + unit;
   }
 
   @Override
@@ -70,5 +45,30 @@ public class SensorReading {
   @Override
   public int hashCode() {
     return Objects.hash(type, value, unit);
+  }
+
+  public void setValue(double newValue) {
+    this.value = newValue;
+  }
+
+  /**
+   * Get a human-readable (formatted) version of the current reading, including the unit.
+   *
+   * @return The sensor reading and the unit
+   */
+  public String getFormatted() {
+    return value + unit;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public String getUnit() {
+    return unit;
+  }
+
+  public double getValue() {
+    return value;
   }
 }
