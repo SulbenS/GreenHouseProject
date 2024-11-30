@@ -2,7 +2,16 @@ package no.ntnu.tools;
 
 import no.ntnu.commands.ActuatorCommand;
 
+/**
+ * Class for testing the MessageSerializer class.
+ */
 public class MessageSerializerTest {
+
+  /**
+   * Main method for testing the MessageSerializer class.
+   *
+   * @param args Command-line arguments
+   */
   public static void main(String[] args) {
     // Test serialization for a specific actuator
     ActuatorCommand actuatorCommand1 = new ActuatorCommand(7, 3, "On");

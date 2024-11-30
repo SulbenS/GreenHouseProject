@@ -1,9 +1,18 @@
 package no.ntnu.run;
 
-import no.ntnu.server.Server;
 import no.ntnu.gui.greenhouse.GreenhouseApplication;
+import no.ntnu.server.Server;
 
+/**
+ * Main class for starting the greenhouse application.
+ */
 public class RunGreenhouseApplication {
+
+  /**
+   * Main method for starting the greenhouse application.
+   *
+   * @param args Command line arguments.
+   */
   public static void main(String[] args) {
     //Server runs on a separate thread.
     new Thread(() -> {

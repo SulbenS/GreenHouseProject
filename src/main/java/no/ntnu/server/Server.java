@@ -1,12 +1,11 @@
 package no.ntnu.server;
 
-import no.ntnu.node.Node;
-import no.ntnu.commands.Data;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
+import no.ntnu.commands.Data;
+import no.ntnu.node.Node;
 
 /**
  * The server of the application.

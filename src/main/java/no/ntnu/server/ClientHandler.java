@@ -7,9 +7,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import no.ntnu.commands.ActuatorCommand;
 import no.ntnu.commands.Data;
-import no.ntnu.tools.MessageSerializer;
 import no.ntnu.commands.NodeCommand;
 import no.ntnu.commands.SensorReadingMessage;
+import no.ntnu.tools.MessageSerializer;
 
 /**
  * The client handler of the application.
@@ -17,7 +17,6 @@ import no.ntnu.commands.SensorReadingMessage;
 public class ClientHandler extends Thread {
   private Server server;
   private Socket socket;
-
   private BufferedReader reader;
   private PrintWriter writer;
 

@@ -1,18 +1,19 @@
 package no.ntnu.tools;
 
+import java.util.HashMap;
+import java.util.Map;
 import no.ntnu.commands.ActuatorCommand;
 import no.ntnu.commands.Data;
 import no.ntnu.commands.NodeCommand;
 import no.ntnu.commands.SensorReadingMessage;
 
-import java.util.HashMap;
-import java.util.Map;
-
-
+/**
+ * Class for serializing and deserializing messages.
+ */
 public class MessageSerializer {
 
   /**
-   * Serialize: Convert a ActuatorCommand object into a raw string
+   * Serialize: Convert a ActuatorCommand object into a raw string.
    *
    * @param actuatorCommand ActuatorCommand object to serialize
    * @return Raw string representation of the ActuatorCommand object
@@ -52,7 +53,7 @@ public class MessageSerializer {
   }
 
   /**
-   * Serialize: Convert a NodeCommand object into a raw string
+   * Serialize: Convert a NodeCommand object into a raw string.
    *
    * @param actuatorCommand NodeCommand object to serialize
    * @return Raw string representation of the NodeCommand object
@@ -61,6 +62,12 @@ public class MessageSerializer {
     return "Node=" + actuatorCommand.getNodeId() + ";" + "Action=" + actuatorCommand.getAction();
   }
 
+  /**
+   * Deserialize: Convert a raw string into a Data object.
+   *
+   * @param rawMessage Raw string to deserialize.
+   * @return NodeCommand object parsed from the raw string.
+   */
   public static NodeCommand deserializeNodeCommand(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
     int nodeId = Integer.parseInt(fields.get("Node"));
@@ -69,6 +76,11 @@ public class MessageSerializer {
     return new NodeCommand(data, nodeId, action);
   }
 
+  /**
+   * Serialize: Convert a SensorReadingMessage object into a raw string.
+   *
+   * @return Raw string representation of the SensorReadingMessage object
+   */
   public static SensorReadingMessage deserializeSensorReadingMessage(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
     int nodeId = Integer.parseInt(fields.get("Node"));
@@ -78,7 +90,7 @@ public class MessageSerializer {
   }
 
   /**
-   * Parse the fields of a raw message into a map
+   * Parse the fields of a raw message into a map.
    *
    * @param rawMessage Raw message to parse
    * @return Map of fields in the raw message

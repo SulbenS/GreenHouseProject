@@ -7,15 +7,14 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
+import no.ntnu.commands.Data;
+import no.ntnu.commands.SensorReadingMessage;
 import no.ntnu.listeners.GreenhouseEventListener;
 import no.ntnu.listeners.node.ActuatorListener;
 import no.ntnu.node.Actuator;
 import no.ntnu.node.Node;
 import no.ntnu.node.SensorReading;
-import no.ntnu.commands.Data;
 import no.ntnu.tools.MessageSerializer;
-import no.ntnu.commands.SensorReadingMessage;
-
 
 /**
  * The central logic of a control panel node. It uses a communication channel to send commands
@@ -42,21 +41,25 @@ public class ControlPanel implements GreenhouseEventListener, ActuatorListener {
 
   }
 
+  /**
+   * Start the control panel.
+   */
   public void start() {
-      try {
-        establishConnection();
-      } catch (IllegalArgumentException e) {
-        System.out.println("Could not establish connection to node.");
-        System.out.println(e.getMessage());
+    try {
+      establishConnection();
+    } catch (IllegalArgumentException e) {
+      System.out.println("Could not establish connection to node.");
+      System.out.println(e.getMessage());
     }
     while (true) {
       String rawMessage = readMessage();
       Data dataType = MessageSerializer.getDataType(rawMessage);
       if (dataType instanceof SensorReadingMessage) {
-
+        //:TODO: Implement this
       }
     }
   }
+
   /**
    * Establishes a connection to the server.
    */
@@ -67,7 +70,8 @@ public class ControlPanel implements GreenhouseEventListener, ActuatorListener {
       System.out.println("Could not connect to the server.");
       System.out.println(e.getMessage());
       throw new IllegalArgumentException("Could not connect to the server");
-    } try {
+    }
+    try {
       this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
       this.writer = new PrintWriter(this.socket.getOutputStream(), true);
     } catch (IOException e) {

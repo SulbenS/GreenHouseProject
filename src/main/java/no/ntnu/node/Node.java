@@ -10,13 +10,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-
+import no.ntnu.commands.Data;
+import no.ntnu.commands.NodeCommand;
 import no.ntnu.listeners.node.ActuatorListener;
 import no.ntnu.listeners.node.NodeStateListener;
 import no.ntnu.listeners.node.SensorListener;
-import no.ntnu.commands.Data;
 import no.ntnu.tools.MessageSerializer;
-import no.ntnu.commands.NodeCommand;
 
 /**
  * Represents one node with sensors and actuators.
@@ -64,7 +63,8 @@ public class Node implements ActuatorListener {
       System.out.println("Could not connect to the server.");
       System.out.println(e.getMessage());
       throw new IllegalArgumentException("Could not connect to the server");
-    } try {
+    }
+    try {
       this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
       this.writer = new PrintWriter(this.socket.getOutputStream(), true);
     } catch (IOException e) {
@@ -155,7 +155,8 @@ public class Node implements ActuatorListener {
   public void addActuator(Actuator actuator) {
     actuator.setListener(this);
     actuators.add(actuator);
-    System.out.println("Created " + actuator.getType() + "[" + actuator.getId() + "] on node " + id);
+    System.out.println("Created " + actuator.getType()
+            + "[" + actuator.getId() + "] on node " + id);
   }
 
   /**
