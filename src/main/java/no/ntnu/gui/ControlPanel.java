@@ -1,6 +1,10 @@
 package no.ntnu.gui;
 
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 import no.ntnu.listeners.GreenhouseEventListener;
@@ -8,6 +12,11 @@ import no.ntnu.listeners.node.ActuatorListener;
 import no.ntnu.node.Actuator;
 import no.ntnu.node.Node;
 import no.ntnu.node.SensorReading;
+import no.ntnu.server.Server;
+import no.ntnu.tools.Data;
+import no.ntnu.tools.MessageSerializer;
+import no.ntnu.tools.NodeCommand;
+import no.ntnu.tools.SensorReadingMessage;
 
 
 /**
@@ -23,13 +32,67 @@ import no.ntnu.node.SensorReading;
 public class ControlPanel implements GreenhouseEventListener, ActuatorListener {
   private final List<GreenhouseEventListener> listeners = new LinkedList<>();
 
-  private List<Node> nodes = new ArrayList<>();
+  private Socket socket;
+
+  private BufferedReader reader;
+  private PrintWriter writer;
 
   /**
    * Create a control panel.
    */
   public ControlPanel() {
 
+  }
+
+  public void start() {
+      try {
+        establishConnection();
+      } catch (IllegalArgumentException e) {
+        System.out.println("Could not establish connection to node.");
+        System.out.println(e.getMessage());
+    }
+    while (true) {
+      String rawMessage = readMessage();
+      Data dataType = MessageSerializer.getDataType(rawMessage);
+      if (dataType instanceof SensorReadingMessage) {
+
+      }
+    }
+  }
+  /**
+   * Establishes a connection to the server.
+   */
+  public void establishConnection() {
+    try {
+      this.socket = new Socket("localhost", 1238);
+    } catch (IOException e) {
+      System.out.println("Could not connect to the server.");
+      System.out.println(e.getMessage());
+      throw new IllegalArgumentException("Could not connect to the server");
+    } try {
+      this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+      this.writer = new PrintWriter(this.socket.getOutputStream(), true);
+    } catch (IOException e) {
+      System.out.println("Could not create the reader/writer.");
+      System.out.println(e.getMessage());
+      throw new IllegalArgumentException("Could not create the reader/writer");
+    }
+  }
+
+  /**
+   * Returns the message from the server.
+   *
+   * @return The message from the server.
+   */
+  public String readMessage() {
+    String rawMessage = "";
+    try {
+      rawMessage = this.reader.readLine();
+    } catch (IOException e) {
+      System.out.println("Could not read the message.");
+      System.out.println(e.getMessage());
+    }
+    return rawMessage;
   }
 
   /**

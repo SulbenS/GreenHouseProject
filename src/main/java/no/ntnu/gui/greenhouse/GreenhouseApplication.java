@@ -50,6 +50,8 @@ public class GreenhouseApplication extends Application implements NodeStateListe
     this.stage.setMinWidth(width);
     this.stage.show();
     this.stage.setOnCloseRequest(event -> this.controlPanel.closeApplication());
+    this.controlPanel = new ControlPanel();
+    this.controlPanel.start();
   }
 
   @Override
