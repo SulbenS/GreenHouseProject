@@ -1,7 +1,7 @@
 package no.ntnu.server;
 
 import no.ntnu.node.Node;
-import no.ntnu.tools.NodeCommand;
+import no.ntnu.tools.Data;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -101,8 +101,8 @@ public class Server {
    *
    * @param message the message to broadcast.
    */
-  public void broadcast(NodeCommand message) {
-    this.clientHandlers.forEach(client -> client.transmit(message));
+  public void broadcast(Data message) {
+    this.clientHandlers.forEach(client -> client.transmitToClient(message));
   }
 
   /**

@@ -1,8 +1,8 @@
 package no.ntnu.tools;
 
 import no.ntnu.node.Actuator;
-import no.ntnu.node.Sensor;
 import no.ntnu.node.Node;
+import no.ntnu.node.Sensor;
 
 /**
  * A factory for producing sensors and actuators of specific types.

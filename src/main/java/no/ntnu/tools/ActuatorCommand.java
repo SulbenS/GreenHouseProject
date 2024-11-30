@@ -1,5 +1,8 @@
 package no.ntnu.tools;
 
+/**
+ * Class representing an ActuatorCommand.
+ */
 public class ActuatorCommand extends NodeCommand {
   private int nodeId;
   private int actuatorId; // Optional (e.g., 3)

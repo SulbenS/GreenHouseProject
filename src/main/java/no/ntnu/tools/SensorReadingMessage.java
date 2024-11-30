@@ -12,7 +12,7 @@ public class SensorReadingMessage extends Data {
    *
    * @param nodeId the ID of the node to which the message is sent.
    * @param reading the message to be sent.
-    * @param data the type data to be sent.
+   * @param data the type data to be sent.
    */
   public SensorReadingMessage(String data, int nodeId, String reading) {
     super(data);

@@ -11,12 +11,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.stage.Stage;
 import no.ntnu.gui.ControlPanel;
-import no.ntnu.node.Node;
-import no.ntnu.node.Actuator;
-import no.ntnu.node.SensorReading;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
 import no.ntnu.listeners.GreenhouseEventListener;
+import no.ntnu.node.Actuator;
+import no.ntnu.node.Node;
+import no.ntnu.node.SensorReading;
+
 
 /**
  * Run a control panel with a graphical user interface (GUI), with JavaFX.

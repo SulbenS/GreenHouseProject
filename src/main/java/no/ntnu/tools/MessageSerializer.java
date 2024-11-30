@@ -3,6 +3,7 @@ package no.ntnu.tools;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class MessageSerializer {
 
   /**
@@ -12,7 +13,7 @@ public class MessageSerializer {
    * @return Raw string representation of the ActuatorCommand object
    */
   public static String serializeActuatorCommand(ActuatorCommand actuatorCommand) {
-    StringBuilder builder = new StringBuilder("Data=Command;");
+    StringBuilder builder = new StringBuilder("Data=ActuatorCommand;");
     builder.append("Node=").append(actuatorCommand.getNodeId()).append(";");
     if (actuatorCommand.getActuatorType() != null) {
       builder.append("ActuatorType=").append(actuatorCommand.getActuatorType()).append(";");
@@ -24,10 +25,10 @@ public class MessageSerializer {
   }
 
   /**
-   * Deserialize: Convert a raw string into a Data object
+   * Deserialize: Convert a raw string into a Data object.
    *
-   * @param rawMessage Raw string to deserialize
-   * @return ActuatorCommand object parsed from the raw string
+   * @param rawMessage Raw string to deserialize.
+   * @return ActuatorCommand object parsed from the raw string.
    */
   public static ActuatorCommand deserializeActuatorCommand(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
@@ -91,8 +92,22 @@ public class MessageSerializer {
     return fields;
   }
 
-  public static String getDataType(String rawMessage) {
+  /**
+   * Returns the data type of raw message.
+   *
+   * @param rawMessage to get the data type of.
+   * @return the data type of the raw message.
+   */
+  public static Data getDataType(String rawMessage) {
+    Data result;
     Map<String, String> fields = parseFields(rawMessage);
-    return fields.get("Data");
+    String dataType = fields.get("Data");
+    result = switch (dataType) {
+      case "Reading" -> deserializeSensorReadingMessage(rawMessage);
+      case "ActuatorCommand" -> deserializeActuatorCommand(rawMessage);
+      case "NodeCommand" -> deserializeNodeCommand(rawMessage);
+      default -> throw new IllegalArgumentException("Could not get the data type.");
+    };
+    return result;
   }
 }

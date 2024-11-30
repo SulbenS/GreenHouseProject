@@ -15,6 +15,10 @@ import no.ntnu.server.Server;
 import no.ntnu.listeners.node.ActuatorListener;
 import no.ntnu.listeners.node.NodeStateListener;
 import no.ntnu.listeners.node.SensorListener;
+import no.ntnu.tools.ActuatorCommand;
+import no.ntnu.tools.Data;
+import no.ntnu.tools.MessageSerializer;
+import no.ntnu.tools.NodeCommand;
 
 /**
  * Represents one node with sensors and actuators.
@@ -216,7 +220,10 @@ public class Node implements ActuatorListener {
   public void run() {
     while (running) {
       String rawMessage = readMessage();
-      executeCommand(rawMessage);
+      Data dataType = MessageSerializer.getDataType(rawMessage);
+      if (dataType instanceof NodeCommand) {
+        executeCommand(rawMessage);
+      }
     }
   }
 

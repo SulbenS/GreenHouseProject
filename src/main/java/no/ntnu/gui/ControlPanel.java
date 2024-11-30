@@ -3,11 +3,12 @@ package no.ntnu.gui;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import no.ntnu.node.Actuator;
-import no.ntnu.node.SensorReading;
-import no.ntnu.node.Node;
-import no.ntnu.listeners.node.ActuatorListener;
 import no.ntnu.listeners.GreenhouseEventListener;
+import no.ntnu.listeners.node.ActuatorListener;
+import no.ntnu.node.Actuator;
+import no.ntnu.node.Node;
+import no.ntnu.node.SensorReading;
+
 
 /**
  * The central logic of a control panel node. It uses a communication channel to send commands

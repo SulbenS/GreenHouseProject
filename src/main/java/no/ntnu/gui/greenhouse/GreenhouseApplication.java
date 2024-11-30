@@ -1,5 +1,6 @@
 package no.ntnu.gui.greenhouse;
 
+import java.util.Objects;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -9,7 +10,6 @@ import javafx.stage.Stage;
 import no.ntnu.gui.ControlPanel;
 import no.ntnu.listeners.node.NodeStateListener;
 
-import java.util.Objects;
 
 /**
  * Run a greenhouse simulation with a graphical user interface (GUI), with JavaFX.
@@ -57,7 +57,7 @@ public class GreenhouseApplication extends Application implements NodeStateListe
     System.out.println("Starting window for node " + nodeId);
     NodeTab window = new NodeTab(this.controlPanel.requestNode(nodeId));
     Platform.runLater(() ->
-      this.tabPane.getTabs().add(new Tab("Node " + nodeId, window.getScene().getRoot()))
+            this.tabPane.getTabs().add(new Tab("Node " + nodeId, window.getScene().getRoot()))
     );
   }
 

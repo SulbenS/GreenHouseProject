@@ -12,7 +12,7 @@ import java.util.Map;
 public class NodeCollection implements NodeStateListener, GreenhouseEventListener {
   private final Map<Integer, Node> nodes = new HashMap<>();
 
-  private void createNode(int temperature, int humidity, int windows, int fans, int heaters) {
+  public void createNode(int temperature, int humidity, int windows, int fans, int heaters) {
     Node node = DeviceFactory.createNode(
             temperature, humidity, windows, fans, heaters);
     node.addStateListener(this);

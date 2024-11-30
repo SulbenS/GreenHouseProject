@@ -1,12 +1,15 @@
 package no.ntnu.server;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.IOException;
 import java.net.Socket;
-
-import no.ntnu.tools.*;
+import no.ntnu.tools.ActuatorCommand;
+import no.ntnu.tools.Data;
+import no.ntnu.tools.MessageSerializer;
+import no.ntnu.tools.NodeCommand;
+import no.ntnu.tools.SensorReadingMessage;
 
 /**
  * The client handler of the application.
@@ -28,7 +31,6 @@ public class ClientHandler extends Thread {
   public ClientHandler(Server server, Socket socket) throws IOException {
     this.server = server;
     this.socket = socket;
-
     this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     this.writer = new PrintWriter(socket.getOutputStream(), true);
   }
@@ -62,8 +64,7 @@ public class ClientHandler extends Thread {
   }
 
   private void sendDataToServer(Data message) {
-    throw new UnsupportedOperationException("Not implemented yet.");
-    // TODO: Implement this method
+    this.server.broadcast(message);
   }
 
   private void sendActuatorCommandToServer(Data message) {
@@ -83,16 +84,7 @@ public class ClientHandler extends Thread {
    * @throws IOException If an I/O error occurs.
    */
   public Data receive() throws IOException {
-    String message = this.reader.readLine();
-    if (MessageSerializer.getDataType(message).equals("Reading")) {
-      return MessageSerializer.deserializeSensorReadingMessage(message);
-    } else if (MessageSerializer.getDataType(message).equals("Command")) {
-      return MessageSerializer.deserializeActuatorCommand(message);
-    } else if (MessageSerializer.getDataType(message).equals("NodeCommand")) {
-      return MessageSerializer.deserializeNodeCommand(message);
-    } else {
-      throw new IllegalArgumentException("Something really went wrong.");
-    }
+    return MessageSerializer.getDataType(this.reader.readLine());
   }
 
   /**
@@ -100,8 +92,16 @@ public class ClientHandler extends Thread {
    *
    * @param message The message to transmit.
    */
-  public void transmit(NodeCommand message) {
-    this.writer.println(MessageSerializer.serializeNodeCommand(message));
+  public void transmitToClient(Data message) {
+    if (message instanceof SensorReadingMessage) {
+      this.writer.println(((SensorReadingMessage) message).getReading());
+    } else if (message instanceof ActuatorCommand) {
+      this.writer.println(MessageSerializer.serializeActuatorCommand((ActuatorCommand) message));
+    } else if (message instanceof NodeCommand) {
+      this.writer.println(MessageSerializer.serializeNodeCommand((NodeCommand) message));
+    } else {
+      throw new IllegalArgumentException("Could not transmit the message.");
+    }
   }
 
   /**

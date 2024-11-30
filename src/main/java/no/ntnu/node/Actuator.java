@@ -2,7 +2,6 @@ package no.ntnu.node;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import no.ntnu.listeners.node.ActuatorListener;
 
 /**
