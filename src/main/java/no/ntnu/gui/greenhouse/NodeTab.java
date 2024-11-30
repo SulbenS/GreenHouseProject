@@ -1,13 +1,14 @@
 package no.ntnu.gui.greenhouse;
 
 import java.util.List;
+import java.util.Objects;
+
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import no.ntnu.node.Actuator;
 import no.ntnu.node.Sensor;
-import no.ntnu.node.Node;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
 import no.ntnu.listeners.node.ActuatorListener;
@@ -21,49 +22,38 @@ public class NodeTab extends Stage implements SensorListener, ActuatorListener {
   private static final double HORIZONTAL_OFFSET = 150;
   private static final double WINDOW_WIDTH = 300;
   private static final double WINDOW_HEIGHT = 300;
+
   private ActuatorPane actuatorPane;
   private SensorPane sensorPane;
-  private final Node node;
+
+  private int nodeId;
 
   /**
    * Create a GUI window for a specific node.
-   *
-   * @param node The node which will be handled in this window.
    */
-  public NodeTab(Node node) {
-    this.node = node;
+  public NodeTab(int nodeId) {
+    this.nodeId = nodeId;
     Scene scene = new Scene(createContent(), WINDOW_WIDTH, WINDOW_HEIGHT);
     setScene(scene);
-    setTitle("Node " + node.getId());
-    initializeListeners(node);
+    setTitle("Node " + this.nodeId);
     setPositionAndSize();
   }
 
   private void setPositionAndSize() {
-    setX((node.getId() - 1) * HORIZONTAL_OFFSET);
-    setY(node.getId() * VERTICAL_OFFSET);
+    setX((this.nodeId - 1) * HORIZONTAL_OFFSET);
+    setY(this.nodeId * VERTICAL_OFFSET);
     setMinWidth(WINDOW_HEIGHT);
     setMinHeight(WINDOW_WIDTH);
   }
 
-
-  private void initializeListeners(Node node) {
-    setOnCloseRequest(windowEvent -> shutDownNode());
-    node.addSensorListener(this);
-    node.addActuatorListener(this);
-  }
-
-  private void shutDownNode() {
-    node.stop();
-  }
-
   private Parent createContent() {
-    actuatorPane = new ActuatorPane(node.getActuators());
+    //actuatorPane = new ActuatorPane(node.getActuators());
     actuatorPane.getStyleClass().add("actuator-pane");
-    sensorPane = new SensorPane(node.getSensors());
+    //sensorPane = new SensorPane(node.getSensors());
     sensorPane.getStyleClass().add("sensor-pane");
     VBox vbox = new VBox(sensorPane, actuatorPane);
-    vbox.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+    vbox.getStylesheets().add(
+            Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
     return vbox;
   }
 

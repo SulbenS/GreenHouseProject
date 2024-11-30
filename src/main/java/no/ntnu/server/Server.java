@@ -1,7 +1,7 @@
 package no.ntnu.server;
 
 import no.ntnu.node.Node;
-import no.ntnu.tools.Data;
+import no.ntnu.commands.Data;
 
 import java.io.IOException;
 import java.net.ServerSocket;

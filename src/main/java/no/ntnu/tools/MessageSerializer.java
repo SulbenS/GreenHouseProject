@@ -1,5 +1,10 @@
 package no.ntnu.tools;
 
+import no.ntnu.commands.ActuatorCommand;
+import no.ntnu.commands.Data;
+import no.ntnu.commands.NodeCommand;
+import no.ntnu.commands.SensorReadingMessage;
+
 import java.util.HashMap;
 import java.util.Map;
 

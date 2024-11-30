@@ -1,5 +1,7 @@
 package no.ntnu.tools;
 
+import no.ntnu.commands.ActuatorCommand;
+
 public class MessageSerializerTest {
   public static void main(String[] args) {
     // Test serialization for a specific actuator

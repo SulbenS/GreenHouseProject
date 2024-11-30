@@ -12,11 +12,9 @@ import no.ntnu.listeners.node.ActuatorListener;
 import no.ntnu.node.Actuator;
 import no.ntnu.node.Node;
 import no.ntnu.node.SensorReading;
-import no.ntnu.server.Server;
-import no.ntnu.tools.Data;
+import no.ntnu.commands.Data;
 import no.ntnu.tools.MessageSerializer;
-import no.ntnu.tools.NodeCommand;
-import no.ntnu.tools.SensorReadingMessage;
+import no.ntnu.commands.SensorReadingMessage;
 
 
 /**

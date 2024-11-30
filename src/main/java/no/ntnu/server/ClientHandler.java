@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import no.ntnu.tools.ActuatorCommand;
-import no.ntnu.tools.Data;
+import no.ntnu.commands.ActuatorCommand;
+import no.ntnu.commands.Data;
 import no.ntnu.tools.MessageSerializer;
-import no.ntnu.tools.NodeCommand;
-import no.ntnu.tools.SensorReadingMessage;
+import no.ntnu.commands.NodeCommand;
+import no.ntnu.commands.SensorReadingMessage;
 
 /**
  * The client handler of the application.

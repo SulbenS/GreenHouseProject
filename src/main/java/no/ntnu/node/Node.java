@@ -11,13 +11,12 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import no.ntnu.server.Server;
 import no.ntnu.listeners.node.ActuatorListener;
 import no.ntnu.listeners.node.NodeStateListener;
 import no.ntnu.listeners.node.SensorListener;
-import no.ntnu.tools.Data;
+import no.ntnu.commands.Data;
 import no.ntnu.tools.MessageSerializer;
-import no.ntnu.tools.NodeCommand;
+import no.ntnu.commands.NodeCommand;
 
 /**
  * Represents one node with sensors and actuators.
@@ -184,7 +183,7 @@ public class Node implements ActuatorListener {
   /**
    * Register a new listener for node state updates.
    *
-   * @param listener The listener which will get notified when the state of this node changes
+   * @param listener The listener which will get notified when the state of this node changes.
    */
   public void addStateListener(NodeStateListener listener) {
     if (!stateListeners.contains(listener)) {

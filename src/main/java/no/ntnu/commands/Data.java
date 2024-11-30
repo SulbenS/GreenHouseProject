@@ -1,10 +1,11 @@
-package no.ntnu.tools;
+package no.ntnu.commands;
 
 /**
  * Class representing the type of data being sent.
  */
 public class Data {
-  private String data;
+  private String data; // Command - Reading
+  private String receiver; // Node - Control-Panel
 
   /**
    * Constructor for the Data class.

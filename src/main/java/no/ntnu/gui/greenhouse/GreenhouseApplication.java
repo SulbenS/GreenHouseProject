@@ -57,7 +57,7 @@ public class GreenhouseApplication extends Application implements NodeStateListe
   @Override
   public void onNodeReady(int nodeId) {
     System.out.println("Starting window for node " + nodeId);
-    NodeTab window = new NodeTab(this.controlPanel.requestNode(nodeId));
+    NodeTab window = new NodeTab(nodeId);
     Platform.runLater(() ->
             this.tabPane.getTabs().add(new Tab("Node " + nodeId, window.getScene().getRoot()))
     );

@@ -2,6 +2,7 @@ package no.ntnu.gui.common;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -23,6 +24,9 @@ public class ActuatorPane extends TitledPane {
   private final Map<Actuator, SimpleStringProperty> actuatorValue = new HashMap<>();
   private final Map<Actuator, SimpleBooleanProperty> actuatorActive = new HashMap<>();
 
+  private Map<Integer, String> actuatorType = new HashMap<>();
+  private Map<Integer, Boolean> actuatorState = new HashMap<>();
+
   /**
    * Create an actuator pane.
    *
@@ -37,7 +41,8 @@ public class ActuatorPane extends TitledPane {
     vbox.getStyleClass().add("vignette"); // Add vignette effect
     setContent(vbox);
     addActuatorControls(actuators, vbox);
-    vbox.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+    vbox.getStylesheets().add(
+            Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
     this.setPrefHeight(5000);
   }
 
@@ -66,7 +71,8 @@ public class ActuatorPane extends TitledPane {
         actuator.turnOff();
       }
     });
-    checkbox.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+    checkbox.getStylesheets().add(
+            Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
     return checkbox;
   }
 

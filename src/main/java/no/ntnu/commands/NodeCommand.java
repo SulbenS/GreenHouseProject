@@ -1,4 +1,4 @@
-package no.ntnu.tools;
+package no.ntnu.commands;
 
 /**
  * Class representing the type of data being sent.
