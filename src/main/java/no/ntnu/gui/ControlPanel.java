@@ -5,17 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.LinkedList;
-import java.util.List;
-import no.ntnu.listeners.GreenhouseEventListener;
-import no.ntnu.listeners.node.ActuatorListener;
-import no.ntnu.node.Actuator;
 import no.ntnu.node.Node;
-import no.ntnu.node.SensorReading;
 import no.ntnu.commands.Data;
 import no.ntnu.tools.MessageSerializer;
 import no.ntnu.commands.SensorReadingMessage;
-
 
 /**
  * The central logic of a control panel node. It uses a communication channel to send commands
@@ -27,9 +20,7 @@ import no.ntnu.commands.SensorReadingMessage;
  * be placed inside a GUI class (JavaFX classes). Therefore, we use proper structure here, even
  * though you may have no real control-panel logic in your projects.
  */
-public class ControlPanel implements GreenhouseEventListener, ActuatorListener {
-  private final List<GreenhouseEventListener> listeners = new LinkedList<>();
-
+public class ControlPanel  {
   private Socket socket;
 
   private BufferedReader reader;
@@ -91,44 +82,6 @@ public class ControlPanel implements GreenhouseEventListener, ActuatorListener {
       System.out.println(e.getMessage());
     }
     return rawMessage;
-  }
-
-  /**
-   * Add an event listener.
-   *
-   * @param listener The listener who will be notified on all events
-   */
-  public void addListener(GreenhouseEventListener listener) {
-    if (!listeners.contains(listener)) {
-      listeners.add(listener);
-    }
-  }
-
-  @Override
-  public void onNodeAdded(Node node) {
-    listeners.forEach(listener -> listener.onNodeAdded(node));
-  }
-
-  @Override
-  public void onNodeRemoved(int nodeId) {
-    listeners.forEach(listener -> listener.onNodeRemoved(nodeId));
-  }
-
-  @Override
-  public void onSensorData(int nodeId, List<SensorReading> sensors) {
-    listeners.forEach(listener -> listener.onSensorData(nodeId, sensors));
-  }
-
-  @Override
-  public void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn) {
-    listeners.forEach(listener -> listener.onActuatorStateChanged(nodeId, actuatorId, isOn));
-  }
-
-  @Override
-  public void actuatorUpdated(int nodeId, Actuator actuator) {
-    listeners.forEach(listener ->
-        listener.onActuatorStateChanged(nodeId, actuator.getId(), actuator.isOn())
-    );
   }
 
   /**

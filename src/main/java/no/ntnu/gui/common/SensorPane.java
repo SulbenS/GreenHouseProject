@@ -1,7 +1,5 @@
 package no.ntnu.gui.common;
 
-import java.util.*;
-
 import javafx.application.Platform;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -34,43 +32,19 @@ public class SensorPane extends Pane {
     setPrefHeight(5000);
   }
 
-  private String generateSensorLabel() {
-    return this.sensorType + ": " + sensorValue;
+  private Label generateSensorLabel() {
+    return new Label(this.sensorType + ": " + sensorValue);
+  }
+
+  private void updateSensorLabel(int sensorReading) {
+    this.sensorValue = sensorReading;
+    Platform.runLater(() -> this.contentBox.getChildren().set(0, generateSensorLabel()));
   }
 
   /**
    * Update the GUI according to the changes in sensor data.
    */
   public void update() {
-    Platform.runLater(() -> this.sensorLabel.setText(generateSensorLabel()));
-  }
-
-  /**
-   * Update the GUI according to the changes in sensor data.
-   * Wrapper for the other method with SensorReading-iterable parameter
-   *
-   * @param sensors The sensor data that has been updated
-   */
-  public void update(List<Sensor> sensors) {
-    update(sensors.stream().map(Sensor::getReading).toList());
-  }
-
-  private Label createAndRememberSensorLabel(SensorReading sensor) {
-    SimpleStringProperty props = new SimpleStringProperty(generateSensorLabel(sensor));
-    this.sensorProps.add(props);
-    Label label = new Label();
-    label.textProperty().bind(props);
-    label.getStyleClass().add("sensor-label");
-    return label;
-  }
-
-  private void updateSensorLabel(SensorReading sensor, int index) {
-    if (this.sensorProps.size() > index) {
-      SimpleStringProperty props = this.sensorProps.get(index);
-      Platform.runLater(() -> props.set(generateSensorLabel(sensor)));
-    } else {
-      System.out.println("Adding sensor[" + index + "]");
-      Platform.runLater(() -> this.contentBox.getChildren().add(createAndRememberSensorLabel(sensor)));
-    }
+    Platform.runLater(() -> this.sensorLabel.setText(generateSensorLabel().getText()));
   }
 }
