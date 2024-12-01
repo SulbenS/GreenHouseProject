@@ -23,9 +23,15 @@ public class SensorReading {
     this.value = value;
   }
 
-  public String readingToString(int nodeId) {
-    return "Data=Reading;type=" + type + ";" + "value=" + value + ";" + "unit=" + unit;
+  public String readingToString(int nodeId, int sensorId) {
+    return "Data=Reading"
+            + ";Node=" + nodeId
+            + ";Sensor=" + sensorId
+            + ";Type=" + this.type
+            + ";Value=" + value
+            + ";Unit=" + unit;
   }
+
 
   @Override
   public boolean equals(Object o) {

@@ -52,25 +52,52 @@ public class ControlPanel  {
     while (this.running) {
       String rawMessage = readMessage();
       Data data = MessageHandler.getData(rawMessage);
-      if (data instanceof SensorIdentifier sensorIdentifier) {
-        if (!this.application.hasNodeTab(sensorIdentifier.getNodeId())) {
-          this.application.addNodeTab(data.getNodeId());
-        }
-        this.application.getNodeTab(data.getNodeId()).addSensorPane(sensorIdentifier.getNodeId(), sensorIdentifier.getType());
-      } else if (data instanceof ActuatorIdentifier actuatorIdentifier) {
-        if (!this.application.hasNodeTab(actuatorIdentifier.getNodeId())) {
-          this.application.addNodeTab(data.getNodeId());
-        }
-        this.application.getNodeTab(data.getNodeId()).addActuatorPane(actuatorIdentifier.getNodeId(), actuatorIdentifier.getType());
-      } else if (data instanceof SensorReadingMessage sensorReadingMessage) {
-        // Create noteTab if it does not exist
-        if (!this.application.hasNodeTab(sensorReadingMessage.getNodeId())) {
-          this.application.addNodeTab(sensorReadingMessage.getNodeId());
-        }
-        this.application.getNodeTab(sensorReadingMessage.getNodeId()).updateSensorReading(sensorReadingMessage.getSensorId(), sensorReadingMessage.getReading());
-      } else {
-        System.out.println("Unknown message type received.");
+      executeCommand(data);
+    }
+  }
+
+  /**
+   * Execute a command received from the server.
+   *
+   * @param data The data to execute.
+   */
+  private void executeCommand(Data data) {
+    if (data instanceof SensorIdentifier sensorIdentifier) {
+      if (!this.application.hasNodeTab(sensorIdentifier.getNodeId())) {
+        this.application.addNodeTab(data.getNodeId());
       }
+      this.application
+              .getNodeTab(data.getNodeId())
+              .addSensorPane(
+                      sensorIdentifier.getNodeId(),
+                      sensorIdentifier.getType());
+    } else if (data instanceof ActuatorIdentifier actuatorIdentifier) {
+      if (!this.application.hasNodeTab(actuatorIdentifier.getNodeId())) {
+        this.application.addNodeTab(data.getNodeId());
+      }
+      this.application
+              .getNodeTab(data.getNodeId())
+              .addActuatorPane(
+                      actuatorIdentifier.getNodeId(),
+                      actuatorIdentifier.getType());
+    } else if (data instanceof SensorReadingMessage sensorReadingMessage) {
+      // Create noteTab if it does not exist
+      if (!this.application.hasNodeTab(sensorReadingMessage.getNodeId())) {
+        this.application.addNodeTab(sensorReadingMessage.getNodeId());
+      }
+      this.application
+              .getNodeTab(data.getNodeId())
+              .addSensorPane(
+                      sensorReadingMessage.getSensorId(),
+                      sensorReadingMessage.getValue());
+      this.application
+              .getNodeTab(sensorReadingMessage.getNodeId())
+              .updateSensorReading(
+                      sensorReadingMessage.getSensorId(),
+                      sensorReadingMessage.getValue());
+    } else {
+      System.out.println("Unknown message type received:");
+      System.out.println(data.getData());
     }
   }
 
@@ -108,6 +135,15 @@ public class ControlPanel  {
       System.out.println(e.getMessage());
     }
     return rawMessage;
+  }
+
+  /**
+   * Writes a message to the server.
+   *
+   * @param message The message to write.
+   */
+  public void writeMessage(String message) {
+    this.writer.println(message);
   }
 
   /**

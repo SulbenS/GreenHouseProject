@@ -275,7 +275,7 @@ public class Node implements ActuatorListener {
     notifySensorChanges();
     debugPrint();
     for (Sensor sensor : sensors) {
-      sendMessage(sensor.getReading().toString());
+      sendMessage(sensor.getReading().readingToString(id, sensor.getSensorId()));
     }
   }
 

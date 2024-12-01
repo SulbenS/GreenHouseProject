@@ -3,14 +3,15 @@ package no.ntnu.tools;
 import no.ntnu.commands.*;
 import no.ntnu.node.Actuator;
 import no.ntnu.node.Sensor;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class MessageHandler {
 
   public static String serializeActuatorInformation(ActuatorIdentifier actuator) {
-    return "Data=Identifier;Node=" + actuator.getNodeId() + ";Actuator=" + actuator.getActuatorId() + ";Type=" + actuator.getType();
+    return "Data=Identifier;Node=" + actuator.getNodeId()
+            + ";Actuator=" + actuator.getActuatorId()
+            + ";Type=" + actuator.getType();
   }
 
   public static Data deserializeActuatorInformation(String rawMessage) {
@@ -23,7 +24,9 @@ public class MessageHandler {
   }
 
   public static String serializeSensorInformation(SensorIdentifier sensor) {
-    return "Data=Identifier;Node=" + sensor.getNodeId() + ";Sensor=" + sensor.getSensorId() + ";Type=" + sensor.getType();
+    return "Data=Identifier;Node=" + sensor.getNodeId()
+            + ";Sensor=" + sensor.getSensorId()
+            + ";Type=" + sensor.getType();
   }
 
   public static Data deserializeSensorInformation(String rawMessage) {
@@ -79,17 +82,23 @@ public class MessageHandler {
     Map<String, String> fields = parseFields(rawMessage);
     String data = fields.get("Data");
     int nodeId = Integer.parseInt(fields.get("Node"));
-    int sensorId = Integer.parseInt(fields.get("SensorId"));
-    String reading = fields.get("Reading");
-    return new SensorReadingMessage(data, nodeId, sensorId, reading);
+    int sensorId = Integer.parseInt(fields.get("Sensor"));
+    String type = fields.get("Type");
+    String value = fields.get("Value");
+    String unit = fields.get("Unit");
+    return new SensorReadingMessage(data, nodeId, sensorId, type, value, unit);
   }
 
   public static String actuatorToString(Actuator actuator) {
-    return "Data=Identifier;Node=" + actuator.getNodeId() + ";Actuator=" + actuator.getId() + ";Type=" + actuator.getType();
+    return "Data=Identifier;Node=" + actuator.getNodeId()
+            + ";Actuator=" + actuator.getId()
+            + ";Type=" + actuator.getType();
   }
 
   public static String sensorToString(Sensor sensor) {
-    return "Data=Identifier;Node=" + sensor.getNodeId() + ";Sensor=" + sensor.getSensorId() + ";Type=" + sensor.getType();
+    return "Data=Identifier;Node=" + sensor.getNodeId()
+            + ";Sensor=" + sensor.getSensorId()
+            + ";Type=" + sensor.getType();
   }
 
   private static Map<String, String> parseFields(String rawMessage) {
@@ -113,25 +122,35 @@ public class MessageHandler {
     Data result;
     Map<String, String> fields = parseFields(rawMessage);
     String dataType = fields.get("Data");
+    if (rawMessage.isBlank()) {
+      throw new IllegalArgumentException("rawMessage is null");
+    }
     if (dataType == null) {
       System.out.println(rawMessage);
       throw new IllegalArgumentException("Could not get the data type.");
     }
-    result = switch (dataType) {
-      case "Reading" -> deserializeSensorReadingMessage(rawMessage);
-      case "ActuatorCommand" -> deserializeActuatorCommand(rawMessage);
-      case "NodeCommand" -> deserializeNodeCommand(rawMessage);
-      case "Identifier" -> {
-        if (fields.containsKey("Actuator")) {
-          yield deserializeActuatorInformation(rawMessage);
-        } else if (fields.containsKey("Sensor")) {
-          yield deserializeSensorInformation(rawMessage);
-        } else {
-          throw new IllegalArgumentException("Could not get the data type.");
+    try {
+      result = switch (dataType) {
+        case "Reading" -> deserializeSensorReadingMessage(rawMessage);
+        case "ActuatorCommand" -> deserializeActuatorCommand(rawMessage);
+        case "NodeCommand" -> deserializeNodeCommand(rawMessage);
+        case "Identifier" -> {
+          if (fields.containsKey("Actuator")) {
+            yield deserializeActuatorInformation(rawMessage);
+          } else if (fields.containsKey("Sensor")) {
+            yield deserializeSensorInformation(rawMessage);
+          } else {
+            throw new IllegalArgumentException("Could not get the data type.");
+          }
         }
-      }
-      default -> throw new IllegalArgumentException("Could not get the data type.");
-    };
-    return result;
+        default -> throw new IllegalArgumentException("Could not get the data type.");
+      };
+      return result;
+    } catch (NumberFormatException e) {
+      System.out.println(rawMessage);
+      e.printStackTrace();
+    }
+    System.out.println(rawMessage);
+    throw new IllegalArgumentException("Could not get the data type.");
   }
 }

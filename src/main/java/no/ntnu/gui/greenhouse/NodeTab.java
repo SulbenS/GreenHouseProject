@@ -59,6 +59,10 @@ public class NodeTab extends Stage {
     this.contentBox.getChildren().add(ActuatorSensorPane);
   }
 
+  public void updateSensorReading(int sensorId, String value) {
+    this.sensorPanes.get(sensorId).updateSensorReading(Double.parseDouble(value));
+  }
+
   private void setPositionAndSize() {
     setX((this.nodeId - 1) * HORIZONTAL_OFFSET);
     setY(this.nodeId * VERTICAL_OFFSET);
@@ -73,9 +77,5 @@ public class NodeTab extends Stage {
    */
   public int getNodeId() {
     return this.nodeId;
-  }
-
-  public void updateSensorReading(int sensorId, String reading) {
-    this.sensorPanes.get(sensorId).updateSensorReading(Integer.parseInt(reading));
   }
 }

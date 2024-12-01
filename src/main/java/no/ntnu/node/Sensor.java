@@ -1,7 +1,5 @@
 package no.ntnu.node;
 
-import no.ntnu.tools.DeviceFactory;
-
 /**
  * A sensor which can sense the environment in a specific way.
  */
@@ -87,10 +85,10 @@ public class Sensor {
     return nextId++;
   }
 
-  @Override
-  public String toString() {
-    return this.reading.toString();
-  }
+  //@Override
+  //public String toString() {
+    //return this.reading.readingToString();
+  //} TODO: maybe this should be implemented
 
   public String getType() {
     return this.reading.getType();

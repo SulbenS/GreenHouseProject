@@ -12,7 +12,7 @@ import javafx.scene.layout.Pane;
 public class SensorPane extends Pane {
   private int sensorId;
   private String sensorType;
-  private int sensorValue;
+  private double sensorValue;
 
   private Label sensorLabel;
   private CheckBox sensorCheckbox;
@@ -36,7 +36,7 @@ public class SensorPane extends Pane {
     return new Label(this.sensorType + ": " + sensorValue);
   }
 
-  public void updateSensorReading(int sensorReading) {
+  public void updateSensorReading(double sensorReading) {
     this.sensorValue = sensorReading;
     Platform.runLater(() -> this.contentBox.getChildren().set(0, generateSensorLabel()));
   }
