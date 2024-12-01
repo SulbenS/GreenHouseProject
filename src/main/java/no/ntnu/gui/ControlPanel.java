@@ -51,29 +51,39 @@ public class ControlPanel {
       if (!this.application.hasNodeTab(sensorIdentifier.getNodeId())) {
         this.application.addNodeTab(sensorIdentifier.getNodeId());
       }
-      this.application
-              .getNodeTab(sensorIdentifier.getNodeId())
-              .addSensorPane(
-                      sensorIdentifier.getSensorId(),
-                      sensorIdentifier.getType());
+      if (!this.application.getNodeTab(sensorIdentifier.getNodeId()).hasActuatorPane(sensorIdentifier.getSensorId())) {
+        this.application
+                .getNodeTab(sensorIdentifier.getNodeId())
+                .addSensorPane(
+                        sensorIdentifier.getSensorId(),
+                        sensorIdentifier.getType());
+      }
+
     } else if (data instanceof ActuatorIdentifier actuatorIdentifier) {
       if (!this.application.hasNodeTab(actuatorIdentifier.getNodeId())) {
         this.application.addNodeTab(actuatorIdentifier.getNodeId());
       }
-      this.application
-              .getNodeTab(actuatorIdentifier.getNodeId())
-              .addActuatorPane(
-                      actuatorIdentifier.getActuatorId(),
-                      actuatorIdentifier.getType());
+      if (!this.application.getNodeTab(actuatorIdentifier.getNodeId()).hasActuatorPane(actuatorIdentifier.getActuatorId())) {
+        this.application
+                .getNodeTab(actuatorIdentifier.getNodeId())
+                .addActuatorPane(
+                        actuatorIdentifier.getActuatorId(),
+                        actuatorIdentifier.getType());
+      }
     } else if (data instanceof SensorReadingMessage sensorReadingMessage) {
       if (!this.application.hasNodeTab(sensorReadingMessage.getNodeId())) {
         this.application.addNodeTab(sensorReadingMessage.getNodeId());
       }
-      this.application
-              .getNodeTab(sensorReadingMessage.getNodeId())
-              .addSensorPane(
-                      sensorReadingMessage.getSensorId(),
-                      sensorReadingMessage.getValue());
+
+      if (!this.application.getNodeTab(sensorReadingMessage.getNodeId()).hasSensorPane(sensorReadingMessage.getSensorId())) {
+        this.application
+                .getNodeTab(sensorReadingMessage.getNodeId())
+                .addSensorPane(
+                        sensorReadingMessage.getSensorId(),
+                        sensorReadingMessage.getType());
+        System.out.println(sensorReadingMessage.getType() + "--------------------------------");
+      }
+
       this.application
               .getNodeTab(sensorReadingMessage.getNodeId())
               .updateSensorReading(

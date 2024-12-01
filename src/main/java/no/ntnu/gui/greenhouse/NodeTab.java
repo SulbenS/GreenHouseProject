@@ -93,4 +93,12 @@ public class NodeTab extends VBox {
   public int getNodeId() {
     return this.nodeId;
   }
+
+  public boolean hasActuatorPane(int actuatorId) {
+    return this.actuatorPanes.containsKey(actuatorId);
+  }
+
+  public boolean hasSensorPane(int sensorId) {
+    return this.sensorPanes.containsKey(sensorId);
+  }
 }

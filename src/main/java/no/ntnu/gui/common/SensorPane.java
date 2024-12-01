@@ -27,9 +27,11 @@ public class SensorPane extends Pane {
    * @param sensorType the type of the sensor.
    */
   public SensorPane(int sensorId , String sensorType) {
+    this.sensorType = sensorType;
+    this.sensorId = sensorId;
     this.contentBox = new HBox();
     this.contentBox.getChildren().add(new Label(sensorType));
-    setPrefHeight(5000);
+    setPrefHeight(500);
     getChildren().add(this.contentBox);
   }
 
