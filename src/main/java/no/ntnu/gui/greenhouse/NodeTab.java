@@ -3,6 +3,8 @@ package no.ntnu.gui.greenhouse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import no.ntnu.gui.common.ActuatorPane;
@@ -19,6 +21,9 @@ public class NodeTab extends VBox {
 
   private Pane contentBox;
 
+  private TitledPane actuatorsTitledPane;
+  private TitledPane sensorsTitledPane;
+
   private Map<Integer, ActuatorPane> actuatorPanes;
   private Map<Integer, SensorPane> sensorPanes;
 
@@ -30,8 +35,14 @@ public class NodeTab extends VBox {
   public NodeTab(int nodeId) {
     this.nodeId = nodeId;
     this.contentBox = new VBox();
+    this.actuatorsTitledPane = new TitledPane();
+    this.sensorsTitledPane = new TitledPane();
     this.actuatorPanes = new HashMap<>();
     this.sensorPanes = new HashMap<>();
+    this.contentBox.getChildren().add(this.actuatorsTitledPane);
+    this.contentBox.getChildren().add(this.sensorsTitledPane);
+    this.actuatorsTitledPane.setText("Actuators");
+    this.sensorsTitledPane.setText("Sensors");
 
     // Set initial properties for the VBox (this is now the root layout)
     setPrefWidth(WINDOW_WIDTH);
@@ -49,20 +60,13 @@ public class NodeTab extends VBox {
   public void addActuatorPane(int actuatorId, String type) {
     ActuatorPane actuatorPane = new ActuatorPane(actuatorId, type);
     this.actuatorPanes.put(actuatorId, actuatorPane);
-    createContent(actuatorPane);
+    this.actuatorsTitledPane.setContent(actuatorPane);
   }
 
   public void addSensorPane(int sensorId, String type) {
     SensorPane sensorPane = new SensorPane(sensorId, type);
     this.sensorPanes.put(sensorId, sensorPane);
-    createContent(sensorPane);
-  }
-
-  private void createContent(Pane pane) {
-    VBox ActuatorSensorPane = new VBox(pane);
-    ActuatorSensorPane.getStylesheets().add(
-            Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
-    this.contentBox.getChildren().add(ActuatorSensorPane);
+    this.sensorsTitledPane.setContent(sensorPane);
   }
 
   public void updateSensorReading(int sensorId, String value) {

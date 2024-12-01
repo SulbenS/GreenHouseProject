@@ -1,5 +1,7 @@
 package no.ntnu.gui.common;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import javafx.application.Platform;
 import javafx.scene.control.CheckBox;

@@ -22,9 +22,10 @@ public class ControlPanel {
   private BufferedReader reader;
   private PrintWriter writer;
 
-  boolean running;
+  private boolean running;
 
   public ControlPanel(GreenhouseApplication application) {
+
     this.application = application;
     this.running = true;
   }
