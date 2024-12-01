@@ -31,6 +31,7 @@ public class NodeTab extends VBox {
    */
   public NodeTab(int nodeId) {
     this.nodeId = nodeId;
+    this.contentBox = new VBox();
     this.actuatorPanes = new HashMap<>();
     this.sensorPanes = new HashMap<>();
 
