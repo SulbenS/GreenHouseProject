@@ -90,7 +90,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   @Override
   public void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn) {
     String state = isOn ? "ON" : "off";
-    System.out.println("actuator[" + actuatorId + "] on node " + nodeId + " is " + state);
+    System.out.println("actuator[" + actuatorId + "] on node " + nodeId + " is " + state + "-----------------");
     ActuatorPane actuatorPane = actuatorPanes.get(nodeId);
     if (actuatorPane != null) {
       Actuator actuator = getStoredActuator(nodeId, actuatorId);

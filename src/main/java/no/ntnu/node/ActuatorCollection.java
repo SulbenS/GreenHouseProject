@@ -13,12 +13,12 @@ public class ActuatorCollection implements Iterable<Actuator> {
   /**
    * Print a short info about all the actuators. Usable for debugging. Does NOT print a newline!
    */
-  public void debugPrint() {
-    for (Actuator actuator : actuators.values()) {
-      System.out.println(" " + actuator.getType() + "[" + actuator.getId() + "]"
-          + (actuator.isOn() ? " ON" : " off"));
-    }
-  }
+  //public void debugPrint() {
+    //for (Actuator actuator : actuators.values()) {
+      //System.out.println(" " + actuator.getType() + "[" + actuator.getId() + "]"
+        //  + (actuator.isOn() ? " ON" : " off"));
+//    }
+  //}
 
   /**
    * Add an actuator to the collection.

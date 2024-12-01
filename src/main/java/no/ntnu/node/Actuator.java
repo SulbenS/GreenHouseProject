@@ -8,7 +8,7 @@ import no.ntnu.listeners.node.ActuatorListener;
  * An actuator that can change the environment in a way. The actuator will make impact on the
  * sensors attached to this same node.
  */
-public class Actuator implements ActuatorListener {
+public class Actuator {
   private static int nextId = 1;
   private final String type;
   private final int nodeId;
@@ -95,15 +95,7 @@ public class Actuator implements ActuatorListener {
    */
   public void toggle() {
     this.on = !this.on;
-    notifyChanges();
   }
-
-  private void notifyChanges() {
-    if (listener != null) {
-      listener.actuatorUpdated(this.nodeId, this);
-    }
-  }
-
   /**
    * Check whether the actuator is active (ON), or inactive (OFF).
    *
@@ -143,7 +135,6 @@ public class Actuator implements ActuatorListener {
   public void turnOn() {
     if (!on) {
       on = true;
-      notifyChanges();
     }
   }
 
@@ -153,7 +144,6 @@ public class Actuator implements ActuatorListener {
   public void turnOff() {
     if (on) {
       on = false;
-      notifyChanges();
     }
   }
 
@@ -176,22 +166,11 @@ public class Actuator implements ActuatorListener {
    *
    * @param on Turn on when true, turn off when false
    */
-  public void set(boolean on) {
+  public void setState(boolean on) {
     if (on) {
       turnOn();
     } else {
       turnOff();
     }
-  }
-
-  /**
-   * An event that is fired every time an actuator changes state.
-   *
-   * @param nodeId   ID of the node on which this actuator is placed
-   * @param actuator The actuator that has changed its state
-   */
-  @Override
-  public void actuatorUpdated(int nodeId, Actuator actuator) {
-
   }
 }

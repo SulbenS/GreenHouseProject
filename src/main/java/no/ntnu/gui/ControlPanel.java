@@ -6,15 +6,13 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import javafx.application.Platform;
-import no.ntnu.commands.ActuatorIdentifier;
-import no.ntnu.commands.SensorIdentifier;
+import no.ntnu.commands.*;
 import no.ntnu.gui.greenhouse.GreenhouseApplication;
+import no.ntnu.listeners.node.ActuatorListener;
 import no.ntnu.node.Node;
-import no.ntnu.commands.Data;
 import no.ntnu.tools.MessageHandler;
-import no.ntnu.commands.SensorReadingMessage;
 
-public class ControlPanel {
+public class ControlPanel implements ActuatorListener {
   private GreenhouseApplication application;
 
   private Socket socket;
@@ -25,7 +23,6 @@ public class ControlPanel {
   private boolean running;
 
   public ControlPanel(GreenhouseApplication application) {
-
     this.application = application;
     this.running = true;
   }
@@ -58,7 +55,6 @@ public class ControlPanel {
                         sensorIdentifier.getSensorId(),
                         sensorIdentifier.getType());
       }
-
     } else if (data instanceof ActuatorIdentifier actuatorIdentifier) {
       if (!this.application.hasNodeTab(actuatorIdentifier.getNodeId())) {
         this.application.addNodeTab(actuatorIdentifier.getNodeId());
@@ -66,7 +62,8 @@ public class ControlPanel {
       if (!this.application.getNodeTab(actuatorIdentifier.getNodeId()).hasActuatorPane(actuatorIdentifier.getActuatorId())) {
         this.application
                 .getNodeTab(actuatorIdentifier.getNodeId())
-                .addActuatorPane(
+                .addActuatorPane(this,
+                        actuatorIdentifier.getNodeId(),
                         actuatorIdentifier.getActuatorId(),
                         actuatorIdentifier.getType());
       }
@@ -74,7 +71,6 @@ public class ControlPanel {
       if (!this.application.hasNodeTab(sensorReadingMessage.getNodeId())) {
         this.application.addNodeTab(sensorReadingMessage.getNodeId());
       }
-
       if (!this.application.getNodeTab(sensorReadingMessage.getNodeId()).hasSensorPane(sensorReadingMessage.getSensorId())) {
         this.application
                 .getNodeTab(sensorReadingMessage.getNodeId())
@@ -83,15 +79,13 @@ public class ControlPanel {
                         sensorReadingMessage.getType());
         System.out.println(sensorReadingMessage.getType() + "--------------------------------");
       }
-
       this.application
               .getNodeTab(sensorReadingMessage.getNodeId())
               .updateSensorReading(
                       sensorReadingMessage.getSensorId(),
                       sensorReadingMessage.getValue());
     } else {
-      System.out.println("Unknown message type received:");
-      System.out.println(data.getData());
+      System.out.println("Unknown message type received: " + data.getData());
     }
   }
 
@@ -121,6 +115,14 @@ public class ControlPanel {
       System.out.println(e.getMessage());
     }
     return rawMessage;
+  }
+
+  @Override
+  public void onActuatorStateChanged(int nodeId, int actuatorId, boolean newState) {
+    String message = ("Actuator " + actuatorId + " state changed to " + (newState ? "ON" : "OFF") + "-----------");
+    System.out.println(message);
+
+    writeMessage("Data=ActuatorCommand;Node=" + nodeId + ";Actuator=" + actuatorId + ";Action=" + (newState ? "ON" : "OFF"));
   }
 
   public void writeMessage(String message) {

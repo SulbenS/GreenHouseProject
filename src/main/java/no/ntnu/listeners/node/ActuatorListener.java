@@ -12,7 +12,8 @@ public interface ActuatorListener {
    * An event that is fired every time an actuator changes state.
    *
    * @param nodeId   ID of the node on which this actuator is placed
-   * @param actuator The actuator that has changed its state
+   * @param actuatorId The ID of the actuator that has changed its state
+   * @param newState The new state of the actuator
    */
-  void actuatorUpdated(int nodeId, Actuator actuator);
+  void onActuatorStateChanged(int nodeId, int actuatorId, boolean newState);
 }

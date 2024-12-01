@@ -23,6 +23,6 @@ public class NodeCommand extends Data {
    * @return The action
    */
   public String getAction() {
-    return action;
+    return this.action;
   }
 }

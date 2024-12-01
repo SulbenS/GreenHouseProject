@@ -89,6 +89,13 @@ public class MessageHandler {
     return new SensorReadingMessage(data, nodeId, sensorId, type, value, unit);
   }
 
+  private static Data deserializeNodeInformation(String rawMessage) {
+    Map<String, String> fields = parseFields(rawMessage);
+    int nodeId = Integer.parseInt(fields.get("Node"));
+    String dataType = fields.get("Data");
+    return new NodeIdentifier(dataType, nodeId);
+  }
+
   public static String actuatorToString(Actuator actuator) {
     return "Data=Identifier;Node=" + actuator.getNodeId()
             + ";Actuator=" + actuator.getId()
@@ -139,6 +146,8 @@ public class MessageHandler {
             yield deserializeActuatorInformation(rawMessage);
           } else if (fields.containsKey("Sensor")) {
             yield deserializeSensorInformation(rawMessage);
+          } else if (fields.containsKey("Node")) {
+            yield deserializeNodeInformation(rawMessage);
           } else {
             throw new IllegalArgumentException("Could not get the data type.");
           }

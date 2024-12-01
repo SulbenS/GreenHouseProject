@@ -20,6 +20,7 @@ public class ClientHandler extends Thread {
   private PrintWriter writer;
 
   private boolean hasNodeTab;
+  private int nodeId;
 
   /**
    * Constructor for the class.
@@ -57,6 +58,7 @@ public class ClientHandler extends Thread {
         } else if (message instanceof ActuatorCommand) {
           sendActuatorCommandToServer(message);
         } else if (message instanceof NodeCommand) {
+          System.out.println("bippity boppity");
           sendNodeCommand(message);
         }
       }
@@ -71,8 +73,7 @@ public class ClientHandler extends Thread {
   }
 
   private void sendActuatorCommandToServer(Data message) {
-    throw new UnsupportedOperationException("Not implemented yet.");
-    // TODO: Implement this method
+    this.server.sendToClient(message);
   }
 
   private void sendNodeCommand(Data message) {
@@ -91,7 +92,11 @@ public class ClientHandler extends Thread {
     if (message == null) {
       throw new IllegalArgumentException("Could not read the message.");
     }
-    return MessageHandler.getData(message);
+    Data data =  MessageHandler.getData(message);
+    if (data instanceof NodeIdentifier) {
+      this.nodeId = data.getNodeId();
+    }
+    return data;
   }
 
   /**
@@ -104,10 +109,21 @@ public class ClientHandler extends Thread {
       if (this.hasNodeTab) {
         this.writer.println(((SensorReadingMessage) message).getReading());
       }
-    } else if (message instanceof ActuatorCommand) {
-      this.writer.println(MessageHandler.serializeActuatorCommand((ActuatorCommand) message));
-    } else if (message instanceof NodeCommand) {
-      this.writer.println(MessageHandler.serializeNodeCommand((NodeCommand) message));
+    } else if (message instanceof ActuatorCommand actuatorCommand) {
+      System.out.println("Sending actuator command: "
+              + "Data=" + actuatorCommand.getData()
+              + ";NodeId=" + actuatorCommand.getNodeId()
+              + ";ActuatorId=" + actuatorCommand.getActuatorId()
+              + ";Action=" + actuatorCommand.getAction()
+      );
+      this.writer.println(MessageHandler.serializeActuatorCommand(actuatorCommand));
+    } else if (message instanceof NodeCommand nodeCommand) {
+      System.out.println("Sending node command: "
+              + "Data=" + nodeCommand.getData()
+              + "NodeId=" + nodeCommand.getNodeId()
+              + "Action=" + nodeCommand.getAction()
+      );
+      this.writer.println(MessageHandler.serializeNodeCommand(nodeCommand));
     } else if (message instanceof SensorIdentifier) {
       this.writer.println(MessageHandler.serializeSensorInformation((SensorIdentifier) message));
       this.hasNodeTab = true;
@@ -138,6 +154,9 @@ public class ClientHandler extends Thread {
     this.socket = socket;
   }
 
+  public void setNodeId(int nodeId) {
+    this.nodeId = nodeId;
+  }
 
   public Server getServer() {
     return this.server;
@@ -145,5 +164,9 @@ public class ClientHandler extends Thread {
 
   public Socket getSocket() {
     return this.socket;
+  }
+
+  public int getNodeId() {
+    return this.nodeId;
   }
 }

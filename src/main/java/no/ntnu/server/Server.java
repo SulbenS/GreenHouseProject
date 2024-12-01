@@ -50,6 +50,7 @@ public class Server {
     while (this.isRunning) {
       ClientHandler clientHandler = connectClient();
       this.clientHandlers.add(clientHandler);
+      System.out.println("Client connected: " + clientHandler.getNodeId() + "aaaaaaa");
     }
   }
 
@@ -105,6 +106,31 @@ public class Server {
   public void broadcast(Data message) {
     this.clientHandlers.forEach(client -> client.transmitToClient(message));
   }
+
+  /**
+   * Sends a message to a specific client.
+   *
+   * @param message the message to send.
+   */
+  public void sendToClient(Data message) throws IllegalArgumentException {
+    getClientHandler(message.getNodeId()).transmitToClient(message);
+  }
+
+  /**
+   * Return the clientHandler.
+   *
+   * @param nodeId the nodeId of the client.
+   * @return the clientHandler.
+   */
+  public ClientHandler getClientHandler(int nodeId) {
+    for (ClientHandler clientHandler : this.clientHandlers) {
+      if (clientHandler.getNodeId() == nodeId) {
+        return clientHandler;
+      }
+    }
+    throw new IllegalArgumentException("No clientHandler found for node with ID " + nodeId);
+  }
+
 
   /**
    * Return the node collection.

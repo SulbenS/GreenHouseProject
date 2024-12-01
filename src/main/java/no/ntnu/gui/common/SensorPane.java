@@ -1,7 +1,6 @@
 package no.ntnu.gui.common;
 
 import javafx.application.Platform;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -15,7 +14,6 @@ public class SensorPane extends Pane {
   private double sensorValue;
 
   private Label sensorLabel;
-  private CheckBox sensorCheckbox;
 
   private final Pane contentBox;
 

@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import no.ntnu.commands.ActuatorCommand;
 import no.ntnu.listeners.node.ActuatorListener;
 import no.ntnu.listeners.node.NodeStateListener;
 import no.ntnu.listeners.node.SensorListener;
@@ -20,7 +22,7 @@ import no.ntnu.commands.NodeCommand;
 /**
  * Represents one node with sensors and actuators.
  */
-public class Node implements ActuatorListener {
+public class Node {
   // How often to generate new sensor values, in seconds.
   private static final long SENSING_DELAY = 5000;
   private final int id;
@@ -105,6 +107,7 @@ public class Node implements ActuatorListener {
     } try {
       this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
       this.writer = new PrintWriter(this.socket.getOutputStream(), true);
+      this.writer.println("Data=Identifier;Node=" + this.id);
     } catch (IOException e) {
       System.out.println("Could not create the reader/writer.");
       System.out.println(e.getMessage());
@@ -134,6 +137,7 @@ public class Node implements ActuatorListener {
     String rawMessage = "";
     try {
       rawMessage = this.reader.readLine();
+      System.out.println("Node " + id + " received message: " + rawMessage);
     } catch (IOException e) {
       System.out.println("Could not read the message.");
       System.out.println(e.getMessage());
@@ -156,8 +160,22 @@ public class Node implements ActuatorListener {
    * @param rawMessage The message given.
    */
   public void executeCommand(String rawMessage) {
-    throw new IllegalArgumentException("Not implemented yet");
-    // TODO: Implement this method
+    if (MessageHandler.getData(rawMessage).getData().equals("NodeCommand")) {
+      NodeCommand nodeCommand = (NodeCommand) MessageHandler.getData(rawMessage);
+      if (nodeCommand.getAction().equals("OFF")) {
+        stop();
+      }
+    } else if (MessageHandler.getData(rawMessage).getData().equals("ActuatorCommand")) {
+      ActuatorCommand actuatorCommand = (ActuatorCommand) MessageHandler.getData(rawMessage);
+      Actuator actuator = getActuator(actuatorCommand.getActuatorId());
+      if (actuatorCommand.getAction().equals("On")) {
+        actuator.setState(true);
+        System.out.println("Actuator " + actuatorCommand.getActuatorId() + " turned on");
+      } else if (actuatorCommand.getAction().equals("Off")) {
+        actuator.setState(false);
+        System.out.println("Actuator " + actuatorCommand.getActuatorId() + " turned off");
+      }
+    }
   }
 
   /**
@@ -190,7 +208,6 @@ public class Node implements ActuatorListener {
    * @param actuator The actuator to add
    */
   public void addActuator(Actuator actuator) {
-    actuator.setListener(this);
     actuators.add(actuator);
     System.out.println("Created " + actuator.getType() + "[" + actuator.getId() + "] on node " + id);
   }
@@ -289,7 +306,7 @@ public class Node implements ActuatorListener {
     for (Sensor sensor : sensors) {
       System.out.println(" " + sensor.getReading().getFormatted());
     }
-    actuators.debugPrint();
+    //actuators.debugPrint();
   }
 
   /**
@@ -306,11 +323,6 @@ public class Node implements ActuatorListener {
     actuator.toggle();
   }
 
-  @Override
-  public void actuatorUpdated(int nodeId, Actuator actuator) {
-    actuator.applyImpact(this);
-    notifyActuatorChange(actuator);
-  }
 
   private void notifySensorChanges() {
     for (SensorListener listener : sensorListeners) {
@@ -318,13 +330,7 @@ public class Node implements ActuatorListener {
     }
   }
 
-  private void notifyActuatorChange(Actuator actuator) {
-    String onOff = actuator.isOn() ? "ON" : "off";
-    System.out.println(" => " + actuator.getType() + " on node " + id + " " + onOff);
-    for (ActuatorListener listener : actuatorListeners) {
-      listener.actuatorUpdated(id, actuator);
-    }
-  }
+
 
   /**
    * An actuator has been turned on or off. Apply an impact from it to all sensors of given type.
@@ -358,7 +364,7 @@ public class Node implements ActuatorListener {
   public void setActuator(int actuatorId, boolean on) {
     Actuator actuator = getActuator(actuatorId);
     if (actuator != null) {
-      actuator.set(on);
+      actuator.setState(on);
     }
   }
 
@@ -369,7 +375,7 @@ public class Node implements ActuatorListener {
    */
   public void setAllActuators(boolean on) {
     for (Actuator actuator : actuators) {
-      actuator.set(on);
+      actuator.setState(on);
     }
   }
 
@@ -394,4 +400,6 @@ public class Node implements ActuatorListener {
   public int getId() {
     return id;
   }
+
+
 }

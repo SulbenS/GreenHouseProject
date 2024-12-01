@@ -5,6 +5,7 @@ import java.util.Map;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import no.ntnu.gui.ControlPanel;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
 
@@ -62,8 +63,8 @@ public class NodeTab extends VBox {
     getChildren().add(this.contentBox);
   }
 
-  public void addActuatorPane(int actuatorId, String type) {
-    ActuatorPane actuatorPane = new ActuatorPane(actuatorId, type);
+  public void addActuatorPane(ControlPanel controlPanel, int nodeId, int actuatorId, String type) {
+    ActuatorPane actuatorPane = new ActuatorPane(controlPanel, nodeId, actuatorId, type);
     this.actuatorPanes.put(actuatorId, actuatorPane);
     this.actuatorsBox.getChildren().add(actuatorPane);
   }
