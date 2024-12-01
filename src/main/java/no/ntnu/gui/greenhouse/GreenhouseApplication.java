@@ -19,7 +19,7 @@ public class GreenhouseApplication extends Application {
   private Scene scene;
   private TabPane tabPane;
 
-  private int width = 450;
+  private int width = 300;
   private int height = 500;
 
   private ControlPanel controlPanel;
@@ -39,20 +39,30 @@ public class GreenhouseApplication extends Application {
     System.out.println("Running greenhouse simulator with JavaFX GUI...");
     launch();
   }
-  
+
   @Override
   public void start(Stage stage) {
     this.stage = stage;
     this.tabPane = new TabPane();
+    Tab addTabButton = new Tab("+");
+    this.tabPane.getTabs().add(addTabButton);
+    addTabButton.setClosable(false);
+    tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+      if (newTab == addTabButton) {
+        tabPane.getSelectionModel().select(oldTab);
+        int nodeId = this.nodeTabs.size() + 1;
+        if (!hasNodeTab(nodeId)) {
+          addNodeTab(nodeId);
+          tabPane.getSelectionModel().select(tabPane.getTabs().size() - 1); // Selecting the tab before the button, which is the newly created one
+        }
+      }
+    });
+
     this.scene = new Scene(this.tabPane, width, height);
     this.scene.getStylesheets().add(
             Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
     this.stage.setScene(scene);
     this.stage.setTitle("Greenhouse simulator");
-    this.stage.setMaxHeight(height);
-    this.stage.setMaxWidth(width);
-    this.stage.setMinHeight(height);
-    this.stage.setMinWidth(width);
     this.stage.show();
     this.stage.setOnCloseRequest(event -> this.controlPanel.closeApplication());
     this.controlPanel = new ControlPanel(this);

@@ -53,16 +53,15 @@
 
 }
 
-.sensor-pane {
+.sensors-pane {
     -fx-background-color: #333333;
 }
 
-.actuator-pane {
+.node-tab {
     -fx-background-color: #333333;
 }
 
-.actuator-vbox {
-
+.actuators-vbox {
     -fx-background-image: url('/Images/picsart_chuck.jpeg');
     -fx-background-size: cover; /* Adjust the size of the background image */
     -fx-background-position: center;
@@ -70,6 +69,6 @@
     -fx-animated: cycle 0.5s;
 }
 
-.sensor-vbox {
+.sensors-vbox {
     -fx-background-color: #333333; /* Change this to your desired color */
 }

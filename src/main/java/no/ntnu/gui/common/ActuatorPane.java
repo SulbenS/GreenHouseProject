@@ -33,7 +33,6 @@ public class ActuatorPane extends Pane {
     this.actuatorType = actuatorType;
     this.actuatorId = actuatorId;
     this.actuatorState = false;
-
     this.contentBox = new HBox();
     this.actuatorLabel = new Label(generateActuatorLabel());
     this.actuatorCheckbox = createActuatorCheckbox();
@@ -41,7 +40,8 @@ public class ActuatorPane extends Pane {
     this.contentBox.getChildren().add(actuatorCheckbox);
     this.contentBox.getStylesheets().add(
             Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
-    this.setPrefHeight(5000);
+    actuatorLabel.getStyleClass().add("actuator-label");
+    contentBox.getStyleClass().add("actuator-pane");
     getChildren().add(this.contentBox);
   }
 
