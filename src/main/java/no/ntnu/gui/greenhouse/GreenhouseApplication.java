@@ -24,6 +24,9 @@ public class GreenhouseApplication extends Application {
   private ControlPanel controlPanel;
   private List<NodeTab> nodeTabs;
 
+  /**
+   * Constructor for the GreenhouseApplication.
+   */
   public GreenhouseApplication() {
     this.nodeTabs = new ArrayList<>();
   }
