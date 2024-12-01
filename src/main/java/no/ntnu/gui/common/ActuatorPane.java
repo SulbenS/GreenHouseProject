@@ -78,5 +78,4 @@ public class ActuatorPane extends Pane {
   public boolean getActuatorState() {
     return actuatorState;
   }
-
 }

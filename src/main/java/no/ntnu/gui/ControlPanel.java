@@ -16,9 +16,12 @@ import no.ntnu.commands.SensorReadingMessage;
 
 public class ControlPanel {
   private GreenhouseApplication application;
+
   private Socket socket;
+
   private BufferedReader reader;
   private PrintWriter writer;
+
   boolean running;
 
   public ControlPanel(GreenhouseApplication application) {
@@ -50,7 +53,7 @@ public class ControlPanel {
       this.application
               .getNodeTab(data.getNodeId())
               .addSensorPane(
-                      sensorIdentifier.getNodeId(),
+                      sensorIdentifier.getSensorId(),
                       sensorIdentifier.getType());
     } else if (data instanceof ActuatorIdentifier actuatorIdentifier) {
       if (!this.application.hasNodeTab(actuatorIdentifier.getNodeId())) {
@@ -63,7 +66,7 @@ public class ControlPanel {
       this.application
               .getNodeTab(data.getNodeId())
               .addActuatorPane(
-                      actuatorIdentifier.getNodeId(),
+                      actuatorIdentifier.getActuatorId(),
                       actuatorIdentifier.getType());
     } else if (data instanceof SensorReadingMessage sensorReadingMessage) {
       if (!this.application.hasNodeTab(sensorReadingMessage.getNodeId())) {
