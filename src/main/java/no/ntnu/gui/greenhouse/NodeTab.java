@@ -2,7 +2,6 @@ package no.ntnu.gui.greenhouse;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
@@ -41,6 +40,7 @@ public class NodeTab extends VBox {
   public NodeTab(int nodeId) {
     this.nodeId = nodeId;
     this.contentBox = new VBox();
+
     nodeButtons = createNodeButtons();
     this.actuatorsTitledPane = new TitledPane();
     this.sensorsTitledPane = new TitledPane();
@@ -89,7 +89,8 @@ public class NodeTab extends VBox {
     Button removeNodeButton = new Button("Remove Node");
     Button AddActuatorButton = new Button("Add Actuator");
     Button AddSensorButton = new Button("Add Sensor");
-    container.getChildren().addAll(removeNodeButton, AddActuatorButton, AddSensorButton);
+    Button addNodeButton = new Button("Add Node");
+    container.getChildren().addAll(removeNodeButton, AddActuatorButton, AddSensorButton, addNodeButton);
     return container;
   }
 

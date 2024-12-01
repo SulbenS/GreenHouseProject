@@ -79,6 +79,13 @@
     -fx-mark-color: #ffffff; /* Green color when selected */
 
 }
+.check-box:hover .box {
+    -fx-border-color: #000000; /* Border color of the checkbox */
+    -fx-border-width: 1px;
+    -fx-background-color: rgba(120, 120, 120, 0.7); /* Background color of the checkbox */
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
 
 .sensors-pane {
     -fx-background-color: #333333;

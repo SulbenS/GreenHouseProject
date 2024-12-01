@@ -19,8 +19,8 @@ public class GreenhouseApplication extends Application {
   private Scene scene;
   private TabPane tabPane;
 
-  private int width = 300;
-  private int height = 500;
+  private int width = 500;
+  private int height = 600;
 
   private ControlPanel controlPanel;
   private List<NodeTab> nodeTabs;
@@ -44,20 +44,6 @@ public class GreenhouseApplication extends Application {
   public void start(Stage stage) {
     this.stage = stage;
     this.tabPane = new TabPane();
-    Tab addTabButton = new Tab("+");
-    this.tabPane.getTabs().add(addTabButton);
-    addTabButton.setClosable(false);
-    tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
-      if (newTab == addTabButton) {
-        tabPane.getSelectionModel().select(oldTab);
-        int nodeId = this.nodeTabs.size() + 1;
-        if (!hasNodeTab(nodeId)) {
-          addNodeTab(nodeId);
-          tabPane.getSelectionModel().select(tabPane.getTabs().size() - 1); // Selecting the tab before the button, which is the newly created one
-        }
-      }
-    });
-
     this.scene = new Scene(this.tabPane, width, height);
     this.scene.getStylesheets().add(
             Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
