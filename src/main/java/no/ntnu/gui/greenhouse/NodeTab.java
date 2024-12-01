@@ -2,8 +2,6 @@ package no.ntnu.gui.greenhouse;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -20,6 +18,9 @@ public class NodeTab extends VBox {
   private static final double WINDOW_HEIGHT = 300;
 
   private Pane contentBox;
+
+  private VBox actuatorsBox;
+  private VBox sensorsBox;
 
   private TitledPane actuatorsTitledPane;
   private TitledPane sensorsTitledPane;
@@ -43,6 +44,10 @@ public class NodeTab extends VBox {
     this.contentBox.getChildren().add(this.sensorsTitledPane);
     this.actuatorsTitledPane.setText("Actuators");
     this.sensorsTitledPane.setText("Sensors");
+    this.actuatorsBox = new VBox();
+    this.sensorsBox = new VBox();
+    this.actuatorsTitledPane.setContent(this.actuatorsBox);
+    this.sensorsTitledPane.setContent(this.sensorsBox);
 
     // Set initial properties for the VBox (this is now the root layout)
     setPrefWidth(WINDOW_WIDTH);
@@ -60,13 +65,13 @@ public class NodeTab extends VBox {
   public void addActuatorPane(int actuatorId, String type) {
     ActuatorPane actuatorPane = new ActuatorPane(actuatorId, type);
     this.actuatorPanes.put(actuatorId, actuatorPane);
-    this.actuatorsTitledPane.setContent(actuatorPane);
+    this.actuatorsBox.getChildren().add(actuatorPane);
   }
 
   public void addSensorPane(int sensorId, String type) {
     SensorPane sensorPane = new SensorPane(sensorId, type);
     this.sensorPanes.put(sensorId, sensorPane);
-    this.sensorsTitledPane.setContent(sensorPane);
+    this.sensorsBox.getChildren().add(sensorPane);
   }
 
   public void updateSensorReading(int sensorId, String value) {
