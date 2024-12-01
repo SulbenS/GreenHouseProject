@@ -4,15 +4,17 @@ package no.ntnu.commands;
  * Class representing the type of data being sent.
  */
 public class Data {
-  private String data; // Command - Reading - Identifier
+  private final String data; // Command - Reading - Identifier
+  private final int nodeID; // 0 if message is to be broadcast
 
   /**
    * Constructor for the Data class.
    *
    * @param data the type data to be sent.
    */
-  public Data(String data) {
+  public Data(String data, int nodeId) {
     this.data = data;
+    this.nodeID = nodeId;
   }
 
   /**
@@ -22,5 +24,14 @@ public class Data {
    */
   public String getData() {
     return data;
+  }
+
+  /**
+   * Return the nodeId.
+   *
+   * @return the nodeId.
+   */
+  public int getNodeId() {
+    return nodeID;
   }
 }

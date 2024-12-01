@@ -1,5 +1,6 @@
 package no.ntnu.gui.greenhouse;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import javafx.scene.Scene;
@@ -30,6 +31,8 @@ public class NodeTab extends Stage {
    */
   public NodeTab(int nodeId) {
     this.nodeId = nodeId;
+    this.actuatorPanes = new HashMap<>();
+    this.sensorPanes = new HashMap<>();
     this.contentBox = new VBox();
     Scene scene = new Scene(this.contentBox, WINDOW_WIDTH, WINDOW_HEIGHT);
     setScene(scene);
@@ -61,5 +64,18 @@ public class NodeTab extends Stage {
     setY(this.nodeId * VERTICAL_OFFSET);
     setMinWidth(WINDOW_HEIGHT);
     setMinHeight(WINDOW_WIDTH);
+  }
+
+  /**
+   * Return the nodeId.
+   *
+   * @return The nodeId
+   */
+  public int getNodeId() {
+    return this.nodeId;
+  }
+
+  public void updateSensorReading(int sensorId, String reading) {
+    this.sensorPanes.get(sensorId).updateSensorReading(Integer.parseInt(reading));
   }
 }

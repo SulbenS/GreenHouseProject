@@ -42,7 +42,6 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     mainScene = new Scene(createEmptyContent(), WIDTH, HEIGHT);
     stage.setScene(mainScene);
     stage.show();
-    logic.addListener(this);
   }
 
   private static Label createEmptyContent() {
@@ -82,7 +81,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     System.out.println("Sensor data from node " + nodeId);
     SensorPane sensorPane = sensorPanes.get(nodeId);
     if (sensorPane != null) {
-      sensorPane.update(sensors);
+      sensorPane.update();
     } else {
       System.out.println("No sensor section for node " + nodeId);
     }
@@ -101,7 +100,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         } else {
           actuator.turnOff();
         }
-        actuatorPane.update(actuatorId);
+        actuatorPane.update();
       } else {
         System.out.println(" actuator not found");
       }

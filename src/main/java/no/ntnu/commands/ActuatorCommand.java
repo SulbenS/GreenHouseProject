@@ -4,7 +4,6 @@ package no.ntnu.commands;
  * Class representing an ActuatorCommand.
  */
 public class ActuatorCommand extends NodeCommand {
-  private int nodeId;
   private int actuatorId; // Optional (e.g., 3)
   private String actuatorType; // Optional (e.g., "Fan")
   private String action; // "On" or "Off"
@@ -37,10 +36,6 @@ public class ActuatorCommand extends NodeCommand {
     this.actuatorId = 0;
   }
 
-  // Getters for accessing fields
-  public int getNodeId() {
-    return nodeId;
-  }
 
   public String getActuatorType() {
     return actuatorType;

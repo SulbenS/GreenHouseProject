@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import no.ntnu.commands.*;
-import no.ntnu.tools.MessageSerializer;
+import no.ntnu.tools.MessageHandler;
 
 /**
  * The client handler of the application.
@@ -18,6 +18,8 @@ public class ClientHandler extends Thread {
 
   private BufferedReader reader;
   private PrintWriter writer;
+
+  private boolean hasNodeTab;
 
   /**
    * Constructor for the class.
@@ -31,6 +33,7 @@ public class ClientHandler extends Thread {
     this.socket = socket;
     this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     this.writer = new PrintWriter(socket.getOutputStream(), true);
+    this.hasNodeTab = false;
   }
 
   /**
@@ -84,7 +87,11 @@ public class ClientHandler extends Thread {
    * @throws IOException If an I/O error occurs.
    */
   public Data receive() throws IOException {
-    return MessageSerializer.getData(this.reader.readLine());
+    String message = this.reader.readLine();
+    if (message == null) {
+      throw new IllegalArgumentException("Could not read the message.");
+    }
+    return MessageHandler.getData(message);
   }
 
   /**
@@ -94,15 +101,19 @@ public class ClientHandler extends Thread {
    */
   public void transmitToClient(Data message) {
     if (message instanceof SensorReadingMessage) {
-      this.writer.println(((SensorReadingMessage) message).getReading());
+      if (this.hasNodeTab) {
+        this.writer.println(((SensorReadingMessage) message).getReading());
+      }
     } else if (message instanceof ActuatorCommand) {
-      this.writer.println(MessageSerializer.serializeActuatorCommand((ActuatorCommand) message));
+      this.writer.println(MessageHandler.serializeActuatorCommand((ActuatorCommand) message));
     } else if (message instanceof NodeCommand) {
-      this.writer.println(MessageSerializer.serializeNodeCommand((NodeCommand) message));
+      this.writer.println(MessageHandler.serializeNodeCommand((NodeCommand) message));
     } else if (message instanceof SensorIdentifier) {
-      this.writer.println(MessageSerializer.serializeSensorInformation((SensorIdentifier) message));
+      this.writer.println(MessageHandler.serializeSensorInformation((SensorIdentifier) message));
+      this.hasNodeTab = true;
     } else if (message instanceof ActuatorIdentifier) {
-      this.writer.println(MessageSerializer.serializeActuatorInformation((ActuatorIdentifier) message));
+      this.writer.println(MessageHandler.serializeActuatorInformation((ActuatorIdentifier) message));
+      this.hasNodeTab = true;
     } else {
       throw new IllegalArgumentException("Could not transmit the message.");
     }

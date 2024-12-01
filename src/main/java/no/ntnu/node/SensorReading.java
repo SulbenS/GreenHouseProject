@@ -23,9 +23,8 @@ public class SensorReading {
     this.value = value;
   }
 
-  @Override
-  public String toString() {
-    return "type=" + type + ", value=" + value + ", unit=" + unit;
+  public String readingToString(int nodeId) {
+    return "Data=Reading;type=" + type + ";" + "value=" + value + ";" + "unit=" + unit;
   }
 
   @Override

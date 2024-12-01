@@ -1,20 +1,19 @@
 package no.ntnu.gui.greenhouse;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 import no.ntnu.gui.ControlPanel;
-import no.ntnu.listeners.node.NodeStateListener;
-
 
 /**
  * Run a greenhouse simulation with a graphical user interface (GUI), with JavaFX.
  */
-public class GreenhouseApplication extends Application implements NodeStateListener {
+public class GreenhouseApplication extends Application {
   private Stage stage;
   private Scene scene;
   private TabPane tabPane;
@@ -23,8 +22,10 @@ public class GreenhouseApplication extends Application implements NodeStateListe
   private int height = 500;
 
   private ControlPanel controlPanel;
+  private List<NodeTab> nodeTabs;
 
   public GreenhouseApplication() {
+    this.nodeTabs = new ArrayList<>();
   }
 
   /**
@@ -50,23 +51,51 @@ public class GreenhouseApplication extends Application implements NodeStateListe
     this.stage.setMinWidth(width);
     this.stage.show();
     this.stage.setOnCloseRequest(event -> this.controlPanel.closeApplication());
-    this.controlPanel = new ControlPanel();
+    this.controlPanel = new ControlPanel(this);
     this.controlPanel.start();
   }
 
-  @Override
-  public void onNodeReady(int nodeId) {
-    System.out.println("Starting window for node " + nodeId);
-    NodeTab window = new NodeTab(nodeId);
-    Platform.runLater(() ->
-            this.tabPane.getTabs().add(new Tab("Node " + nodeId, window.getScene().getRoot()))
-    );
+  /**
+   * Add a NodeTab to the GUI.
+   *
+   * @param nodeId ID of the node
+   */
+  public void addNodeTab(int nodeId) {
+    NodeTab nodeTab = new NodeTab(nodeId);
+    this.nodeTabs.add(nodeTab);
+    this.tabPane.getTabs().add(new Tab("Node " + nodeTab.getNodeId(), nodeTab.getScene().getRoot()));
   }
 
-  @Override
-  public void onNodeStopped(int nodeId) {
-    Platform.runLater(() -> {
-      tabPane.getTabs().removeIf(tab -> tab.getText().equals("Node " + nodeId));
-    });
+  /**
+   * Check if a NodeTab for a specific node exists.
+   *
+   * @param nodeId ID of the node
+   * @return True if a NodeTab exists for the node
+   */
+  public boolean hasNodeTab(int nodeId) {
+    if (this.nodeTabs == null) {
+      return false;
+    }
+    for (NodeTab tab : this.nodeTabs) {
+      if (tab.getNodeId() == (nodeId)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Return the NodeTab for a specific node.
+   *
+   * @param nodeId ID of the node
+   * @return The NodeTab for the node
+   */
+  public NodeTab getNodeTab(int nodeId) {
+    for (NodeTab tab : this.nodeTabs) {
+      if (tab.getNodeId() == (nodeId)) {
+        return tab;
+      }
+    }
+    throw new IllegalArgumentException("No tab found for node " + nodeId);
   }
 }

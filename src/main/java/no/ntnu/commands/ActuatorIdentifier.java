@@ -9,8 +9,8 @@ public class ActuatorIdentifier extends Data {
    *
    * @param data the type data to be sent.
    */
-  public ActuatorIdentifier(String data, String type, int actuatorId) {
-    super(data);
+  public ActuatorIdentifier(String data, int nodeId, String type, int actuatorId) {
+    super(data, nodeId);
     this.type = type;
     this.actuatorId = actuatorId;
   }
@@ -31,5 +31,14 @@ public class ActuatorIdentifier extends Data {
    */
   public int getActuatorId() {
     return this.actuatorId;
+  }
+
+  /**
+   * Return the nodeId.
+   *
+   * @return the nodeId.
+   */
+  public int getNodeId() {
+    return super.getNodeId();
   }
 }

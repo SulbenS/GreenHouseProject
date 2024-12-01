@@ -1,5 +1,7 @@
 package no.ntnu.node;
 
+import no.ntnu.tools.DeviceFactory;
+
 /**
  * A sensor which can sense the environment in a specific way.
  */
@@ -11,18 +13,21 @@ public class Sensor {
   private final double max;
 
   private final int id;
+  private final int nodeId;
 
   /**
    * Create a sensor.
    *
+   * @param nodeId  The ID of the node to which this sensor is connected
    * @param type    The type of the sensor. Examples: "temperature", "humidity"
    * @param min     Minimum allowed value
    * @param max     Maximum allowed value
    * @param current The current (starting) value of the sensor
    * @param unit    The measurement unit. Examples: "%", "C", "lux"
    */
-  public Sensor(String type, double min, double max, double current, String unit) {
+  public Sensor(int nodeId, String type, double min, double max, double current, String unit) {
     this.reading = new SensorReading(type, current, unit);
+    this.nodeId = nodeId;
     this.min = min;
     this.max = max;
     this.id = generateUniqueId();
@@ -35,7 +40,7 @@ public class Sensor {
    * @return A clone of this sensor, where all the fields are the same
    */
   public Sensor createClone() {
-    return new Sensor(this.reading.getType(), this.min, this.max,
+    return new Sensor(this.nodeId, reading.getType(), this.min, this.max,
         this.reading.getValue(), this.reading.getUnit());
   }
 
@@ -107,5 +112,14 @@ public class Sensor {
    */
   public int getSensorId() {
     return this.id;
+  }
+
+  /**
+   * Return the node id of the sensor.
+   *
+   * @return the node id of the sensor.
+   */
+  public int getNodeId() {
+    return this.nodeId;
   }
 }

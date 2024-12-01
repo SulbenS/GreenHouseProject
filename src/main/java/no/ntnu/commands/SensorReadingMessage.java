@@ -4,8 +4,8 @@ package no.ntnu.commands;
  * Class representing the type of data being sent.
  */
 public class SensorReadingMessage extends Data {
-  private int nodeId;
   private String reading;
+  private int sensorId;
 
   /**
    * Constructor for the Message class.
@@ -14,9 +14,9 @@ public class SensorReadingMessage extends Data {
    * @param reading the message to be sent.
    * @param data the type data to be sent.
    */
-  public SensorReadingMessage(String data, int nodeId, String reading) {
-    super(data);
-    this.nodeId = nodeId;
+  public SensorReadingMessage(String data, int nodeId, int sensorId, String reading) {
+    super(data, nodeId);
+    this.sensorId = sensorId;
     this.reading = reading;
   }
 
@@ -30,11 +30,11 @@ public class SensorReadingMessage extends Data {
   }
 
   /**
-   * Return the nodeId.
+   * Return the sensorId.
    *
-   * @return the nodeId.
+   * @return the sensorId.
    */
-  public int getNodeId() {
-    return this.nodeId;
+  public int getSensorId() {
+    return this.sensorId;
   }
 }

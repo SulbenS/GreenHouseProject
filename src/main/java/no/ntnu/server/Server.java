@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The server of the application.
@@ -15,7 +16,7 @@ public class Server {
   public static final int TCP_PORT = 1238; //The port of the server.
   private ServerSocket serverSocket;
 
-  private List<ClientHandler> clientHandlers;
+  private CopyOnWriteArrayList<ClientHandler> clientHandlers;
 
   private NodeCollection nodes;
   private boolean isRunning;
@@ -24,7 +25,7 @@ public class Server {
    * Constructor for the class.
    */
   public Server() {
-    this.clientHandlers = new ArrayList<>();
+    this.clientHandlers = new CopyOnWriteArrayList<>();
     this.nodes = new NodeCollection();
     this.isRunning = false;
   }

@@ -12,8 +12,8 @@ public class SensorIdentifier extends Data {
    *
    * @param data the type data to be sent.
    */
-  public SensorIdentifier(String data, String type, int SensorId) {
-    super(data);
+  public SensorIdentifier(String data, int nodeId, String type, int SensorId) {
+    super(data, nodeId);
     this.type = type;
     this.SensorId = SensorId;
   }
@@ -34,5 +34,14 @@ public class SensorIdentifier extends Data {
    */
   public int getSensorId() {
     return this.SensorId;
+  }
+
+  /**
+   * Return the nodeId.
+   *
+   * @return the nodeId.
+   */
+  public int getNodeId() {
+    return super.getNodeId();
   }
 }

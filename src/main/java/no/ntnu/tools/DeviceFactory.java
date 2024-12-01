@@ -40,10 +40,10 @@ public class DeviceFactory {
                                 int windowCount, int fanCount, int heaterCount) {
     Node node = new Node(generateUniqueNodeId());
     if (temperatureSensorCount > 0) {
-      node.addSensors(DeviceFactory.createTemperatureSensor(), temperatureSensorCount);
+      node.addSensors(DeviceFactory.createTemperatureSensor(node.getId()), temperatureSensorCount);
     }
     if (humiditySensorCount > 0) {
-      node.addSensors(DeviceFactory.createHumiditySensor(), humiditySensorCount);
+      node.addSensors(DeviceFactory.createHumiditySensor(node.getId()), humiditySensorCount);
     }
     if (windowCount > 0) {
       addActuators(node, DeviceFactory.createWindow(node.getId()), windowCount);
@@ -76,8 +76,8 @@ public class DeviceFactory {
    *
    * @return A typical temperature sensor, which can be used as a template
    */
-  public static Sensor createTemperatureSensor() {
-    return new Sensor(SENSOR_TYPE_TEMPERATURE, MIN_TEMPERATURE, MAX_TEMPERATURE,
+  public static Sensor createTemperatureSensor(int nodeId) {
+    return new Sensor(nodeId, SENSOR_TYPE_TEMPERATURE, MIN_TEMPERATURE, MAX_TEMPERATURE,
         randomize(NORMAL_GREENHOUSE_TEMPERATURE, 1.0), TEMPERATURE_UNIT);
   }
 
@@ -86,8 +86,8 @@ public class DeviceFactory {
    *
    * @return A typical humidity sensor which can be used as a template
    */
-  public static Sensor createHumiditySensor() {
-    return new Sensor("humidity", MIN_HUMIDITY, MAX_HUMIDITY,
+  public static Sensor createHumiditySensor(int nodeId) {
+    return new Sensor(nodeId, "humidity", MIN_HUMIDITY, MAX_HUMIDITY,
         randomize(NORMAL_GREENHOUSE_HUMIDITY, 5.0), HUMIDITY_UNIT);
   }
 

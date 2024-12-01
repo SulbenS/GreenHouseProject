@@ -36,7 +36,7 @@ public class SensorPane extends Pane {
     return new Label(this.sensorType + ": " + sensorValue);
   }
 
-  private void updateSensorLabel(int sensorReading) {
+  public void updateSensorReading(int sensorReading) {
     this.sensorValue = sensorReading;
     Platform.runLater(() -> this.contentBox.getChildren().set(0, generateSensorLabel()));
   }

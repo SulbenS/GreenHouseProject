@@ -1,41 +1,40 @@
 package no.ntnu.tools;
 
 import no.ntnu.commands.*;
+import no.ntnu.node.Actuator;
+import no.ntnu.node.Sensor;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class MessageSerializer {
+public class MessageHandler {
+
   public static String serializeActuatorInformation(ActuatorIdentifier actuator) {
-    return "Data=Identifier;Actuator=" + actuator.getActuatorId() + ";Type=" + actuator.getType();
+    return "Data=Identifier;Node=" + actuator.getNodeId() + ";Actuator=" + actuator.getActuatorId() + ";Type=" + actuator.getType();
   }
 
   public static Data deserializeActuatorInformation(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
+    int nodeId = Integer.parseInt(fields.get("Node"));
     int actuatorId = Integer.parseInt(fields.get("Actuator"));
     String actuatorType = fields.get("Type");
     String dataType = fields.get("Data");
-    return new ActuatorIdentifier(dataType, actuatorType, actuatorId);
+    return new ActuatorIdentifier(dataType, nodeId, actuatorType, actuatorId);
   }
 
   public static String serializeSensorInformation(SensorIdentifier sensor) {
-    return "Data=Identifier;Sensor=" + sensor.getSensorId() + ";Type=" + sensor.getType();
+    return "Data=Identifier;Node=" + sensor.getNodeId() + ";Sensor=" + sensor.getSensorId() + ";Type=" + sensor.getType();
   }
 
   public static Data deserializeSensorInformation(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
+    int nodeId = Integer.parseInt(fields.get("Node"));
     int sensorId = Integer.parseInt(fields.get("Sensor"));
     String sensorType = fields.get("Type");
     String dataType = fields.get("Data");
-    return new SensorIdentifier(dataType, sensorType, sensorId);
+    return new SensorIdentifier(dataType, nodeId, sensorType, sensorId);
   }
 
-  /**
-   * Serialize: Convert an ActuatorCommand object into a raw string.
-   *
-   * @param actuatorCommand ActuatorCommand object to serialize.
-   * @return Raw string representation of the ActuatorCommand object.
-   */
   public static String serializeActuatorCommand(ActuatorCommand actuatorCommand) {
     StringBuilder builder = new StringBuilder("Data=ActuatorCommand;");
     builder.append("Node=").append(actuatorCommand.getNodeId()).append(";");
@@ -48,12 +47,6 @@ public class MessageSerializer {
     return builder.toString();
   }
 
-  /**
-   * Deserialize: Convert a raw string into an ActuatorCommand object.
-   *
-   * @param rawMessage Raw string to deserialize.
-   * @return ActuatorCommand object parsed from the raw string.
-   */
   public static ActuatorCommand deserializeActuatorCommand(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
     String data = fields.get("Data");
@@ -70,22 +63,10 @@ public class MessageSerializer {
     throw new IllegalArgumentException("Invalid ActuatorCommand format");
   }
 
-  /**
-   * Serialize: Convert a NodeCommand object into a raw string.
-   *
-   * @param nodeCommand NodeCommand object to serialize.
-   * @return Raw string representation of the NodeCommand object.
-   */
   public static String serializeNodeCommand(NodeCommand nodeCommand) {
-    return "Node=" + nodeCommand.getNodeId() + ";" + "Action=" + nodeCommand.getAction();
+    return "Data=NodeCommand;Node=" + nodeCommand.getNodeId() + ";Action=" + nodeCommand.getAction();
   }
 
-  /**
-   * Deserialize: Convert a raw string into a NodeCommand object.
-   *
-   * @param rawMessage Raw string to deserialize.
-   * @return NodeCommand object parsed from the raw string.
-   */
   public static NodeCommand deserializeNodeCommand(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
     String data = fields.get("Data");
@@ -94,26 +75,23 @@ public class MessageSerializer {
     return new NodeCommand(data, nodeId, action);
   }
 
-  /**
-   * Deserialize: Convert a raw string into a SensorReadingMessage object.
-   *
-   * @param rawMessage Raw string to deserialize.
-   * @return SensorReadingMessage object parsed from the raw string.
-   */
   public static SensorReadingMessage deserializeSensorReadingMessage(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
-    int nodeId = Integer.parseInt(fields.get("Node"));
-    String reading = fields.get("Reading");
     String data = fields.get("Data");
-    return new SensorReadingMessage(data, nodeId, reading);
+    int nodeId = Integer.parseInt(fields.get("Node"));
+    int sensorId = Integer.parseInt(fields.get("SensorId"));
+    String reading = fields.get("Reading");
+    return new SensorReadingMessage(data, nodeId, sensorId, reading);
   }
 
-  /**
-   * Parse the fields of a raw message into a map.
-   *
-   * @param rawMessage Raw message to parse.
-   * @return Map of fields in the raw message.
-   */
+  public static String actuatorToString(Actuator actuator) {
+    return "Data=Identifier;Node=" + actuator.getNodeId() + ";Actuator=" + actuator.getId() + ";Type=" + actuator.getType();
+  }
+
+  public static String sensorToString(Sensor sensor) {
+    return "Data=Identifier;Node=" + sensor.getNodeId() + ";Sensor=" + sensor.getSensorId() + ";Type=" + sensor.getType();
+  }
+
   private static Map<String, String> parseFields(String rawMessage) {
     Map<String, String> fields = new HashMap<>();
     String[] parts = rawMessage.split(";");
@@ -125,19 +103,20 @@ public class MessageSerializer {
         throw new IllegalArgumentException("Invalid key-value pair: " + part);
       }
     }
+    if (fields.isEmpty()) {
+      throw new IllegalArgumentException("Could not parse fields.");
+    }
     return fields;
   }
 
-  /**
-   * Returns the data type of raw message.
-   *
-   * @param rawMessage to get the data type of.
-   * @return the data type of the raw message.
-   */
   public static Data getData(String rawMessage) {
     Data result;
     Map<String, String> fields = parseFields(rawMessage);
     String dataType = fields.get("Data");
+    if (dataType == null) {
+      System.out.println(rawMessage);
+      throw new IllegalArgumentException("Could not get the data type.");
+    }
     result = switch (dataType) {
       case "Reading" -> deserializeSensorReadingMessage(rawMessage);
       case "ActuatorCommand" -> deserializeActuatorCommand(rawMessage);

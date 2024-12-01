@@ -5,9 +5,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+
+import no.ntnu.commands.ActuatorIdentifier;
+import no.ntnu.commands.SensorIdentifier;
+import no.ntnu.gui.greenhouse.GreenhouseApplication;
 import no.ntnu.node.Node;
 import no.ntnu.commands.Data;
-import no.ntnu.tools.MessageSerializer;
+import no.ntnu.tools.MessageHandler;
 import no.ntnu.commands.SensorReadingMessage;
 
 /**
@@ -21,16 +25,21 @@ import no.ntnu.commands.SensorReadingMessage;
  * though you may have no real control-panel logic in your projects.
  */
 public class ControlPanel  {
+  private GreenhouseApplication application;
+
   private Socket socket;
 
   private BufferedReader reader;
   private PrintWriter writer;
 
+  boolean running;
+
   /**
    * Create a control panel.
    */
-  public ControlPanel() {
-
+  public ControlPanel(GreenhouseApplication application) {
+    this.application = application;
+    this.running = true;
   }
 
   public void start() {
@@ -40,14 +49,31 @@ public class ControlPanel  {
         System.out.println("Could not establish connection to node.");
         System.out.println(e.getMessage());
     }
-    while (true) {
+    while (this.running) {
       String rawMessage = readMessage();
-      Data data = MessageSerializer.getData(rawMessage);
-      if (data instanceof SensorReadingMessage) {
-
+      Data data = MessageHandler.getData(rawMessage);
+      if (data instanceof SensorIdentifier sensorIdentifier) {
+        if (!this.application.hasNodeTab(sensorIdentifier.getNodeId())) {
+          this.application.addNodeTab(data.getNodeId());
+        }
+        this.application.getNodeTab(data.getNodeId()).addSensorPane(sensorIdentifier.getNodeId(), sensorIdentifier.getType());
+      } else if (data instanceof ActuatorIdentifier actuatorIdentifier) {
+        if (!this.application.hasNodeTab(actuatorIdentifier.getNodeId())) {
+          this.application.addNodeTab(data.getNodeId());
+        }
+        this.application.getNodeTab(data.getNodeId()).addActuatorPane(actuatorIdentifier.getNodeId(), actuatorIdentifier.getType());
+      } else if (data instanceof SensorReadingMessage sensorReadingMessage) {
+        // Create noteTab if it does not exist
+        if (!this.application.hasNodeTab(sensorReadingMessage.getNodeId())) {
+          this.application.addNodeTab(sensorReadingMessage.getNodeId());
+        }
+        this.application.getNodeTab(sensorReadingMessage.getNodeId()).updateSensorReading(sensorReadingMessage.getSensorId(), sensorReadingMessage.getReading());
+      } else {
+        System.out.println("Unknown message type received.");
       }
     }
   }
+
   /**
    * Establishes a connection to the server.
    */

@@ -10,12 +10,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import no.ntnu.listeners.node.ActuatorListener;
 import no.ntnu.listeners.node.NodeStateListener;
 import no.ntnu.listeners.node.SensorListener;
 import no.ntnu.commands.Data;
-import no.ntnu.tools.MessageSerializer;
+import no.ntnu.tools.MessageHandler;
 import no.ntnu.commands.NodeCommand;
 
 /**
@@ -62,10 +61,10 @@ public class Node implements ActuatorListener {
       try {
         establishConnection();
         this.actuators.forEach(actuator ->
-                sendMessage(MessageSerializer.serializeActuatorInformation(actuator))
+                sendMessage(MessageHandler.actuatorToString(actuator))
         );
         this.sensors.forEach(sensor ->
-                sendMessage(MessageSerializer.serializeSensorInformation(sensor))
+                sendMessage(MessageHandler.sensorToString(sensor))
         );
       } catch (IllegalArgumentException e) {
         System.out.println("Could not establish connection to node.");
@@ -74,7 +73,6 @@ public class Node implements ActuatorListener {
       running = true;
       new Thread(() -> {
         System.out.println("-- Starting simulation of node " + id);
-        notifyStateChanges(true);
         run();
       }).start();
       startPeriodicSensorReading();
@@ -87,7 +85,7 @@ public class Node implements ActuatorListener {
   public void run() {
     while (running) {
       String rawMessage = readMessage();
-      Data dataType = MessageSerializer.getData(rawMessage);
+      Data dataType = MessageHandler.getData(rawMessage);
       if (dataType instanceof NodeCommand) {
         executeCommand(rawMessage);
       }
@@ -181,7 +179,6 @@ public class Node implements ActuatorListener {
     if (n <= 0) {
       throw new IllegalArgumentException("Can't add a negative number of sensors");
     }
-
     for (int i = 0; i < n; ++i) {
       sensors.add(template.createClone());
     }
@@ -239,7 +236,6 @@ public class Node implements ActuatorListener {
       System.out.println("-- Stopping simulation of node " + id);
       stopPeriodicSensorReading();
       running = false;
-      notifyStateChanges(false);
       disconnectFromServer();
     }
   }
@@ -327,23 +323,6 @@ public class Node implements ActuatorListener {
     System.out.println(" => " + actuator.getType() + " on node " + id + " " + onOff);
     for (ActuatorListener listener : actuatorListeners) {
       listener.actuatorUpdated(id, actuator);
-    }
-  }
-
-  /**
-   * Notify the listeners that the state of this node has changed.
-   *
-   * @param isReady When true, let them know that this node is ready;
-   *                when false - that this node is shut down
-   */
-  private void notifyStateChanges(boolean isReady) {
-    System.out.println("Notify state changes for node " + id);
-    for (NodeStateListener listener : stateListeners) {
-      if (isReady) {
-        listener.onNodeReady(this.id);
-      } else {
-        listener.onNodeStopped(this.id);
-      }
     }
   }
 
