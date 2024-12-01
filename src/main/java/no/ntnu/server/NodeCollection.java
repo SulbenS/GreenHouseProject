@@ -1,17 +1,29 @@
 package no.ntnu.server;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import no.ntnu.listeners.GreenhouseEventListener;
 import no.ntnu.listeners.node.NodeStateListener;
 import no.ntnu.node.Node;
 import no.ntnu.node.SensorReading;
 import no.ntnu.tools.DeviceFactory;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
+/**
+ * A collection of all nodes in the greenhouse.
+ */
 public class NodeCollection implements NodeStateListener, GreenhouseEventListener {
   private final Map<Integer, Node> nodes = new HashMap<>();
 
+  /**
+   * Create a new node with the given parameters.
+   *
+   * @param temperature The initial temperature of the node
+   * @param humidity    The initial humidity of the node
+   * @param windows     The number of windows in the node
+   * @param fans        The number of fans in the node
+   * @param heaters     The number of heaters in the node
+   */
   public void createNode(int temperature, int humidity, int windows, int fans, int heaters) {
     Node node = DeviceFactory.createNode(
             temperature, humidity, windows, fans, heaters);
@@ -23,6 +35,9 @@ public class NodeCollection implements NodeStateListener, GreenhouseEventListene
     this.nodes.put(node.getId(), node);
   }
 
+  /**
+   * Initialize the greenhouse with some nodes.
+   */
   public void initialize() {
     createNode(20, 50, 2, 2, 2);
     createNode(25, 60, 3, 3, 3);
