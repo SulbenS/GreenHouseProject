@@ -50,7 +50,6 @@ public class Server {
     while (this.isRunning) {
       ClientHandler clientHandler = connectClient();
       this.clientHandlers.add(clientHandler);
-      System.out.println("Client connected: " + clientHandler.getNodeId() + "aaaaaaa");
     }
   }
 

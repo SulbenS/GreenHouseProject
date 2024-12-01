@@ -119,9 +119,7 @@ public class ControlPanel implements ActuatorListener {
 
   @Override
   public void onActuatorStateChanged(int nodeId, int actuatorId, boolean newState) {
-    String message = ("Actuator " + actuatorId + " state changed to " + (newState ? "ON" : "OFF") + "-----------");
-    System.out.println(message);
-
+    System.out.println("Actuator " + actuatorId + " NodeId " + nodeId + " state changed to " + (newState ? "ON" : "OFF") + "-----------");
     writeMessage("Data=ActuatorCommand;Node=" + nodeId + ";Actuator=" + actuatorId + ";Action=" + (newState ? "ON" : "OFF"));
   }
 

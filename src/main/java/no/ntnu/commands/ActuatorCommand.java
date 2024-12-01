@@ -20,6 +20,7 @@ public class ActuatorCommand extends NodeCommand {
     super(data, nodeId, action);
     this.actuatorType = null;
     this.actuatorId = actuatorId;
+    this.action = action;
   }
 
   /**

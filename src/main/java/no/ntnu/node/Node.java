@@ -137,7 +137,6 @@ public class Node {
     String rawMessage = "";
     try {
       rawMessage = this.reader.readLine();
-      System.out.println("Node " + id + " received message: " + rawMessage);
     } catch (IOException e) {
       System.out.println("Could not read the message.");
       System.out.println(e.getMessage());
@@ -162,7 +161,7 @@ public class Node {
   public void executeCommand(String rawMessage) {
     if (MessageHandler.getData(rawMessage).getData().equals("NodeCommand")) {
       NodeCommand nodeCommand = (NodeCommand) MessageHandler.getData(rawMessage);
-      if (nodeCommand.getAction().equals("OFF")) {
+      if (nodeCommand.getAction().equals("Off")) {
         stop();
       }
     } else if (MessageHandler.getData(rawMessage).getData().equals("ActuatorCommand")) {
