@@ -58,7 +58,13 @@ public class ActuatorPane extends Pane {
   }
 
   private String generateActuatorLabel() {
-    return this.actuatorType + ": " + (this.actuatorState ? "ON" : "OFF");
+    String label = this.actuatorType + ": ";
+    label = label + switch (this.actuatorType) {
+      case "window" -> (this.actuatorState ? "Open" : "Closed");
+      case "fan", "heater" -> (this.actuatorState ? "On" : "Off");
+      default -> (this.actuatorState ? "On" : "Off");
+    };
+    return label;
   }
 
   /**
