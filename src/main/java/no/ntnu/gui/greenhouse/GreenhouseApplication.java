@@ -61,9 +61,10 @@ public class GreenhouseApplication extends Application {
    * @param nodeId ID of the node
    */
   public void addNodeTab(int nodeId) {
-    NodeTab nodeTab = new NodeTab(nodeId);
-    this.nodeTabs.add(nodeTab);
-    this.tabPane.getTabs().add(new Tab("Node " + nodeTab.getNodeId(), nodeTab.getScene().getRoot()));
+    NodeTab nodeTab = new NodeTab(nodeId); // Create the NodeTab
+    this.nodeTabs.add(nodeTab); // Add to the internal list for tracking
+    this.tabPane.getTabs().add(new Tab("Node " + nodeTab.getNodeId(), nodeTab)); // Add NodeTab directly
+    System.out.println("Added tab for node " + nodeId);
   }
 
   /**

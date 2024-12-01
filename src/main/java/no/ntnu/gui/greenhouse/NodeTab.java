@@ -13,7 +13,7 @@ import no.ntnu.gui.common.SensorPane;
 /**
  * Window with GUI for overview and control of one specific sensor/actuator node.
  */
-public class NodeTab extends Stage {
+public class NodeTab extends VBox {
   private static final double VERTICAL_OFFSET = 50;
   private static final double HORIZONTAL_OFFSET = 150;
   private static final double WINDOW_WIDTH = 300;
@@ -33,12 +33,20 @@ public class NodeTab extends Stage {
     this.nodeId = nodeId;
     this.actuatorPanes = new HashMap<>();
     this.sensorPanes = new HashMap<>();
-    this.contentBox = new VBox();
-    Scene scene = new Scene(this.contentBox, WINDOW_WIDTH, WINDOW_HEIGHT);
-    setScene(scene);
-    setTitle("Node " + this.nodeId);
+
+    // Set initial properties for the VBox (this is now the root layout)
+    setPrefWidth(WINDOW_WIDTH);
+    setPrefHeight(WINDOW_HEIGHT);
+    setSpacing(10); // Optional spacing between components
     setPositionAndSize();
+    //getStyleClass().add("node-tab");
+
+    // Optionally add some default content or styling
+    //getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
+    //TODO: add styling, maybe title, etc.
   }
+
+
 
   public void addActuatorPane(int actuatorId, String type) {
     ActuatorPane actuatorPane = new ActuatorPane(actuatorId, type);
@@ -64,8 +72,8 @@ public class NodeTab extends Stage {
   }
 
   private void setPositionAndSize() {
-    setX((this.nodeId - 1) * HORIZONTAL_OFFSET);
-    setY(this.nodeId * VERTICAL_OFFSET);
+    this.contentBox.setLayoutX((this.nodeId - 1) * HORIZONTAL_OFFSET);
+    this.contentBox.setLayoutY(this.nodeId * VERTICAL_OFFSET);
     setMinWidth(WINDOW_HEIGHT);
     setMinHeight(WINDOW_WIDTH);
   }
