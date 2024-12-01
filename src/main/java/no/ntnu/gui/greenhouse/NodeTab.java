@@ -2,8 +2,11 @@ package no.ntnu.gui.greenhouse;
 
 import java.util.HashMap;
 import java.util.Map;
+import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import no.ntnu.gui.ControlPanel;
 import no.ntnu.gui.common.ActuatorPane;
@@ -20,6 +23,7 @@ public class NodeTab extends VBox {
 
   private Pane contentBox;
 
+  private HBox nodeButtons;
   private VBox actuatorsBox;
   private VBox sensorsBox;
 
@@ -37,29 +41,31 @@ public class NodeTab extends VBox {
   public NodeTab(int nodeId) {
     this.nodeId = nodeId;
     this.contentBox = new VBox();
+
+    nodeButtons = createNodeButtons();
     this.actuatorsTitledPane = new TitledPane();
     this.sensorsTitledPane = new TitledPane();
     this.actuatorPanes = new HashMap<>();
     this.sensorPanes = new HashMap<>();
-    this.contentBox.getChildren().add(this.actuatorsTitledPane);
+    this.contentBox.getChildren().add(nodeButtons);
     this.contentBox.getChildren().add(this.sensorsTitledPane);
+    this.contentBox.getChildren().add(this.actuatorsTitledPane);
     this.actuatorsTitledPane.setText("Actuators");
     this.sensorsTitledPane.setText("Sensors");
-    this.actuatorsBox = new VBox();
     this.sensorsBox = new VBox();
-    this.actuatorsTitledPane.setContent(this.actuatorsBox);
+    this.actuatorsBox = new VBox();
     this.sensorsTitledPane.setContent(this.sensorsBox);
+    this.actuatorsTitledPane.setContent(this.actuatorsBox);
 
-    // Set initial properties for the VBox (this is now the root layout)
-    setPrefWidth(WINDOW_WIDTH);
-    setPrefHeight(WINDOW_HEIGHT);
-    setSpacing(10); // Optional spacing between components
-    setPositionAndSize();
-    //getStyleClass().add("node-tab");
-
-    // Optionally add some default content or styling
-    // getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
-    // TODO: add styling, maybe title, etc.
+    this.sensorsBox.getStyleClass().add("sensors-vbox");
+    this.actuatorsBox.getStyleClass().add("actuators-vbox");
+    getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+    getStyleClass().add("node-tab");
+    actuatorsTitledPane.setMaxHeight(10000000);
+    VBox.setVgrow(this.actuatorsTitledPane, Priority.ALWAYS);
+    VBox.setVgrow(this.contentBox, Priority.ALWAYS);
+    actuatorsTitledPane.collapsibleProperty().set(false);
+    sensorsTitledPane.collapsibleProperty().set(false);
     getChildren().add(this.contentBox);
   }
 
@@ -77,6 +83,16 @@ public class NodeTab extends VBox {
 
   public void updateSensorReading(int sensorId, String value) {
     this.sensorPanes.get(sensorId).updateSensorReading(Double.parseDouble(value));
+  }
+
+  public HBox createNodeButtons() {
+    HBox container = new HBox();
+    Button removeNodeButton = new Button("Remove Node");
+    Button AddActuatorButton = new Button("Add Actuator");
+    Button AddSensorButton = new Button("Add Sensor");
+    Button addNodeButton = new Button("Add Node");
+    container.getChildren().addAll(removeNodeButton, AddActuatorButton, AddSensorButton, addNodeButton);
+    return container;
   }
 
   private void setPositionAndSize() {

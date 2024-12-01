@@ -1,9 +1,11 @@
 package no.ntnu.gui.common;
 
 import javafx.application.Platform;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import java.util.Objects;
 
 /**
  * A section of GUI displaying sensor data.
@@ -27,14 +29,19 @@ public class SensorPane extends Pane {
   public SensorPane(int sensorId , String sensorType) {
     this.sensorType = sensorType;
     this.sensorId = sensorId;
+    this.sensorLabel = new Label(generateSensorLabel().getText());
     this.contentBox = new HBox();
-    this.contentBox.getChildren().add(new Label(sensorType));
-    setPrefHeight(500);
+    this.contentBox.getChildren().add(this.sensorLabel);
+    this.contentBox.getStylesheets().add(
+            Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
+    contentBox.getStyleClass().add("sensor-pane");
     getChildren().add(this.contentBox);
   }
 
   private Label generateSensorLabel() {
-    return new Label(this.sensorType + ": " + sensorValue);
+    this.sensorLabel = new Label(this.sensorType + ": " + this.sensorValue);
+    this.sensorLabel.getStyleClass().add("sensor-label");
+    return this.sensorLabel;
   }
 
   public void updateSensorReading(double sensorReading) {

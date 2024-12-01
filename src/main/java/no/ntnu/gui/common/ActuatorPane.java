@@ -47,7 +47,8 @@ public class ActuatorPane extends Pane {
     this.contentBox.getChildren().add(generateRemoveButton());
     this.contentBox.getStylesheets().add(
             Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
-    this.setPrefHeight(5000);
+    actuatorLabel.getStyleClass().add("actuator-label");
+    contentBox.getStyleClass().add("actuator-pane");
     getChildren().add(this.contentBox);
   }
 

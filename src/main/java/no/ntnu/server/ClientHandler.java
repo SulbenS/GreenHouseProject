@@ -60,10 +60,8 @@ public class ClientHandler extends Thread {
                 || message instanceof SensorIdentifier
                 || message instanceof ActuatorIdentifier) {
           sendDataToServer(message);
-        } else if (message instanceof ActuatorCommand) {
-          sendActuatorCommandToServer(message);
         } else if (message instanceof NodeCommand) {
-          sendNodeCommand(message);
+          sendCommandToServer(message);
         }
       }
     } catch (IOException e) {
@@ -76,13 +74,8 @@ public class ClientHandler extends Thread {
     this.server.broadcast(message);
   }
 
-  private void sendActuatorCommandToServer(Data message) {
+  private void sendCommandToServer(Data message) {
     this.server.sendToClient(message);
-  }
-
-  private void sendNodeCommand(Data message) {
-    throw new UnsupportedOperationException("Not implemented yet.");
-    // TODO: Implement this method
   }
 
   /**

@@ -19,8 +19,8 @@ public class GreenhouseApplication extends Application {
   private Scene scene;
   private TabPane tabPane;
 
-  private int width = 450;
-  private int height = 500;
+  private int width = 500;
+  private int height = 600;
 
   private ControlPanel controlPanel;
   private List<NodeTab> nodeTabs;
@@ -39,7 +39,7 @@ public class GreenhouseApplication extends Application {
     System.out.println("Running greenhouse simulator with JavaFX GUI...");
     launch();
   }
-  
+
   @Override
   public void start(Stage stage) {
     this.stage = stage;
@@ -49,10 +49,6 @@ public class GreenhouseApplication extends Application {
             Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
     this.stage.setScene(scene);
     this.stage.setTitle("Greenhouse simulator");
-    this.stage.setMaxHeight(height);
-    this.stage.setMaxWidth(width);
-    this.stage.setMinHeight(height);
-    this.stage.setMinWidth(width);
     this.stage.show();
     this.stage.setOnCloseRequest(event -> this.controlPanel.closeApplication());
     this.controlPanel = new ControlPanel(this);
