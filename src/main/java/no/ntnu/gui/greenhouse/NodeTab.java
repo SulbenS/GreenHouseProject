@@ -2,7 +2,10 @@ package no.ntnu.gui.greenhouse;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -18,9 +21,9 @@ public class NodeTab extends VBox {
   private static final double WINDOW_WIDTH = 300;
   private static final double WINDOW_HEIGHT = 300;
 
-
   private Pane contentBox;
 
+  private HBox nodeButtons;
   private VBox actuatorsBox;
   private VBox sensorsBox;
 
@@ -38,10 +41,12 @@ public class NodeTab extends VBox {
   public NodeTab(int nodeId) {
     this.nodeId = nodeId;
     this.contentBox = new VBox();
+    nodeButtons = createNodeButtons();
     this.actuatorsTitledPane = new TitledPane();
     this.sensorsTitledPane = new TitledPane();
     this.actuatorPanes = new HashMap<>();
     this.sensorPanes = new HashMap<>();
+    this.contentBox.getChildren().add(nodeButtons);
     this.contentBox.getChildren().add(this.sensorsTitledPane);
     this.contentBox.getChildren().add(this.actuatorsTitledPane);
     this.actuatorsTitledPane.setText("Actuators");
@@ -77,6 +82,15 @@ public class NodeTab extends VBox {
 
   public void updateSensorReading(int sensorId, String value) {
     this.sensorPanes.get(sensorId).updateSensorReading(Double.parseDouble(value));
+  }
+
+  public HBox createNodeButtons() {
+    HBox container = new HBox();
+    Button removeNodeButton = new Button("Remove Node");
+    Button AddActuatorButton = new Button("Add Actuator");
+    Button AddSensorButton = new Button("Add Sensor");
+    container.getChildren().addAll(removeNodeButton, AddActuatorButton, AddSensorButton);
+    return container;
   }
 
   private void setPositionAndSize() {
