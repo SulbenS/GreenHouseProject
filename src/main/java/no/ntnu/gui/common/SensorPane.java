@@ -31,21 +31,18 @@ public class SensorPane extends Pane {
   public SensorPane(int sensorId , String sensorType) {
     this.contentBox = new HBox();
     this.contentBox.getChildren().add(new Label(sensorType));
-    getStylesheets().add(
-            Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
     setPrefHeight(5000);
+  }
+
+  private String generateSensorLabel() {
+    return this.sensorType + ": " + sensorValue;
   }
 
   /**
    * Update the GUI according to the changes in sensor data.
-   *
-   * @param sensors The sensor data that has been updated
    */
-  public void update(Iterable<SensorReading> sensors) {
-    int index = 0;
-    for (SensorReading sensor : sensors) {
-      updateSensorLabel(sensor, index++);
-    }
+  public void update() {
+    Platform.runLater(() -> this.sensorLabel.setText(generateSensorLabel()));
   }
 
   /**
@@ -59,7 +56,7 @@ public class SensorPane extends Pane {
   }
 
   private Label createAndRememberSensorLabel(SensorReading sensor) {
-    SimpleStringProperty props = new SimpleStringProperty(generateSensorText(sensor));
+    SimpleStringProperty props = new SimpleStringProperty(generateSensorLabel(sensor));
     this.sensorProps.add(props);
     Label label = new Label();
     label.textProperty().bind(props);
@@ -67,14 +64,10 @@ public class SensorPane extends Pane {
     return label;
   }
 
-  private String generateSensorText(SensorReading sensor) {
-    return sensor.getType() + ": " + sensor.getFormatted();
-  }
-
   private void updateSensorLabel(SensorReading sensor, int index) {
     if (this.sensorProps.size() > index) {
       SimpleStringProperty props = this.sensorProps.get(index);
-      Platform.runLater(() -> props.set(generateSensorText(sensor)));
+      Platform.runLater(() -> props.set(generateSensorLabel(sensor)));
     } else {
       System.out.println("Adding sensor[" + index + "]");
       Platform.runLater(() -> this.contentBox.getChildren().add(createAndRememberSensorLabel(sensor)));

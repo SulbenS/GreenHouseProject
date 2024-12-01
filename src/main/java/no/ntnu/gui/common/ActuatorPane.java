@@ -33,7 +33,7 @@ public class ActuatorPane extends Pane {
     this.actuatorState = false;
 
     this.contentBox = new HBox();
-    this.actuatorLabel = new Label(generateActuatorText());
+    this.actuatorLabel = new Label(generateActuatorLabel());
     this.actuatorCheckbox = createActuatorCheckbox();
     this.contentBox.getChildren().add(actuatorLabel);
     this.contentBox.getChildren().add(actuatorCheckbox);
@@ -55,7 +55,7 @@ public class ActuatorPane extends Pane {
     return checkbox;
   }
 
-  private String generateActuatorText() {
+  private String generateActuatorLabel() {
     return this.actuatorType + ": " + (this.actuatorState ? "ON" : "OFF");
   }
 
