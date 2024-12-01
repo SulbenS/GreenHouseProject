@@ -86,11 +86,10 @@ public class NodeTab extends VBox {
 
   public HBox createNodeButtons() {
     HBox container = new HBox();
-    Button removeNodeButton = new Button("Remove Node");
     Button AddActuatorButton = new Button("Add Actuator");
     Button AddSensorButton = new Button("Add Sensor");
     Button addNodeButton = new Button("Add Node");
-    container.getChildren().addAll(removeNodeButton, AddActuatorButton, AddSensorButton, addNodeButton);
+    container.getChildren().addAll(AddActuatorButton, AddSensorButton, addNodeButton);
     return container;
   }
 
