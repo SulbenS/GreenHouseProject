@@ -3,10 +3,8 @@ package no.ntnu.gui.greenhouse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
 
@@ -43,11 +41,10 @@ public class NodeTab extends VBox {
     //getStyleClass().add("node-tab");
 
     // Optionally add some default content or styling
-    //getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
-    //TODO: add styling, maybe title, etc.
+    // getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
+    // TODO: add styling, maybe title, etc.
+    getChildren().add(this.contentBox);
   }
-
-
 
   public void addActuatorPane(int actuatorId, String type) {
     ActuatorPane actuatorPane = new ActuatorPane(actuatorId, type);

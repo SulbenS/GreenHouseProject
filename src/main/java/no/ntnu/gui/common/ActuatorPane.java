@@ -42,7 +42,6 @@ public class ActuatorPane extends Pane {
     this.setPrefHeight(5000);
   }
 
-
   private CheckBox createActuatorCheckbox() {
     CheckBox checkbox = new CheckBox();
     checkbox.setSelected(false);
