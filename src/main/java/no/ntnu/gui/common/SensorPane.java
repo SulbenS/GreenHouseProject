@@ -30,6 +30,7 @@ public class SensorPane extends Pane {
     this.contentBox = new HBox();
     this.contentBox.getChildren().add(new Label(sensorType));
     setPrefHeight(5000);
+    getChildren().add(this.contentBox);
   }
 
   private Label generateSensorLabel() {

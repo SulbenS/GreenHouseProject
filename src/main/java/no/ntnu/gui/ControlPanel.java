@@ -48,23 +48,19 @@ public class ControlPanel {
   private void executeCommand(Data data) {
     if (data instanceof SensorIdentifier sensorIdentifier) {
       if (!this.application.hasNodeTab(sensorIdentifier.getNodeId())) {
-        this.application.addNodeTab(data.getNodeId());
+        this.application.addNodeTab(sensorIdentifier.getNodeId());
       }
       this.application
-              .getNodeTab(data.getNodeId())
+              .getNodeTab(sensorIdentifier.getNodeId())
               .addSensorPane(
                       sensorIdentifier.getSensorId(),
                       sensorIdentifier.getType());
     } else if (data instanceof ActuatorIdentifier actuatorIdentifier) {
       if (!this.application.hasNodeTab(actuatorIdentifier.getNodeId())) {
-        this.application.addNodeTab(data.getNodeId());
-        this.application.getNodeTab(data.getNodeId()).addActuatorPane(
-                actuatorIdentifier.getActuatorId(),
-                actuatorIdentifier.getType());
-        System.out.println("Added actuator pane");
+        this.application.addNodeTab(actuatorIdentifier.getNodeId());
       }
       this.application
-              .getNodeTab(data.getNodeId())
+              .getNodeTab(actuatorIdentifier.getNodeId())
               .addActuatorPane(
                       actuatorIdentifier.getActuatorId(),
                       actuatorIdentifier.getType());
@@ -73,7 +69,7 @@ public class ControlPanel {
         this.application.addNodeTab(sensorReadingMessage.getNodeId());
       }
       this.application
-              .getNodeTab(data.getNodeId())
+              .getNodeTab(sensorReadingMessage.getNodeId())
               .addSensorPane(
                       sensorReadingMessage.getSensorId(),
                       sensorReadingMessage.getValue());

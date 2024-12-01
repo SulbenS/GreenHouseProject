@@ -40,6 +40,7 @@ public class ActuatorPane extends Pane {
     this.contentBox.getStylesheets().add(
             Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
     this.setPrefHeight(5000);
+    getChildren().add(this.contentBox);
   }
 
   private CheckBox createActuatorCheckbox() {
