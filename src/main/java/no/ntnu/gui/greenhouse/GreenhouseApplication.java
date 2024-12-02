@@ -41,6 +41,7 @@ public class GreenhouseApplication extends Application {
     this.stage = stage;
     this.tabPane = new TabPane();
     this.scene = new Scene(this.tabPane, 600, 700);
+    tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
     this.scene.getStylesheets().add(
             Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
     this.stage.setScene(this.scene);

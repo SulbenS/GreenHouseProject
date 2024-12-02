@@ -122,6 +122,7 @@ public class NodeTab extends VBox {
     Button addActuatorButton = new Button("Add Actuator");
     Button addSensorButton = new Button("Add Sensor");
     Button addNodeButton = new Button("Add Node");
+    Button removeNodeButton = new Button("Remove Node");
     // Open dialog to add an actuator
     addActuatorButton.setOnAction(e -> showActuatorDialog());
 
@@ -138,7 +139,7 @@ public class NodeTab extends VBox {
     });
 
     HBox container = new HBox();
-    container.getChildren().addAll(addActuatorButton, addSensorButton, addNodeButton);
+    container.getChildren().addAll(addActuatorButton, addSensorButton, addNodeButton, removeNodeButton);
     return container;
   }
 
