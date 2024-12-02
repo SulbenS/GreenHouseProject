@@ -71,7 +71,9 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
                 .addActuatorPane(
                         actuatorIdentifier.getNodeId(),
                         actuatorIdentifier.getActuatorId(),
-                        actuatorIdentifier.getType());
+                        actuatorIdentifier.getType(),
+                        actuatorIdentifier.getState()
+                );
       }
     } else if (data instanceof SensorReadingMessage sensorReadingMessage) {
       if (!this.application.hasNodeTab(sensorReadingMessage.getNodeId())) {
@@ -130,8 +132,13 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
 
   @Override
   public void onActuatorStateChanged(int nodeId, int actuatorId, boolean newState) {
-    System.out.println("Actuator " + actuatorId + " NodeId " + nodeId + " state changed to " + (newState ? "ON" : "OFF") + "-----------");
-    writeMessage("Data=ActuatorCommand;Node=" + nodeId + ";Actuator=" + actuatorId + ";Action=" + (newState ? "ON" : "OFF"));
+    System.out.println("Actuator " + actuatorId
+            + " NodeId " + nodeId
+            + " state changed to "
+            + (newState ? "ON" : "OFF"));
+    writeMessage("Data=ActuatorCommand;Node=" + nodeId
+            + ";Actuator=" + actuatorId + ";Action="
+            + (newState ? "ON" : "OFF"));
   }
 
   public void writeMessage(String message) {

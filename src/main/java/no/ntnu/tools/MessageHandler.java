@@ -10,16 +10,18 @@ public class MessageHandler {
   public static String serializeActuatorInformation(ActuatorIdentifier actuator) {
     return "Data=Identifier;Node=" + actuator.getNodeId()
             + ";Actuator=" + actuator.getActuatorId()
-            + ";Type=" + actuator.getType();
+            + ";Type=" + actuator.getType()
+            + ";State=" + actuator.getState();
   }
 
   public static ActuatorIdentifier deserializeActuatorInformation(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
-    int nodeId = Integer.parseInt(fields.get("Node"));
-    int actuatorId = Integer.parseInt(fields.get("Actuator"));
-    String actuatorType = fields.get("Type");
     String dataType = fields.get("Data");
-    return new ActuatorIdentifier(dataType, nodeId, actuatorType, actuatorId);
+    int nodeId = Integer.parseInt(fields.get("Node"));
+    String actuatorType = fields.get("Type");
+    int actuatorId = Integer.parseInt(fields.get("Actuator"));
+    boolean state = Boolean.parseBoolean(fields.get("State"));
+    return new ActuatorIdentifier(dataType, nodeId, actuatorType, actuatorId, state);
   }
 
   public static String serializeSensorInformation(SensorIdentifier sensor) {
@@ -113,7 +115,8 @@ public class MessageHandler {
   public static String actuatorToString(Actuator actuator) {
     return "Data=Identifier;Node=" + actuator.getNodeId()
             + ";Actuator=" + actuator.getId()
-            + ";Type=" + actuator.getType();
+            + ";Type=" + actuator.getType()
+            + ";State=" + actuator.isOn();
   }
 
   public static String sensorToString(Sensor sensor) {

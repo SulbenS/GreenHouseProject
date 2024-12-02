@@ -159,6 +159,8 @@ public class Node {
    * @param rawMessage The message given.
    */
   public void executeCommand(String rawMessage) {
+    System.out.println("Executing command: dfghjklækøjhgfxdgchjkløæ" +
+            "lkjhgfchjkløæ " + rawMessage);
     if (MessageHandler.getData(rawMessage).getData().equals("NodeCommand")) {
       NodeCommand nodeCommand = (NodeCommand) MessageHandler.getData(rawMessage);
       if (nodeCommand.getAction().equals("Off")) {
@@ -169,10 +171,21 @@ public class Node {
       Actuator actuator = getActuator(actuatorCommand.getActuatorId());
       if (actuatorCommand.getAction().equals("On")) {
         actuator.setState(true);
+        sendMessage("Data=Identifier"
+                + ";Node=" + actuator.getNodeId()
+                + ";Type=" + actuatorCommand.getActuatorType()
+                + ";Actuator=" + actuator.getId()
+                + ";State=On");
         System.out.println("Actuator " + actuatorCommand.getActuatorId() + " turned on");
       } else if (actuatorCommand.getAction().equals("Off")) {
         actuator.setState(false);
         System.out.println("Actuator " + actuatorCommand.getActuatorId() + " turned off");
+        sendMessage("Data=Identifier"
+                + ";Node=" + actuator.getNodeId()
+                + ";Type=" + actuatorCommand.getActuatorType()
+                + ";Actuator=" + actuator.getId()
+                + ";State=Off");
+        System.out.println("Actuator " + actuatorCommand.getActuatorId() + " turned off" + "aksbd-uaGVSDHJ: man;CD");
       }
     } else if (MessageHandler.getData(rawMessage).getData().equals("ActuatorAddedInGui")) {
       ActuatorAddedInGui actuatorAddedInGui = (ActuatorAddedInGui) MessageHandler.getData(rawMessage);
@@ -182,7 +195,11 @@ public class Node {
       System.out.println("Actuator " + actuatorAddedInGui.getActuatorType() + " added to node "
               + actuatorAddedInGui.getNodeId() + "asdgauydsg oA BSdgiuysavdauyGLDS");
       // send identifier back to the server and gui so that the gui can update the actuator with correct actuatorId
-      this.writer.println("Data=Identifier;Node=" + actuatorAddedInGui.getNodeId() + ";Actuator=" + addedActuator.getId() + ";Type=" + addedActuator.getType());
+      sendMessage("Data=Identifier"
+              + ";Node=" + actuatorAddedInGui.getNodeId()
+              + ";Actuator=" + addedActuator.getId()
+              + ";Type=" + addedActuator.getType()
+              + ";State=" + addedActuator.isOn());
     }
   }
 
@@ -359,7 +376,7 @@ public class Node {
    * @return collection of the actuators
    */
   public ActuatorCollection getActuators() {
-    return actuators;
+    return this.actuators;
   }
 
   /**

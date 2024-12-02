@@ -10,13 +10,11 @@ import no.ntnu.listeners.node.ActuatorListener;
  */
 public class Actuator {
   private static int nextId = 1;
-  private final String type;
   private final int nodeId;
-  private final int id;
   private Map<String, Double> impacts = new HashMap<>();
 
-  private ActuatorListener listener;
-
+  private final String type;
+  private final int id;
   private boolean on;
 
   /**
@@ -48,15 +46,6 @@ public class Actuator {
 
   private static int generateUniqueId() {
     return nextId++;
-  }
-
-  /**
-   * Set the listener which will be notified when actuator state changes.
-   *
-   * @param listener The listener of state change events
-   */
-  public void setListener(ActuatorListener listener) {
-    this.listener = listener;
   }
 
   /**

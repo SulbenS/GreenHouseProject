@@ -5,8 +5,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-
-import no.ntnu.commands.*;
+import no.ntnu.commands.ActuatorAddedInGui;
+import no.ntnu.commands.ActuatorCommand;
+import no.ntnu.commands.NodeIdentifier;
+import no.ntnu.commands.ActuatorIdentifier;
+import no.ntnu.commands.Data;
+import no.ntnu.commands.NodeCommand;
+import no.ntnu.commands.SensorIdentifier;
+import no.ntnu.commands.SensorReadingMessage;
 import no.ntnu.tools.MessageHandler;
 
 /**
@@ -94,8 +100,9 @@ public class ClientHandler extends Thread {
     if (message == null) {
       throw new IllegalArgumentException("Could not read the message.");
     }
-    Data data =  MessageHandler.getData(message);
+    Data data = MessageHandler.getData(message);
     if (data instanceof NodeIdentifier) {
+      System.out.println("Received node identifier: " + data.getNodeId());
       this.nodeId = data.getNodeId();
     }
     return data;

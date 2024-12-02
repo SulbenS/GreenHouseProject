@@ -47,8 +47,8 @@ public class ActuatorPane extends Pane {
     this.contentBox.getChildren().add(actuatorCheckbox);
     this.contentBox.getStylesheets().add(
             Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
-    actuatorLabel.getStyleClass().add("actuator-label");
-    contentBox.getStyleClass().add("actuator-pane");
+    this.actuatorLabel.getStyleClass().add("actuator-label");
+    this.contentBox.getStyleClass().add("actuator-pane");
     getChildren().add(this.contentBox);
   }
 
@@ -94,17 +94,14 @@ public class ActuatorPane extends Pane {
     return label;
   }
 
-  /**
-   * An actuator has been updated, update the corresponding GUI parts.
-   */
-  public void update() {
-    Platform.runLater(() -> {
-      this.actuatorCheckbox.setSelected(!actuatorCheckbox.isSelected());
-    });
-  }
-
   public void setActuatorListener(ActuatorListener listener) {
     this.listener = listener;
+  }
+
+  public void setActuatorState(boolean state) {
+    this.actuatorState = state;
+    Platform.runLater(() -> this.actuatorCheckbox.setSelected(state));
+    this.actuatorLabel.setText(generateActuatorLabel());
   }
 
   public int getActuatorId() {

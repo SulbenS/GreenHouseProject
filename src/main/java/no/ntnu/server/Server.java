@@ -103,6 +103,7 @@ public class Server {
    * @param message the message to broadcast.
    */
   public void broadcast(Data message) {
+    System.out.println("Broadcasting message: " + message.getNodeId());
     this.clientHandlers.forEach(client -> client.transmitToClient(message));
   }
 
@@ -116,6 +117,7 @@ public class Server {
   }
 
   public void sendNodeInformation() {
+    System.out.println("Broadcasting all node information.");
     Collection<Node> collection = this.nodes.getNodes();
     collection.forEach(
             node -> node.getActuators().forEach(

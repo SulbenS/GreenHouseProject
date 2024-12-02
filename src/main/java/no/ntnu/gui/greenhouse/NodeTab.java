@@ -77,8 +77,9 @@ public class NodeTab extends VBox {
     getChildren().add(this.contentBox);
   }
 
-  public void addActuatorPane(int nodeId, int actuatorId, String type) {
+  public void addActuatorPane(int nodeId, int actuatorId, String type, boolean state) {
     ActuatorPane actuatorPane = new ActuatorPane(this.observer, nodeId, actuatorId, type);
+    actuatorPane.setActuatorState(state);
     this.actuatorPanes.put(actuatorId, actuatorPane);
     this.actuatorsBox.getChildren().add(actuatorPane);
   }
