@@ -1,11 +1,11 @@
 package no.ntnu.gui.common;
 
+import java.util.Objects;
 import javafx.application.Platform;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import java.util.Objects;
 
 /**
  * A section of GUI displaying sensor data.
@@ -26,7 +26,7 @@ public class SensorPane extends Pane {
    * @param sensorId the id of the sensor.
    * @param sensorType the type of the sensor.
    */
-  public SensorPane(int sensorId , String sensorType) {
+  public SensorPane(int sensorId, String sensorType) {
     this.sensorType = sensorType;
     this.sensorId = sensorId;
     this.sensorLabel = new Label(generateSensorLabel().getText());

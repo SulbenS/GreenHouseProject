@@ -1,5 +1,8 @@
 package no.ntnu.listeners;
 
+/**
+ * Interface for the NodeTabObserver.
+ */
 public interface NodeTabObserver {
 
   void onActuatorAddedInGui(int nodeId, String actuatorType);

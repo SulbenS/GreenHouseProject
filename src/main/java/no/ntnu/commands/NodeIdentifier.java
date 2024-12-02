@@ -1,5 +1,8 @@
 package no.ntnu.commands;
 
+/**
+ * Class representing the type of data being sent.
+ */
 public class NodeIdentifier extends Data {
 
   /**

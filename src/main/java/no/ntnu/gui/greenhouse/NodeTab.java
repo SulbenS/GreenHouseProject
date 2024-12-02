@@ -2,19 +2,19 @@ package no.ntnu.gui.greenhouse;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import no.ntnu.gui.ControlPanel;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
-import java.util.Objects;
 
-import javafx.scene.layout.Priority;
 
 /**
  * Window with GUI for overview and control of one specific sensor/actuator node.
@@ -77,6 +77,14 @@ public class NodeTab extends VBox {
     getChildren().add(this.contentBox);
   }
 
+  /**
+   * Add an actuator pane to the node tab.
+   *
+   * @param nodeId    The ID of the node
+   * @param actuatorId The ID of the actuator
+   * @param type      The type of the actuator
+   * @param state     The state of the actuator
+   */
   public void addActuatorPane(int nodeId, int actuatorId, String type, boolean state) {
     ActuatorPane actuatorPane = new ActuatorPane(this.observer, nodeId, actuatorId, type);
     actuatorPane.setActuatorState(state);
@@ -84,28 +92,42 @@ public class NodeTab extends VBox {
     this.actuatorsBox.getChildren().add(actuatorPane);
   }
 
+  /**
+   * Update the state of an actuator in the GUI.
+   *
+   * @param type The ID of the actuator
+   * @param sensorId      The new state of the actuator
+   */
   public void addSensorPane(int sensorId, String type) {
     SensorPane sensorPane = new SensorPane(sensorId, type);
     this.sensorPanes.put(sensorId, sensorPane);
     this.sensorsBox.getChildren().add(sensorPane);
   }
 
+  /**
+   * Update the state of a sensor in the GUI.
+   *
+   * @param value The ID of the actuator
+   * @param sensorId      The new state of the actuator
+   */
   public void updateSensorReading(int sensorId, String value) {
     this.sensorPanes.get(sensorId).updateSensorReading(Double.parseDouble(value));
   }
 
+  /**
+   * Create buttons for adding actuators and sensors.
+   *
+   */
   public HBox createNodeButtons() {
-    HBox container = new HBox();
-    Button AddActuatorButton = new Button("Add Actuator");
-    Button AddSensorButton = new Button("Add Sensor");
+    Button addActuatorButton = new Button("Add Actuator");
+    Button addSensorButton = new Button("Add Sensor");
     Button addNodeButton = new Button("Add Node");
     // Open dialog to add an actuator
-    AddActuatorButton.setOnAction(e -> ShowActuatorDialog());
-
+    addActuatorButton.setOnAction(e -> showActuatorDialog());
 
     // Additional buttons can be set up here
-    AddSensorButton.setOnAction(e -> {
-      ShowSensorDialog();
+    addSensorButton.setOnAction(e -> {
+      showSensorDialog();
       // Add logic for adding a sensor
     });
 
@@ -115,16 +137,18 @@ public class NodeTab extends VBox {
       }
     });
 
-    container.getChildren().addAll(AddActuatorButton, AddSensorButton, addNodeButton);
+    HBox container = new HBox();
+    container.getChildren().addAll(addActuatorButton, addSensorButton, addNodeButton);
     return container;
   }
 
-  private void ShowActuatorDialog(){
+  /**
+   * Show a dialog for adding an actuator.
+   */
+  private void showActuatorDialog() {
     Dialog<String> dialog = new Dialog<>();
-    HBox dialogLayout = new HBox(10);
     dialog.setTitle("Add Actuator");
     ComboBox<String> comboBox = new ComboBox<>();
-
     comboBox.getItems().addAll("Window", "Fan", "Heater");
     comboBox.setValue("Window");
     Button saveButton = new Button("Add");
@@ -138,14 +162,18 @@ public class NodeTab extends VBox {
       dialog.close();
     });
 
+    HBox dialogLayout = new HBox(10);
     dialogLayout.getChildren().addAll(comboBox, saveButton, close);
     dialog.getDialogPane().setContent(dialogLayout);
     dialog.showAndWait();
   }
 
-  private void ShowSensorDialog() {
+  /**
+   * Show a dialog for adding sensor.
+   *
+   */
+  private void showSensorDialog() {
     Dialog<String> dialog = new Dialog<>();
-    HBox dialogLayout = new HBox(10);
     dialog.setTitle("Add Sensor");
     ComboBox<String> comboBox = new ComboBox<>();
     comboBox.getItems().addAll("Temperature", "Humidity", "Light");
@@ -160,11 +188,18 @@ public class NodeTab extends VBox {
       dialog.setResult("");
       dialog.close();
     });
+    HBox dialogLayout = new HBox(10);
     dialogLayout.getChildren().addAll(comboBox, saveButton, close);
     dialog.getDialogPane().setContent(dialogLayout);
     dialog.showAndWait();
   }
 
+  /**
+   * Sets observer.
+   *
+   * @param observer The observer to set
+   *
+   */
   public void setObserver(ControlPanel observer) {
     this.observer = observer;
   }

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import no.ntnu.listeners.GreenhouseEventListener;
 import no.ntnu.listeners.node.NodeStateListener;
 import no.ntnu.node.Node;

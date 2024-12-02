@@ -87,7 +87,7 @@ public class Sensor {
 
   //@Override
   //public String toString() {
-    //return this.reading.readingToString();
+  //return this.reading.readingToString();
   //} TODO: maybe this should be implemented
 
   public String getType() {

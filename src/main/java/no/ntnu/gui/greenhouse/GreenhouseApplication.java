@@ -73,6 +73,7 @@ public class GreenhouseApplication extends Application {
    * @param nodeId ID of the node
    * @return True if a NodeTab exists for the node
    */
+
   public boolean hasNodeTab(int nodeId) {
     if (this.nodeTabs == null) {
       return false;

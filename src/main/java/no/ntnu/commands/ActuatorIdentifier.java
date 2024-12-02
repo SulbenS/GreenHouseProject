@@ -1,5 +1,8 @@
 package no.ntnu.commands;
 
+/**
+ * Class for the actuator identifier command.
+ */
 public class ActuatorIdentifier extends Data {
   private String type;
   private int actuatorId;

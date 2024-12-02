@@ -10,8 +10,10 @@ import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import no.ntnu.commands.*;
+import no.ntnu.commands.ActuatorAddedInGui;
+import no.ntnu.commands.ActuatorCommand;
+import no.ntnu.commands.Data;
+import no.ntnu.commands.NodeCommand;
 import no.ntnu.listeners.node.ActuatorListener;
 import no.ntnu.listeners.node.NodeStateListener;
 import no.ntnu.listeners.node.SensorListener;
@@ -104,7 +106,8 @@ public class Node {
       System.out.println("Could not connect to the server.");
       System.out.println(e.getMessage());
       throw new IllegalArgumentException("Could not connect to the server");
-    } try {
+    }
+    try {
       this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
       this.writer = new PrintWriter(this.socket.getOutputStream(), true);
       this.writer.println("Data=Identifier;Node=" + this.id);
@@ -159,8 +162,8 @@ public class Node {
    * @param rawMessage The message given.
    */
   public void executeCommand(String rawMessage) {
-    System.out.println("Executing command: dfghjklækøjhgfxdgchjkløæ" +
-            "lkjhgfchjkløæ " + rawMessage);
+    System.out.println("Executing command: dfghjklækøjhgfxdgchjkløæ"
+            + "lkjhgfchjkløæ " + rawMessage);
     if (MessageHandler.getData(rawMessage).getData().equals("NodeCommand")) {
       NodeCommand nodeCommand = (NodeCommand) MessageHandler.getData(rawMessage);
       if (nodeCommand.getAction().equals("Off")) {
@@ -185,16 +188,20 @@ public class Node {
                 + ";Type=" + actuatorCommand.getActuatorType()
                 + ";Actuator=" + actuator.getId()
                 + ";State=Off");
-        System.out.println("Actuator " + actuatorCommand.getActuatorId() + " turned off" + "aksbd-uaGVSDHJ: man;CD");
+        System.out.println("Actuator " + actuatorCommand.getActuatorId()
+                + " turned off" + "aksbd-uaGVSDHJ: man;CD");
       }
     } else if (MessageHandler.getData(rawMessage).getData().equals("ActuatorAddedInGui")) {
-      ActuatorAddedInGui actuatorAddedInGui = (ActuatorAddedInGui) MessageHandler.getData(rawMessage);
+      ActuatorAddedInGui actuatorAddedInGui =
+              (ActuatorAddedInGui) MessageHandler.getData(rawMessage);
 
-      Actuator addedActuator = new Actuator(actuatorAddedInGui.getActuatorType(), actuatorAddedInGui.getNodeId());
+      Actuator addedActuator =
+              new Actuator(actuatorAddedInGui.getActuatorType(), actuatorAddedInGui.getNodeId());
       addActuator(addedActuator);
       System.out.println("Actuator " + actuatorAddedInGui.getActuatorType() + " added to node "
               + actuatorAddedInGui.getNodeId() + "asdgauydsg oA BSdgiuysavdauyGLDS");
-      // send identifier back to the server and gui so that the gui can update the actuator with correct actuatorId
+      // send identifier back to the server and gui so that the gui can update the
+      // actuator with correct actuatorId
       sendMessage("Data=Identifier"
               + ";Node=" + actuatorAddedInGui.getNodeId()
               + ";Actuator=" + addedActuator.getId()
@@ -234,7 +241,8 @@ public class Node {
    */
   public void addActuator(Actuator actuator) {
     actuators.add(actuator);
-    System.out.println("Created " + actuator.getType() + "[" + actuator.getId() + "] on node " + id);
+    System.out.println("Created " + actuator.getType()
+            + "[" + actuator.getId() + "] on node " + id);
   }
 
   /**

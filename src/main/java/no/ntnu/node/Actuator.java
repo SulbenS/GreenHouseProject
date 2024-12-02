@@ -90,6 +90,7 @@ public class Actuator {
    *
    * @return True when the actuator is ON, false if it is OFF
    */
+
   public boolean isOn() {
     return on;
   }

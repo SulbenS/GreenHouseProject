@@ -5,17 +5,17 @@ package no.ntnu.commands;
  */
 public class SensorIdentifier extends Data {
   private String type;
-  private int SensorId;
+  private int sensorId;
 
   /**
    * Constructor for the Data class.
    *
    * @param data the type data to be sent.
    */
-  public SensorIdentifier(String data, int nodeId, String type, int SensorId) {
+  public SensorIdentifier(String data, int nodeId, String type, int sensorId) {
     super(data, nodeId);
     this.type = type;
-    this.SensorId = SensorId;
+    this.sensorId = sensorId;
   }
 
   /**
@@ -33,7 +33,7 @@ public class SensorIdentifier extends Data {
    * @return the actuatorId.
    */
   public int getSensorId() {
-    return this.SensorId;
+    return this.sensorId;
   }
 
   /**

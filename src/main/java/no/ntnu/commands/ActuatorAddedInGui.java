@@ -1,5 +1,8 @@
 package no.ntnu.commands;
 
+/**
+ * Class for the actuator added in the GUI command.
+ */
 public class ActuatorAddedInGui extends Data {
 
   private String actuatorType;
