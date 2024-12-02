@@ -1,8 +1,11 @@
 package no.ntnu.server;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import no.ntnu.listeners.GreenhouseEventListener;
 import no.ntnu.listeners.node.NodeStateListener;
 import no.ntnu.node.Node;
@@ -13,7 +16,7 @@ import no.ntnu.tools.DeviceFactory;
  * A collection of all nodes in the greenhouse.
  */
 public class NodeCollection implements NodeStateListener, GreenhouseEventListener {
-  private final Map<Integer, Node> nodes = new HashMap<>();
+  private final Map<Integer, Node> nodes = new ConcurrentHashMap<>();
 
   /**
    * Create a new node with the given parameters.
@@ -52,6 +55,15 @@ public class NodeCollection implements NodeStateListener, GreenhouseEventListene
    */
   public Node getNode(int nodeId) {
     return this.nodes.get(nodeId);
+  }
+
+  /**
+   * Return the node collection.
+   *
+   * @return the node collection.
+   */
+  public Collection<Node> getNodes() {
+    return this.nodes.values();
   }
 
   /**

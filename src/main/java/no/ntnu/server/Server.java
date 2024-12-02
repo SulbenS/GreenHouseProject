@@ -1,13 +1,12 @@
 package no.ntnu.server;
 
-import no.ntnu.node.Node;
-import no.ntnu.commands.Data;
-
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
+import no.ntnu.node.Node;
+import no.ntnu.commands.Data;
+import no.ntnu.tools.MessageHandler;
 
 /**
  * The server of the application.
@@ -86,14 +85,15 @@ public class Server {
     return clientHandler;
   }
 
-  /**
-   * Disconnects a client from the server.
-   *
-   * @param client The client to disconnect.
-   */
-  public void disconnectClient(ClientHandler client) {
-    if (this.isRunning) {
-      this.clientHandlers.remove(client);
+  public void stop() {
+    System.out.println("Stopping the server.");
+    this.isRunning = false;
+    try {
+      this.serverSocket.close();
+      System.exit(0);
+    } catch (IOException e) {
+      System.out.println("Could not close the server socket.");
+      System.out.println(e.getMessage());
     }
   }
 
@@ -115,6 +115,20 @@ public class Server {
     getClientHandler(message.getNodeId()).transmitToClient(message);
   }
 
+  public void sendNodeInformation() {
+    Collection<Node> collection = this.nodes.getNodes();
+    collection.forEach(
+            node -> node.getActuators().forEach(
+                    actuator -> broadcast(
+                            MessageHandler.deserializeActuatorInformation(
+                                    MessageHandler.actuatorToString(actuator)))));
+    collection.forEach(
+            node -> node.getSensors().forEach(
+                    sensor -> broadcast(
+                            MessageHandler.deserializeSensorInformation(
+                                    MessageHandler.sensorToString(sensor)))));
+  }
+
   /**
    * Return the clientHandler.
    *
@@ -129,7 +143,6 @@ public class Server {
     }
     throw new IllegalArgumentException("No clientHandler found for node with ID " + nodeId);
   }
-
 
   /**
    * Return the node collection.

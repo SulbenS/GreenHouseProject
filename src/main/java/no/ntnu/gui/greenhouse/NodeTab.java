@@ -2,17 +2,19 @@ package no.ntnu.gui.greenhouse;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import no.ntnu.gui.ControlPanel;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
-import no.ntnu.listeners.NodeTabObserver;
-import no.ntnu.tools.DeviceFactory;
+import java.util.Objects;
+
+import javafx.scene.layout.Priority;
 
 /**
  * Window with GUI for overview and control of one specific sensor/actuator node.
@@ -64,7 +66,8 @@ public class NodeTab extends VBox {
 
     this.sensorsBox.getStyleClass().add("sensors-vbox");
     this.actuatorsBox.getStyleClass().add("actuators-vbox");
-    getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+    getStylesheets().add(
+            Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
     getStyleClass().add("node-tab");
     actuatorsTitledPane.setMaxHeight(10000000);
     VBox.setVgrow(this.actuatorsTitledPane, Priority.ALWAYS);
@@ -169,24 +172,6 @@ public class NodeTab extends VBox {
     }
   }
 
-
-
-  private void setPositionAndSize() {
-    this.contentBox.setLayoutX((this.nodeId - 1) * HORIZONTAL_OFFSET);
-    this.contentBox.setLayoutY(this.nodeId * VERTICAL_OFFSET);
-    setMinWidth(WINDOW_HEIGHT);
-    setMinHeight(WINDOW_WIDTH);
-  }
-
-  /**
-   * Return the nodeId.
-   *
-   * @return The nodeId
-   */
-  public int getNodeId() {
-    return this.nodeId;
-  }
-
   public boolean hasActuatorPane(int actuatorId) {
     return this.actuatorPanes.containsKey(actuatorId);
   }
@@ -195,5 +180,12 @@ public class NodeTab extends VBox {
     return this.sensorPanes.containsKey(sensorId);
   }
 
-
+  /**
+   * Return the nodeId.
+   *
+   * @return The nodeId.
+   */
+  public int getNodeId() {
+    return this.nodeId;
+  }
 }

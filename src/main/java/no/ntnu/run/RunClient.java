@@ -12,7 +12,6 @@ public class RunClient {
    * @param args Command line arguments.
    */
   public static void main(String[] args) {
-    System.out.println("Starting the greenhouse client.");
     GreenhouseApplication greenhouseApplication = new GreenhouseApplication();
     greenhouseApplication.startApp();
   }

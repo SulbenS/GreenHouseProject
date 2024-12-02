@@ -36,6 +36,7 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
       System.out.println(e.getMessage());
     }
     new Thread(() -> {
+      System.out.println("Starting to read messages.");
       while (this.running) {
         String rawMessage = readMessage();
         Data data = MessageHandler.getData(rawMessage);
@@ -49,7 +50,9 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
       if (!this.application.hasNodeTab(sensorIdentifier.getNodeId())) {
         this.application.addNodeTab(sensorIdentifier.getNodeId());
       }
-      if (!this.application.getNodeTab(sensorIdentifier.getNodeId()).hasActuatorPane(sensorIdentifier.getSensorId())) {
+      if (!this.application
+              .getNodeTab(sensorIdentifier.getNodeId())
+              .hasActuatorPane(sensorIdentifier.getSensorId())) {
         this.application
                 .getNodeTab(sensorIdentifier.getNodeId())
                 .addSensorPane(
@@ -60,7 +63,9 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
       if (!this.application.hasNodeTab(actuatorIdentifier.getNodeId())) {
         this.application.addNodeTab(actuatorIdentifier.getNodeId());
       }
-      if (!this.application.getNodeTab(actuatorIdentifier.getNodeId()).hasActuatorPane(actuatorIdentifier.getActuatorId())) {
+      if (!this.application
+              .getNodeTab(actuatorIdentifier.getNodeId())
+              .hasActuatorPane(actuatorIdentifier.getActuatorId())) {
         this.application
                 .getNodeTab(actuatorIdentifier.getNodeId())
                 .addActuatorPane(
@@ -72,14 +77,14 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
       if (!this.application.hasNodeTab(sensorReadingMessage.getNodeId())) {
         this.application.addNodeTab(sensorReadingMessage.getNodeId());
       }
-      if (!this.application.getNodeTab(sensorReadingMessage.getNodeId()).hasSensorPane(sensorReadingMessage.getSensorId())) {
+      if (!this.application
+              .getNodeTab(sensorReadingMessage.getNodeId())
+              .hasSensorPane(sensorReadingMessage.getSensorId())) {
         this.application
                 .getNodeTab(sensorReadingMessage.getNodeId())
                 .addSensorPane(
                         sensorReadingMessage.getSensorId(),
-                        sensorReadingMessage.getType());
-        System.out.println(sensorReadingMessage.getType() + "--------------------------------");
-      }
+                        sensorReadingMessage.getType());}
       this.application
               .getNodeTab(sensorReadingMessage.getNodeId())
               .updateSensorReading(
@@ -92,7 +97,9 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
 
   public void establishConnection() {
     try {
+      System.out.println("Attempting to establish connection to the server.");
       this.socket = new Socket("localhost", 1238);
+      System.out.println("Connection established.");
     } catch (IOException e) {
       System.out.println("Could not connect to the server.");
       System.out.println(e.getMessage());
@@ -100,6 +107,7 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
     } try {
       this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
       this.writer = new PrintWriter(this.socket.getOutputStream(), true);
+      this.writer.println("Data=Identifier;Node=-1");
     } catch (IOException e) {
       System.out.println("Could not create the reader/writer.");
       System.out.println(e.getMessage());
@@ -110,7 +118,9 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
   public String readMessage() {
     String rawMessage = "";
     try {
+      System.out.println("Waiting for message.");
       rawMessage = this.reader.readLine();
+      System.out.println("Received message: " + rawMessage);
     } catch (IOException e) {
       System.out.println("Could not read the message.");
       System.out.println(e.getMessage());
@@ -129,13 +139,7 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
   }
 
   public void closeApplication() {
-    this.running = false;
-    try {
-      this.socket.close();
-    } catch (IOException e) {
-      System.out.println("Could not close the socket.");
-      System.out.println(e.getMessage());
-    }
+    this.writeMessage("Data=Stop;Node=0");
   }
 
   public Node requestNode(int nodeId) {
