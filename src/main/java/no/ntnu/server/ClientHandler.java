@@ -5,13 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import no.ntnu.commands.ActuatorCommand;
-import no.ntnu.commands.Data;
-import no.ntnu.commands.NodeCommand;
-import no.ntnu.commands.SensorIdentifier;
-import no.ntnu.commands.SensorReadingMessage;
-import no.ntnu.commands.ActuatorIdentifier;
-import no.ntnu.commands.NodeIdentifier;
+
+import no.ntnu.commands.*;
 import no.ntnu.tools.MessageHandler;
 
 /**
@@ -61,6 +56,8 @@ public class ClientHandler extends Thread {
                 || message instanceof ActuatorIdentifier) {
           sendDataToServer(message);
         } else if (message instanceof NodeCommand) {
+          sendCommandToServer(message);
+        } else if (message instanceof ActuatorAddedInGui) {
           sendCommandToServer(message);
         }
       }
@@ -127,6 +124,8 @@ public class ClientHandler extends Thread {
     } else if (message instanceof ActuatorIdentifier) {
       this.writer.println(MessageHandler.serializeActuatorInformation((ActuatorIdentifier) message));
       this.hasNodeTab = true;
+    } else if (message instanceof ActuatorAddedInGui) {
+      this.writer.println(MessageHandler.serializeActuatorAddedInGui((ActuatorAddedInGui) message));
     } else {
       throw new IllegalArgumentException("Could not transmit the message.");
     }

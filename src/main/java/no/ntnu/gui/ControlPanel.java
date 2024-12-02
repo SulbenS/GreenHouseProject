@@ -8,11 +8,12 @@ import java.net.Socket;
 import javafx.application.Platform;
 import no.ntnu.commands.*;
 import no.ntnu.gui.greenhouse.GreenhouseApplication;
+import no.ntnu.listeners.NodeTabObserver;
 import no.ntnu.listeners.node.ActuatorListener;
 import no.ntnu.node.Node;
 import no.ntnu.tools.MessageHandler;
 
-public class ControlPanel implements ActuatorListener {
+public class ControlPanel implements ActuatorListener, NodeTabObserver {
   private GreenhouseApplication application;
 
   private Socket socket;
@@ -62,7 +63,7 @@ public class ControlPanel implements ActuatorListener {
       if (!this.application.getNodeTab(actuatorIdentifier.getNodeId()).hasActuatorPane(actuatorIdentifier.getActuatorId())) {
         this.application
                 .getNodeTab(actuatorIdentifier.getNodeId())
-                .addActuatorPane(this,
+                .addActuatorPane(
                         actuatorIdentifier.getNodeId(),
                         actuatorIdentifier.getActuatorId(),
                         actuatorIdentifier.getType());
@@ -140,5 +141,19 @@ public class ControlPanel implements ActuatorListener {
   public Node requestNode(int nodeId) {
     throw new UnsupportedOperationException("Not implemented yet");
     // TODO: Implement this method
+  }
+
+  @Override
+  public void onActuatorAddedInGui(int nodeId, String actuatorType) {
+    System.out.println("Controlpanel notified actuatorpane is added in GUI: " + actuatorType);
+    writeMessage("Data=ActuatorAddedInGui;Node=" + nodeId + ";ActuatorType=" + actuatorType);
+    // receive the next message from the server that includes the actuatorId
+
+
+  }
+
+  @Override
+  public void onSensorAddedInGui(int nodeId, String sensorType) {
+
   }
 }

@@ -11,13 +11,11 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import no.ntnu.commands.ActuatorCommand;
+import no.ntnu.commands.*;
 import no.ntnu.listeners.node.ActuatorListener;
 import no.ntnu.listeners.node.NodeStateListener;
 import no.ntnu.listeners.node.SensorListener;
-import no.ntnu.commands.Data;
 import no.ntnu.tools.MessageHandler;
-import no.ntnu.commands.NodeCommand;
 
 /**
  * Represents one node with sensors and actuators.
@@ -89,6 +87,8 @@ public class Node {
       String rawMessage = readMessage();
       Data dataType = MessageHandler.getData(rawMessage);
       if (dataType instanceof NodeCommand) {
+        executeCommand(rawMessage);
+      } else if (dataType instanceof ActuatorAddedInGui) {
         executeCommand(rawMessage);
       }
     }
@@ -174,6 +174,15 @@ public class Node {
         actuator.setState(false);
         System.out.println("Actuator " + actuatorCommand.getActuatorId() + " turned off");
       }
+    } else if (MessageHandler.getData(rawMessage).getData().equals("ActuatorAddedInGui")) {
+      ActuatorAddedInGui actuatorAddedInGui = (ActuatorAddedInGui) MessageHandler.getData(rawMessage);
+
+      Actuator addedActuator = new Actuator(actuatorAddedInGui.getActuatorType(), actuatorAddedInGui.getNodeId());
+      addActuator(addedActuator);
+      System.out.println("Actuator " + actuatorAddedInGui.getActuatorType() + " added to node "
+              + actuatorAddedInGui.getNodeId() + "asdgauydsg oA BSdgiuysavdauyGLDS");
+      // send identifier back to the server and gui so that the gui can update the actuator with correct actuatorId
+      this.writer.println("Data=Identifier;Node=" + actuatorAddedInGui.getNodeId() + ";Actuator=" + addedActuator.getId() + ";Type=" + addedActuator.getType());
     }
   }
 

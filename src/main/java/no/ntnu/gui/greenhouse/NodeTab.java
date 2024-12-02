@@ -2,8 +2,8 @@ package no.ntnu.gui.greenhouse;
 
 import java.util.HashMap;
 import java.util.Map;
-import javafx.scene.control.Button;
-import javafx.scene.control.TitledPane;
+
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -11,6 +11,8 @@ import javafx.scene.layout.VBox;
 import no.ntnu.gui.ControlPanel;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
+import no.ntnu.listeners.NodeTabObserver;
+import no.ntnu.tools.DeviceFactory;
 
 /**
  * Window with GUI for overview and control of one specific sensor/actuator node.
@@ -34,6 +36,9 @@ public class NodeTab extends VBox {
   private Map<Integer, SensorPane> sensorPanes;
 
   private int nodeId;
+
+  private ControlPanel observer;
+
 
   /**
    * Create a GUI window for a specific node.
@@ -69,8 +74,8 @@ public class NodeTab extends VBox {
     getChildren().add(this.contentBox);
   }
 
-  public void addActuatorPane(ControlPanel controlPanel, int nodeId, int actuatorId, String type) {
-    ActuatorPane actuatorPane = new ActuatorPane(controlPanel, nodeId, actuatorId, type);
+  public void addActuatorPane(int nodeId, int actuatorId, String type) {
+    ActuatorPane actuatorPane = new ActuatorPane(this.observer, nodeId, actuatorId, type);
     this.actuatorPanes.put(actuatorId, actuatorPane);
     this.actuatorsBox.getChildren().add(actuatorPane);
   }
@@ -90,9 +95,81 @@ public class NodeTab extends VBox {
     Button AddActuatorButton = new Button("Add Actuator");
     Button AddSensorButton = new Button("Add Sensor");
     Button addNodeButton = new Button("Add Node");
+    // Open dialog to add an actuator
+    AddActuatorButton.setOnAction(e -> ShowActuatorDialog());
+
+
+    // Additional buttons can be set up here
+    AddSensorButton.setOnAction(e -> {
+      ShowSensorDialog();
+      // Add logic for adding a sensor
+    });
+
+    addNodeButton.setOnAction(e -> {
+      // Add logic for adding a node
+    });
+
     container.getChildren().addAll(AddActuatorButton, AddSensorButton, addNodeButton);
     return container;
   }
+
+  private void ShowActuatorDialog(){
+    Dialog<String> dialog = new Dialog<>();
+    HBox dialogLayout = new HBox(10);
+    dialog.setTitle("Add Actuator");
+    ComboBox<String> comboBox = new ComboBox<>();
+
+    comboBox.getItems().addAll("Window", "Fan", "Heater");
+    comboBox.setValue("Window");
+    Button saveButton = new Button("Add");
+    Button close = new Button("Exit");
+    saveButton.setOnAction(e -> {
+      notifyObserverActuatorAdded(this.nodeId, comboBox.getValue().toLowerCase());
+      dialog.setResult("");
+    });
+    close.setOnAction(e -> {
+      dialog.setResult("");
+      dialog.close();
+    });
+
+    dialogLayout.getChildren().addAll(comboBox, saveButton, close);
+    dialog.getDialogPane().setContent(dialogLayout);
+    dialog.showAndWait();
+  }
+
+  private void ShowSensorDialog() {
+    Dialog<String> dialog = new Dialog<>();
+    HBox dialogLayout = new HBox(10);
+    dialog.setTitle("Add Sensor");
+    ComboBox<String> comboBox = new ComboBox<>();
+
+    comboBox.getItems().addAll("Temperature", "Humidity", "Light");
+    comboBox.setValue("Temperature");
+    Button saveButton = new Button("Add");
+    Button close = new Button("Exit");
+    saveButton.setOnAction(e -> {
+      notifyObserverSensorAdded(this.nodeId, comboBox.getValue().toLowerCase());
+      dialog.setResult("");
+    });
+  }
+
+  public void setObserver(ControlPanel observer) {
+    this.observer = observer;
+  }
+
+  private void notifyObserverActuatorAdded(int nodeId, String actuatorType) {
+    if (observer != null) {
+      observer.onActuatorAddedInGui(nodeId, actuatorType);
+    }
+  }
+
+  private void notifyObserverSensorAdded(int nodeId, String sensorType) {
+    if (observer != null) {
+      observer.onSensorAddedInGui(nodeId, sensorType);
+    }
+  }
+
+
 
   private void setPositionAndSize() {
     this.contentBox.setLayoutX((this.nodeId - 1) * HORIZONTAL_OFFSET);
@@ -117,4 +194,6 @@ public class NodeTab extends VBox {
   public boolean hasSensorPane(int sensorId) {
     return this.sensorPanes.containsKey(sensorId);
   }
+
+
 }
