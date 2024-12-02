@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
@@ -18,9 +17,6 @@ public class GreenhouseApplication extends Application {
   private Stage stage;
   private Scene scene;
   private TabPane tabPane;
-
-  private int width = 500;
-  private int height = 600;
 
   private ControlPanel controlPanel;
   private List<NodeTab> nodeTabs;
@@ -44,10 +40,10 @@ public class GreenhouseApplication extends Application {
   public void start(Stage stage) {
     this.stage = stage;
     this.tabPane = new TabPane();
-    this.scene = new Scene(this.tabPane, width, height);
+    this.scene = new Scene(this.tabPane, 500, 600);
     this.scene.getStylesheets().add(
             Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
-    this.stage.setScene(scene);
+    this.stage.setScene(this.scene);
     this.stage.setTitle("Greenhouse simulator");
     this.stage.show();
     this.stage.setOnCloseRequest(event -> this.controlPanel.closeApplication());
