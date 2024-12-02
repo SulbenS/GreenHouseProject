@@ -30,9 +30,6 @@ These features make TCP a suitable choice for the reliable and orderly communica
 
 ## The architecture
 
-TODO - show the general architecture of your network. Which part is a server? Who are clients?
-Do you have one or several servers? Perhaps include a picture here.
-
 The general architecture of the network for the distributed smart greenhouse application consists of the following components:
 
 1. Sensor/Actuator Nodes: These nodes are responsible for sensing environmental data and controlling actuators. Each node has direct access to a set of sensors and actuators and is connected to the Internet. These nodes act as clients in the network.
@@ -112,9 +109,6 @@ The communication protocol used in this project is connection-oriented and state
 
 ## Types, constants
 
-TODO - Do you have some specific value types you use in several messages? They you can describe
-them here.
-
 
 In the communication protocol, there are several specific value types used in multiple messages. These include:
 #### Message Types
@@ -139,11 +133,11 @@ In the communication protocol, there are several specific value types used in mu
 * Error: Contains:
   * errorCode: An integer representing the error code.
   * errorMessage: A string describing the error.
+## Error Messages
+
+We currently have exeption-handling. We will add error messages in the future.
 
 ## Message format
-
-TODO - describe the general format of all messages. Then describe specific format for each
-message type in your protocol.
 
 All messages in the protocol follow a common structure to ensure consistency and ease of parsing. The general format includes the following fields, separated by a delimiter (e.g., |):  
 1. Message Type: A string indicating the type of the message (e.g., SENSOR_DATA, ACTUATOR_COMMAND).
@@ -153,23 +147,6 @@ All messages in the protocol follow a common structure to ensure consistency and
 3. Timestamp: A long integer representing the time the message was sent, in milliseconds since the epoch.
 
 4. Payload: A string containing the specific data relevant to the message type, with fields separated by the same delimiter.
-
-### Error messages
-
-TODO - describe the possible error messages that nodes can send in your system.
-* 400: Bad Request - The server could not understand the request due to invalid syntax.
-
-* 401: Unauthorized - The client must authenticate itself to get the requested response.
-
-* 403: Forbidden - The client does not have access rights to the content.
-
-* 404: Not Found - The server can not find the requested resource.
-
-* 500: Internal Server Error - The server has encountered a situation it doesn't know how to handle.
-
-* 502: Bad Gateway - The server, while acting as a gateway or proxy, received an invalid response from the upstream server.
-
-* 503: Service Unavailable - The server is not ready to handle the request, usually due to maintenance or overload.
 
 ## An example scenario
 
@@ -206,8 +183,6 @@ TODO - describe the possible error messages that nodes can send in your system.
    * Node 2 Reaction: Executes the command to turn off all actuators (fans and heater).
 
 ## Reliability and security
-
-TODO - describe the reliability and security mechanisms your solution supports.
 
 1. Authentication: Nodes authenticate themselves to the central server using a pre-shared key or certificate-based authentication to ensure only authorized nodes can connect.
 
