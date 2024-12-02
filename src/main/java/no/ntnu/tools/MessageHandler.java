@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MessageHandler {
-
   public static String serializeActuatorInformation(ActuatorIdentifier actuator) {
     return "Data=Identifier;Node=" + actuator.getNodeId()
             + ";Actuator=" + actuator.getActuatorId()

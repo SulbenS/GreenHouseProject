@@ -35,6 +35,7 @@ public class ControlPanel implements ActuatorListener {
       System.out.println(e.getMessage());
     }
     new Thread(() -> {
+      System.out.println("Starting to read messages.");
       while (this.running) {
         String rawMessage = readMessage();
         Data data = MessageHandler.getData(rawMessage);
@@ -76,9 +77,7 @@ public class ControlPanel implements ActuatorListener {
                 .getNodeTab(sensorReadingMessage.getNodeId())
                 .addSensorPane(
                         sensorReadingMessage.getSensorId(),
-                        sensorReadingMessage.getType());
-        System.out.println(sensorReadingMessage.getType() + "--------------------------------");
-      }
+                        sensorReadingMessage.getType());}
       this.application
               .getNodeTab(sensorReadingMessage.getNodeId())
               .updateSensorReading(
@@ -91,7 +90,9 @@ public class ControlPanel implements ActuatorListener {
 
   public void establishConnection() {
     try {
+      System.out.println("Attempting to establish connection to the server.");
       this.socket = new Socket("localhost", 1238);
+      System.out.println("Connection established.");
     } catch (IOException e) {
       System.out.println("Could not connect to the server.");
       System.out.println(e.getMessage());
@@ -99,6 +100,7 @@ public class ControlPanel implements ActuatorListener {
     } try {
       this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
       this.writer = new PrintWriter(this.socket.getOutputStream(), true);
+      this.writer.println("Data=Identifier;Node=-1");
     } catch (IOException e) {
       System.out.println("Could not create the reader/writer.");
       System.out.println(e.getMessage());
@@ -109,7 +111,9 @@ public class ControlPanel implements ActuatorListener {
   public String readMessage() {
     String rawMessage = "";
     try {
+      System.out.println("Waiting for message.");
       rawMessage = this.reader.readLine();
+      System.out.println("Received message: " + rawMessage);
     } catch (IOException e) {
       System.out.println("Could not read the message.");
       System.out.println(e.getMessage());
@@ -128,13 +132,7 @@ public class ControlPanel implements ActuatorListener {
   }
 
   public void closeApplication() {
-    this.running = false;
-    try {
-      this.socket.close();
-    } catch (IOException e) {
-      System.out.println("Could not close the socket.");
-      System.out.println(e.getMessage());
-    }
+    this.writeMessage("Data=Stop;Node=0");
   }
 
   public Node requestNode(int nodeId) {

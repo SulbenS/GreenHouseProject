@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -32,7 +33,6 @@ public class GreenhouseApplication extends Application {
    * Start the GUI Application.
    */
   public void startApp() {
-    System.out.println("Running greenhouse simulator with JavaFX GUI...");
     launch();
   }
 
@@ -47,6 +47,7 @@ public class GreenhouseApplication extends Application {
     this.stage.setTitle("Greenhouse simulator");
     this.stage.show();
     this.stage.setOnCloseRequest(event -> this.controlPanel.closeApplication());
+    System.out.println("Creating ControlPanel.");
     this.controlPanel = new ControlPanel(this);
     this.controlPanel.start();
   }
@@ -60,9 +61,11 @@ public class GreenhouseApplication extends Application {
     NodeTab nodeTab = new NodeTab(nodeId);
     this.nodeTabs.add(nodeTab);
     Tab tab = new Tab("Node " + nodeTab.getNodeId(), nodeTab);
-    this.tabPane.getTabs().add(tab);
+    Platform.runLater(() -> {
+      this.tabPane.getTabs().add(tab);
+      System.out.println("Added NodeTab for node " + nodeId);
+    });
   }
-
   /**
    * Check if a NodeTab for a specific node exists.
    *

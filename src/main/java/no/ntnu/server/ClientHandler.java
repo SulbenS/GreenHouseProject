@@ -62,12 +62,20 @@ public class ClientHandler extends Thread {
           sendDataToServer(message);
         } else if (message instanceof NodeCommand) {
           sendCommandToServer(message);
+        } else if (message instanceof NodeIdentifier && message.getNodeId() == -1) {
+          requestNodeInformation();
+        } else if (message.getData().equals("Stop")) {
+          this.server.stop();
         }
       }
     } catch (IOException e) {
       System.out.println("Could not read the message.");
       System.out.println(e.getMessage());
     }
+  }
+
+  private void requestNodeInformation() {
+    this.server.sendNodeInformation();
   }
 
   private void sendDataToServer(Data message) {
