@@ -5,16 +5,17 @@ package no.ntnu.commands;
  */
 public class Data {
   private final String data; // Command - Reading - Identifier - Stop
-  private final int nodeID; // 0 if message is to be broadcast
+  private final int nodeId; // 0 if message is to be broadcast
 
   /**
    * Constructor for the Data class.
+   *
    *
    * @param data the type data to be sent.
    */
   public Data(String data, int nodeId) {
     this.data = data;
-    this.nodeID = nodeId;
+    this.nodeId = nodeId;
   }
 
   /**
@@ -32,6 +33,6 @@ public class Data {
    * @return the nodeId.
    */
   public int getNodeId() {
-    return nodeID;
+    return nodeId;
   }
 }

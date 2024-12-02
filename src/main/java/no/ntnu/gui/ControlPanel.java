@@ -6,13 +6,19 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import javafx.application.Platform;
-import no.ntnu.commands.*;
+import no.ntnu.commands.ActuatorIdentifier;
+import no.ntnu.commands.Data;
+import no.ntnu.commands.SensorIdentifier;
+import no.ntnu.commands.SensorReadingMessage;
 import no.ntnu.gui.greenhouse.GreenhouseApplication;
 import no.ntnu.listeners.NodeTabObserver;
 import no.ntnu.listeners.node.ActuatorListener;
 import no.ntnu.node.Node;
 import no.ntnu.tools.MessageHandler;
 
+/**
+ * The control panel of the application.
+ */
 public class ControlPanel implements ActuatorListener, NodeTabObserver {
   private GreenhouseApplication application;
 
@@ -28,6 +34,9 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
     this.running = true;
   }
 
+  /**
+   * Starts the control panel.
+   */
   public void start() {
     try {
       establishConnection();
@@ -67,13 +76,13 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
               .getNodeTab(actuatorIdentifier.getNodeId())
               .hasActuatorPane(actuatorIdentifier.getActuatorId())) {
         this.application
-                .getNodeTab(actuatorIdentifier.getNodeId())
-                .addActuatorPane(
-                        actuatorIdentifier.getNodeId(),
-                        actuatorIdentifier.getActuatorId(),
-                        actuatorIdentifier.getType(),
-                        actuatorIdentifier.getState()
-                );
+            .getNodeTab(actuatorIdentifier.getNodeId())
+            .addActuatorPane(
+                actuatorIdentifier.getNodeId(),
+                actuatorIdentifier.getActuatorId(),
+                actuatorIdentifier.getType(),
+                actuatorIdentifier.getState()
+            );
       }
     } else if (data instanceof SensorReadingMessage sensorReadingMessage) {
       if (!this.application.hasNodeTab(sensorReadingMessage.getNodeId())) {
@@ -86,7 +95,8 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
                 .getNodeTab(sensorReadingMessage.getNodeId())
                 .addSensorPane(
                         sensorReadingMessage.getSensorId(),
-                        sensorReadingMessage.getType());}
+                        sensorReadingMessage.getType());
+      }
       this.application
               .getNodeTab(sensorReadingMessage.getNodeId())
               .updateSensorReading(
@@ -97,6 +107,9 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
     }
   }
 
+  /**
+   * Establishes a connection to the server.
+   */
   public void establishConnection() {
     try {
       System.out.println("Attempting to establish connection to the server.");
@@ -106,7 +119,8 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
       System.out.println("Could not connect to the server.");
       System.out.println(e.getMessage());
       throw new IllegalArgumentException("Could not connect to the server");
-    } try {
+    }
+    try {
       this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
       this.writer = new PrintWriter(this.socket.getOutputStream(), true);
       this.writer.println("Data=Identifier;Node=-1");
@@ -117,6 +131,11 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
     }
   }
 
+  /**
+   * Reads a message from the server.
+   *
+   * @return The message read from the server.
+   */
   public String readMessage() {
     String rawMessage = "";
     try {
@@ -160,12 +179,20 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
     writeMessage("Data=ActuatorAddedInGui;Node=" + nodeId + ";ActuatorType=" + actuatorType);
   }
 
+  /**
+   * Stops the control panel.
+   */
   @Override
   public void onSensorAddedInGui(int nodeId, String sensorType) {
     System.out.println("Controlpanel notified sensorpane is added in GUI: " + sensorType);
     writeMessage("Data=SensorAddedInGui;Node=" + nodeId + ";SensorType=" + sensorType);
   }
 
+  /**
+   * Adds a node tab to the application.
+   *
+   * @param nodeId The ID of the node to add.
+   */
   public void addNodeTab(int nodeId) {
     Platform.runLater(() -> {
       this.application.addNodeTab(nodeId);

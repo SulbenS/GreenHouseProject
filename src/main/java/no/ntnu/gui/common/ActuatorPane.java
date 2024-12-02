@@ -2,7 +2,11 @@ package no.ntnu.gui.common;
 
 import java.util.Objects;
 import javafx.application.Platform;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import no.ntnu.gui.ControlPanel;
@@ -97,6 +101,13 @@ public class ActuatorPane extends Pane {
   public void setActuatorListener(ActuatorListener listener) {
     this.listener = listener;
   }
+
+  /**
+   * Set the state of the actuator.
+   *
+   * @param state The state of the actuator.
+   *
+   */
 
   public void setActuatorState(boolean state) {
     this.actuatorState = state;

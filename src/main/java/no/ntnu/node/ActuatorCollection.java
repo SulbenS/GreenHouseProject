@@ -10,15 +10,6 @@ import java.util.Map;
 public class ActuatorCollection implements Iterable<Actuator> {
   private final Map<Integer, Actuator> actuators = new HashMap<>();
 
-  /**
-   * Print a short info about all the actuators. Usable for debugging. Does NOT print a newline!
-   */
-  //public void debugPrint() {
-    //for (Actuator actuator : actuators.values()) {
-      //System.out.println(" " + actuator.getType() + "[" + actuator.getId() + "]"
-        //  + (actuator.isOn() ? " On" : " Off"));
-//    }
-  //}
 
   /**
    * Add an actuator to the collection.

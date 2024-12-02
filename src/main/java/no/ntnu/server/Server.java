@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import no.ntnu.commands.ActuatorIdentifier;
-import no.ntnu.node.Node;
 import no.ntnu.commands.Data;
+import no.ntnu.node.Node;
 import no.ntnu.tools.MessageHandler;
 
 /**
@@ -87,6 +85,9 @@ public class Server {
     return clientHandler;
   }
 
+  /**
+   * Stops the server.
+   */
   public void stop() {
     System.out.println("Stopping the server.");
     this.isRunning = false;
@@ -118,6 +119,9 @@ public class Server {
     getClientHandler(message.getNodeId()).transmitToClient(message);
   }
 
+  /**
+   * Sends all node information to all clients.
+   */
   public void sendNodeInformation() {
     System.out.println("Broadcasting all node information.");
     Collection<Node> collection = this.nodes.getNodes();

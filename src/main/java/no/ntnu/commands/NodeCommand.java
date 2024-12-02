@@ -4,7 +4,7 @@ package no.ntnu.commands;
  * Class representing the type of data being sent.
  */
 public class NodeCommand extends Data {
-   private final String action; // "On" or "Off"
+  private final String action; // "On" or "Off"
 
   /**
    * Constructor for actuator commands with a specific actuator ID.

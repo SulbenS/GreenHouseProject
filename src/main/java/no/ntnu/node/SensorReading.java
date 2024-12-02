@@ -23,6 +23,12 @@ public class SensorReading {
     this.value = value;
   }
 
+  /**
+   * Create a new sensor reading.
+   *
+   * @param nodeId  The type of sensor being read
+   * @param sensorId The current value of the sensor
+   */
   public String readingToString(int nodeId, int sensorId) {
     return "Data=Reading"
             + ";Node=" + nodeId

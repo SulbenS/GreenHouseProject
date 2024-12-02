@@ -1,12 +1,30 @@
 package no.ntnu.tools;
 
-import no.ntnu.commands.*;
-import no.ntnu.node.Actuator;
-import no.ntnu.node.Sensor;
 import java.util.HashMap;
 import java.util.Map;
+import no.ntnu.commands.ActuatorAddedInGui;
+import no.ntnu.commands.ActuatorCommand;
+import no.ntnu.commands.ActuatorIdentifier;
+import no.ntnu.commands.Data;
+import no.ntnu.commands.NodeCommand;
+import no.ntnu.commands.NodeIdentifier;
+import no.ntnu.commands.SensorAddedInGui;
+import no.ntnu.commands.SensorIdentifier;
+import no.ntnu.commands.SensorReadingMessage;
+import no.ntnu.node.Actuator;
+import no.ntnu.node.Sensor;
 
+/**
+ * A class for handling messages.
+ */
 public class MessageHandler {
+
+  /**
+   * Serialize the sensor reading message.
+   *
+   * @param actuator The sensor reading message to serialize.
+   * @return The serialized sensor reading message.
+   */
   public static String serializeActuatorInformation(ActuatorIdentifier actuator) {
     return "Data=Identifier;Node=" + actuator.getNodeId()
             + ";Actuator=" + actuator.getActuatorId()
@@ -14,6 +32,12 @@ public class MessageHandler {
             + ";State=" + actuator.getState();
   }
 
+  /**
+   * Deserialize the actuator information.
+   *
+   * @param rawMessage The raw message to deserialize.
+   * @return The actuator information.
+   */
   public static ActuatorIdentifier deserializeActuatorInformation(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
     String dataType = fields.get("Data");
@@ -24,12 +48,24 @@ public class MessageHandler {
     return new ActuatorIdentifier(dataType, nodeId, actuatorType, actuatorId, state);
   }
 
+  /**
+   * Serialize the sensor information.
+   *
+   * @param sensor The sensor to serialize.
+   * @return The serialized sensor information.
+   */
   public static String serializeSensorInformation(SensorIdentifier sensor) {
     return "Data=Identifier;Node=" + sensor.getNodeId()
             + ";Sensor=" + sensor.getSensorId()
             + ";Type=" + sensor.getType();
   }
 
+  /**
+   * Deserialize the sensor information.
+   *
+   * @param rawMessage The raw message to deserialize.
+   * @return The sensor information.
+   */
   public static SensorIdentifier deserializeSensorInformation(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
     int nodeId = Integer.parseInt(fields.get("Node"));
@@ -39,6 +75,12 @@ public class MessageHandler {
     return new SensorIdentifier(dataType, nodeId, sensorType, sensorId);
   }
 
+  /**
+   * Serialize the actuator command.
+   *
+   * @param actuatorCommand The actuator command to serialize.
+   * @return The serialized actuator command.
+   */
   public static String serializeActuatorCommand(ActuatorCommand actuatorCommand) {
     StringBuilder builder = new StringBuilder("Data=ActuatorCommand;");
     builder.append("Node=").append(actuatorCommand.getNodeId()).append(";");
@@ -51,6 +93,12 @@ public class MessageHandler {
     return builder.toString();
   }
 
+  /**
+   * Deserialize the actuator command.
+   *
+   * @param rawMessage The raw message to deserialize.
+   * @return The actuator command.
+   */
   public static ActuatorCommand deserializeActuatorCommand(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
     String data = fields.get("Data");
@@ -67,10 +115,23 @@ public class MessageHandler {
     throw new IllegalArgumentException("Invalid ActuatorCommand format");
   }
 
+  /**
+   * Serialize the node command.
+   *
+   * @param nodeCommand The node command to serialize.
+   * @return The serialized node command.
+   */
   public static String serializeNodeCommand(NodeCommand nodeCommand) {
-    return "Data=NodeCommand;Node=" + nodeCommand.getNodeId() + ";Action=" + nodeCommand.getAction();
+    return "Data=NodeCommand;Node=" + nodeCommand.getNodeId() + ";Action="
+            + nodeCommand.getAction();
   }
 
+  /**
+   * Deserialize the node command.
+   *
+   * @param rawMessage The raw message to deserialize.
+   * @return The node command.
+   */
   public static NodeCommand deserializeNodeCommand(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
     String data = fields.get("Data");
@@ -79,6 +140,12 @@ public class MessageHandler {
     return new NodeCommand(data, nodeId, action);
   }
 
+  /**
+   * Serialize the sensor reading message.
+   *
+   * @param rawMessage The sensor reading message to serialize.
+   * @return The serialized sensor reading message.
+   */
   public static SensorReadingMessage deserializeSensorReadingMessage(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
     String data = fields.get("Data");
@@ -90,6 +157,12 @@ public class MessageHandler {
     return new SensorReadingMessage(data, nodeId, sensorId, type, value, unit);
   }
 
+  /**
+   * Deserialize the sensor reading message.
+   *
+   * @param rawMessage The sensor reading message to serialize.
+   * @return The serialized sensor reading message.
+   */
   public static Data deserializeNodeInformation(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
     int nodeId = Integer.parseInt(fields.get("Node"));
@@ -97,6 +170,12 @@ public class MessageHandler {
     return new NodeIdentifier(dataType, nodeId);
   }
 
+  /**
+   * Serialize the sensor reading message.
+   *
+   * @param rawMessage The sensor reading message to serialize.
+   * @return The serialized sensor reading message.
+   */
   public static ActuatorAddedInGui deserializeActuatorAddedInGui(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
     int nodeId = Integer.parseInt(fields.get("Node"));
@@ -105,6 +184,12 @@ public class MessageHandler {
     return new ActuatorAddedInGui(dataType, nodeId, actuatorType);
   }
 
+  /**
+   * Serialize the sensor reading message.
+   *
+   * @param actuatorAddedInGui The sensor reading message to serialize.
+   * @return The serialized sensor reading message.
+   */
   public static String serializeActuatorAddedInGui(ActuatorAddedInGui actuatorAddedInGui) {
     return "Data=ActuatorAddedInGui;Node="
             + actuatorAddedInGui.getNodeId()
@@ -112,6 +197,12 @@ public class MessageHandler {
             + actuatorAddedInGui.getActuatorType();
   }
 
+  /**
+   * Serialize the sensor reading message.
+   *
+   * @param sensorAddedInGui The sensor reading message to serialize.
+   * @return The serialized sensor reading message.
+   */
   public static String serializeSensorAddedInGui(SensorAddedInGui sensorAddedInGui) {
     return "Data=SensorAddedInGui;Node="
             + sensorAddedInGui.getNodeId()
@@ -119,6 +210,12 @@ public class MessageHandler {
             + sensorAddedInGui.getSensorType();
   }
 
+  /**
+   * Deserialize the sensor reading message.
+   *
+   * @param rawMessage The sensor reading message to serialize.
+   * @return The serialized sensor reading message.
+   */
   public static SensorAddedInGui deserializeSensorAddedInGui(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
     int nodeId = Integer.parseInt(fields.get("Node"));
@@ -127,6 +224,12 @@ public class MessageHandler {
     return new SensorAddedInGui(dataType, nodeId, sensorType);
   }
 
+  /**
+   * Serialize the sensor reading message.
+   *
+   * @param actuator The sensor reading message to serialize.
+   * @return The serialized sensor reading message.
+   */
   public static String actuatorToString(Actuator actuator) {
     return "Data=Identifier;Node=" + actuator.getNodeId()
             + ";Actuator=" + actuator.getId()
@@ -134,12 +237,24 @@ public class MessageHandler {
             + ";State=" + actuator.isOn();
   }
 
+  /**
+   * Serialize the sensor reading message.
+   *
+   * @param sensor The sensor reading message to serialize.
+   * @return The serialized sensor reading message.
+   */
   public static String sensorToString(Sensor sensor) {
     return "Data=Identifier;Node=" + sensor.getNodeId()
             + ";Sensor=" + sensor.getSensorId()
             + ";Type=" + sensor.getType();
   }
 
+  /**
+   * Serialize the sensor reading message.
+   *
+   * @param rawMessage The sensor reading message to serialize.
+   * @return The serialized sensor reading message.
+   */
   private static Map<String, String> parseFields(String rawMessage) {
     Map<String, String> fields = new HashMap<>();
     String[] parts = rawMessage.split(";");
@@ -157,6 +272,12 @@ public class MessageHandler {
     return fields;
   }
 
+  /**
+   * Deserialize the sensor reading message.
+   *
+   * @param rawMessage The sensor reading message to serialize.
+   * @return The serialized sensor reading message.
+   */
   public static Data getData(String rawMessage) {
     Data result;
     Map<String, String> fields = parseFields(rawMessage);

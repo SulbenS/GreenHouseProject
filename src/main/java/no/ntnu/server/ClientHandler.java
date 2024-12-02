@@ -5,8 +5,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-
-import no.ntnu.commands.*;
+import no.ntnu.commands.ActuatorAddedInGui;
+import no.ntnu.commands.ActuatorCommand;
+import no.ntnu.commands.ActuatorIdentifier;
+import no.ntnu.commands.Data;
+import no.ntnu.commands.NodeCommand;
+import no.ntnu.commands.NodeIdentifier;
+import no.ntnu.commands.SensorAddedInGui;
+import no.ntnu.commands.SensorIdentifier;
+import no.ntnu.commands.SensorReadingMessage;
 import no.ntnu.tools.MessageHandler;
 
 /**
@@ -131,7 +138,9 @@ public class ClientHandler extends Thread {
       this.writer.println(MessageHandler.serializeSensorInformation((SensorIdentifier) message));
       this.hasNodeTab = true;
     } else if (message instanceof ActuatorIdentifier) {
-      this.writer.println(MessageHandler.serializeActuatorInformation((ActuatorIdentifier) message));
+      this.writer.println(MessageHandler.serializeActuatorInformation(
+              (ActuatorIdentifier) message)
+      );
       this.hasNodeTab = true;
     } else if (message instanceof ActuatorAddedInGui) {
       this.writer.println(MessageHandler.serializeActuatorAddedInGui((ActuatorAddedInGui) message));
