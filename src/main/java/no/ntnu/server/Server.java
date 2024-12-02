@@ -161,6 +161,10 @@ public class Server {
     return this.nodes;
   }
 
+  public void addNode() {
+    this.nodes.createNode(0, 0, 0, 0, 0);
+  }
+
   /**
    * Return a specific node by its ID.
    *

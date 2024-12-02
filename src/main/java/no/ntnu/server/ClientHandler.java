@@ -5,15 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import no.ntnu.commands.ActuatorAddedInGui;
-import no.ntnu.commands.ActuatorCommand;
-import no.ntnu.commands.ActuatorIdentifier;
-import no.ntnu.commands.Data;
-import no.ntnu.commands.NodeCommand;
-import no.ntnu.commands.NodeIdentifier;
-import no.ntnu.commands.SensorAddedInGui;
-import no.ntnu.commands.SensorIdentifier;
-import no.ntnu.commands.SensorReadingMessage;
+
+import no.ntnu.commands.*;
 import no.ntnu.tools.MessageHandler;
 
 /**
@@ -68,10 +61,15 @@ public class ClientHandler extends Thread {
           sendCommandToServer(message);
         } else if (message instanceof SensorAddedInGui) {
           sendCommandToServer(message);
+        } else if (message instanceof NodeAddedInGui) {
+          this.server.addNode();
         } else if (message instanceof NodeIdentifier && message.getNodeId() == -1) {
           requestNodeInformation();
         } else if (message.getData().equals("Stop")) {
           this.server.stop();
+        }
+        if (message instanceof NodeIdentifier && this.nodeId != -1) {
+          this.server.broadcast(message);
         }
       }
     } catch (IOException e) {
@@ -121,6 +119,8 @@ public class ClientHandler extends Thread {
       if (this.hasNodeTab) {
         this.writer.println(((SensorReadingMessage) message).getReading());
       }
+    } else if (message instanceof NodeIdentifier nodeIdentifier) {
+      this.writer.println(MessageHandler.serializeNodeIdentifier(nodeIdentifier));
     } else if (message instanceof ActuatorCommand actuatorCommand) {
       System.out.println("Sending actuator command: "
               + "Data=" + actuatorCommand.getData()
@@ -147,7 +147,8 @@ public class ClientHandler extends Thread {
       this.writer.println(MessageHandler.serializeActuatorAddedInGui((ActuatorAddedInGui) message));
     } else if (message instanceof SensorAddedInGui) {
       this.writer.println(MessageHandler.serializeSensorAddedInGui((SensorAddedInGui) message));
-    } else {
+    }
+    else {
       throw new IllegalArgumentException("Could not transmit the message.");
     }
   }

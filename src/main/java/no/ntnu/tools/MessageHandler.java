@@ -2,15 +2,8 @@ package no.ntnu.tools;
 
 import java.util.HashMap;
 import java.util.Map;
-import no.ntnu.commands.ActuatorAddedInGui;
-import no.ntnu.commands.ActuatorCommand;
-import no.ntnu.commands.ActuatorIdentifier;
-import no.ntnu.commands.Data;
-import no.ntnu.commands.NodeCommand;
-import no.ntnu.commands.NodeIdentifier;
-import no.ntnu.commands.SensorAddedInGui;
-import no.ntnu.commands.SensorIdentifier;
-import no.ntnu.commands.SensorReadingMessage;
+
+import no.ntnu.commands.*;
 import no.ntnu.node.Actuator;
 import no.ntnu.node.Sensor;
 
@@ -157,6 +150,10 @@ public class MessageHandler {
     return new SensorReadingMessage(data, nodeId, sensorId, type, value, unit);
   }
 
+  public static String serializeNodeIdentifier(NodeIdentifier nodeIdentifier) {
+    return "Data=Identifier;Node=" + nodeIdentifier.getNodeId();
+  }
+
   /**
    * Deserialize the sensor reading message.
    *
@@ -222,6 +219,23 @@ public class MessageHandler {
     String sensorType = fields.get("SensorType");
     String dataType = fields.get("Data");
     return new SensorAddedInGui(dataType, nodeId, sensorType);
+  }
+
+  private static Data deserializeNodeAddedInGui(String rawMessage) {
+    Map<String, String> fields = parseFields(rawMessage);
+    String dataType = fields.get("Data");
+    int nodeId = Integer.parseInt(fields.get("Node"));
+    return new NodeAddedInGui(dataType, nodeId);
+  }
+
+  /**
+   * Serialize the sensor reading message.
+   *
+   * @param nodeAddedInGui The sensor reading message to serialize.
+   * @return The serialized sensor reading message.
+   */
+  public static String serializeNodeAddedInGui(NodeAddedInGui nodeAddedInGui) {
+    return "Data=NodeAddedInGui;Node=" + nodeAddedInGui.getNodeId();
   }
 
   /**
@@ -296,6 +310,7 @@ public class MessageHandler {
         case "NodeCommand" -> deserializeNodeCommand(rawMessage);
         case "ActuatorAddedInGui" -> deserializeActuatorAddedInGui(rawMessage);
         case "SensorAddedInGui" -> deserializeSensorAddedInGui(rawMessage);
+        case "NodeAddedInGui" -> deserializeNodeAddedInGui(rawMessage);
         case "Identifier" -> {
           if (fields.containsKey("Actuator")) {
             yield deserializeActuatorInformation(rawMessage);

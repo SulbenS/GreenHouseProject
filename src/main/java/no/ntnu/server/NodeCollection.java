@@ -30,9 +30,6 @@ public class NodeCollection implements NodeStateListener, GreenhouseEventListene
     Node node = DeviceFactory.createNode(
             temperature, humidity, windows, fans, heaters);
     node.addStateListener(this);
-    // TODO: Add listeners for sensor and actuator events
-    // node.addSensorListener(this);
-    // node.addActuatorListener(this);
     node.start();
     this.nodes.put(node.getId(), node);
   }

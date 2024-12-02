@@ -6,10 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import javafx.application.Platform;
-import no.ntnu.commands.ActuatorIdentifier;
-import no.ntnu.commands.Data;
-import no.ntnu.commands.SensorIdentifier;
-import no.ntnu.commands.SensorReadingMessage;
+import no.ntnu.commands.*;
 import no.ntnu.gui.greenhouse.GreenhouseApplication;
 import no.ntnu.listeners.NodeTabObserver;
 import no.ntnu.listeners.node.ActuatorListener;
@@ -55,7 +52,13 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
   }
 
   private void executeCommand(Data data) {
-    if (data instanceof SensorIdentifier sensorIdentifier) {
+    if (data instanceof NodeIdentifier nodeIdentifier) {
+      if (!this.application.hasNodeTab(nodeIdentifier.getNodeId())) {
+        this.application.addNodeTab(nodeIdentifier.getNodeId());
+        System.out.println("Node added in GUI: " + nodeIdentifier.getNodeId());
+        System.out.println("ARE WE REACHING THIS?");
+      }
+    } else if (data instanceof SensorIdentifier sensorIdentifier) {
       if (!this.application.hasNodeTab(sensorIdentifier.getNodeId())) {
         this.application.addNodeTab(sensorIdentifier.getNodeId());
       }
@@ -168,11 +171,6 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
     this.writeMessage("Data=Stop;Node=0");
   }
 
-  public Node requestNode(int nodeId) {
-    throw new UnsupportedOperationException("Not implemented yet");
-    // TODO: Implement this method
-  }
-
   @Override
   public void onActuatorAddedInGui(int nodeId, String actuatorType) {
     System.out.println("Controlpanel notified actuatorpane is added in GUI: " + actuatorType);
@@ -186,6 +184,12 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
   public void onSensorAddedInGui(int nodeId, String sensorType) {
     System.out.println("Controlpanel notified sensorpane is added in GUI: " + sensorType);
     writeMessage("Data=SensorAddedInGui;Node=" + nodeId + ";SensorType=" + sensorType);
+  }
+
+  @Override
+  public void onNodeAddedInGui(int nodeId) {
+    System.out.println("Controlpanel notified node is added in GUI: " + nodeId);
+    writeMessage("Data=NodeAddedInGui;Node=" + nodeId);
   }
 
   /**

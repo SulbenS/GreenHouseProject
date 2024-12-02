@@ -20,11 +20,6 @@ import no.ntnu.gui.common.SensorPane;
  * Window with GUI for overview and control of one specific sensor/actuator node.
  */
 public class NodeTab extends VBox {
-  private static final double VERTICAL_OFFSET = 50;
-  private static final double HORIZONTAL_OFFSET = 150;
-  private static final double WINDOW_WIDTH = 300;
-  private static final double WINDOW_HEIGHT = 300;
-
   private Pane contentBox;
 
   private HBox nodeButtons;
@@ -49,7 +44,7 @@ public class NodeTab extends VBox {
     this.nodeId = nodeId;
     this.contentBox = new VBox();
 
-    nodeButtons = createNodeButtons();
+    this.nodeButtons = createNodeButtons();
     this.actuatorsTitledPane = new TitledPane();
     this.sensorsTitledPane = new TitledPane();
     this.actuatorPanes = new HashMap<>();
@@ -127,15 +122,10 @@ public class NodeTab extends VBox {
     addActuatorButton.setOnAction(e -> showActuatorDialog());
 
     // Additional buttons can be set up here
-    addSensorButton.setOnAction(e -> {
-      showSensorDialog();
-      // Add logic for adding a sensor
-    });
+    addSensorButton.setOnAction(e -> showSensorDialog());
 
     addNodeButton.setOnAction(e -> {
-      if (observer != null) {
-        observer.addNodeTab(this.nodeId);
-      }
+      this.observer.onNodeAddedInGui(0);
     });
 
     HBox container = new HBox();
@@ -177,7 +167,7 @@ public class NodeTab extends VBox {
     Dialog<String> dialog = new Dialog<>();
     dialog.setTitle("Add Sensor");
     ComboBox<String> comboBox = new ComboBox<>();
-    comboBox.getItems().addAll("Temperature", "Humidity", "Light");
+    comboBox.getItems().addAll("Temperature", "Humidity");
     comboBox.setValue("Temperature");
     Button saveButton = new Button("Add");
     Button close = new Button("Exit");

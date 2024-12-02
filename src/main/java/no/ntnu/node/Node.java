@@ -208,7 +208,6 @@ public class Node {
       SensorAddedInGui sensorAddedInGui =
               (SensorAddedInGui) MessageHandler.getData(rawMessage);
       if (sensorAddedInGui.getSensorType().equals("temperature")) {
-        System.out.println("Creating temperature sensor" + "xxxxxxxxxxxxxxxxxxxxxxx");
         Sensor sensor = DeviceFactory.createTemperatureSensor(sensorAddedInGui.getNodeId());
         addSensors(sensor, 1);
         sendMessage("Data=Identifier"
@@ -217,8 +216,6 @@ public class Node {
                 + ";Sensor=" + sensor.getSensorId()
                 + ";Value=" + sensor.getReading().getValue());
       } else if (sensorAddedInGui.getSensorType().equals("humidity")) {
-        System.out.println("Creating temperature sensor" + "yyyyyyyyyyyyyyyyyy");
-
         Sensor sensor = DeviceFactory.createHumiditySensor(sensorAddedInGui.getNodeId());
         addSensors(sensor, 1);
         sendMessage("Data=Identifier"
@@ -229,6 +226,12 @@ public class Node {
       } else {
         System.out.println("Unknown sensor type: " + sensorAddedInGui.getSensorType());
       }
+    } else if (MessageHandler.getData(rawMessage).getData().equals("NodeAddedInGui")) {
+      NodeAddedInGui nodeAddedInGui = (NodeAddedInGui) MessageHandler.getData(rawMessage);
+      System.out.println("Node " + nodeAddedInGui.getNodeId() + " added in GUI");
+      sendMessage("Data=Identifier;Node=" + nodeAddedInGui.getNodeId());
+    } else {
+      System.out.println("Unknown message type received: " + rawMessage);
     }
   }
 
