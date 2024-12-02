@@ -144,7 +144,6 @@ public class Server {
     throw new IllegalArgumentException("No clientHandler found for node with ID " + nodeId);
   }
 
-
   /**
    * Return the node collection.
    *

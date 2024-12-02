@@ -13,7 +13,7 @@ public class MessageHandler {
             + ";Type=" + actuator.getType();
   }
 
-  public static Data deserializeActuatorInformation(String rawMessage) {
+  public static ActuatorIdentifier deserializeActuatorInformation(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
     int nodeId = Integer.parseInt(fields.get("Node"));
     int actuatorId = Integer.parseInt(fields.get("Actuator"));
@@ -28,7 +28,7 @@ public class MessageHandler {
             + ";Type=" + sensor.getType();
   }
 
-  public static Data deserializeSensorInformation(String rawMessage) {
+  public static SensorIdentifier deserializeSensorInformation(String rawMessage) {
     Map<String, String> fields = parseFields(rawMessage);
     int nodeId = Integer.parseInt(fields.get("Node"));
     int sensorId = Integer.parseInt(fields.get("Sensor"));

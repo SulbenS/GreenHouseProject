@@ -2,6 +2,8 @@ package no.ntnu.gui.greenhouse;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
 import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
@@ -59,7 +61,8 @@ public class NodeTab extends VBox {
 
     this.sensorsBox.getStyleClass().add("sensors-vbox");
     this.actuatorsBox.getStyleClass().add("actuators-vbox");
-    getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+    getStylesheets().add(
+            Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
     getStyleClass().add("node-tab");
     actuatorsTitledPane.setMaxHeight(10000000);
     VBox.setVgrow(this.actuatorsTitledPane, Priority.ALWAYS);
@@ -101,20 +104,20 @@ public class NodeTab extends VBox {
     setMinHeight(WINDOW_WIDTH);
   }
 
-  /**
-   * Return the nodeId.
-   *
-   * @return The nodeId
-   */
-  public int getNodeId() {
-    return this.nodeId;
-  }
-
   public boolean hasActuatorPane(int actuatorId) {
     return this.actuatorPanes.containsKey(actuatorId);
   }
 
   public boolean hasSensorPane(int sensorId) {
     return this.sensorPanes.containsKey(sensorId);
+  }
+
+  /**
+   * Return the nodeId.
+   *
+   * @return The nodeId.
+   */
+  public int getNodeId() {
+    return this.nodeId;
   }
 }

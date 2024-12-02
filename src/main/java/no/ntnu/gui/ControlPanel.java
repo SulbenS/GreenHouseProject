@@ -49,7 +49,9 @@ public class ControlPanel implements ActuatorListener {
       if (!this.application.hasNodeTab(sensorIdentifier.getNodeId())) {
         this.application.addNodeTab(sensorIdentifier.getNodeId());
       }
-      if (!this.application.getNodeTab(sensorIdentifier.getNodeId()).hasActuatorPane(sensorIdentifier.getSensorId())) {
+      if (!this.application
+              .getNodeTab(sensorIdentifier.getNodeId())
+              .hasActuatorPane(sensorIdentifier.getSensorId())) {
         this.application
                 .getNodeTab(sensorIdentifier.getNodeId())
                 .addSensorPane(
@@ -60,7 +62,9 @@ public class ControlPanel implements ActuatorListener {
       if (!this.application.hasNodeTab(actuatorIdentifier.getNodeId())) {
         this.application.addNodeTab(actuatorIdentifier.getNodeId());
       }
-      if (!this.application.getNodeTab(actuatorIdentifier.getNodeId()).hasActuatorPane(actuatorIdentifier.getActuatorId())) {
+      if (!this.application
+              .getNodeTab(actuatorIdentifier.getNodeId())
+              .hasActuatorPane(actuatorIdentifier.getActuatorId())) {
         this.application
                 .getNodeTab(actuatorIdentifier.getNodeId())
                 .addActuatorPane(this,
@@ -72,7 +76,9 @@ public class ControlPanel implements ActuatorListener {
       if (!this.application.hasNodeTab(sensorReadingMessage.getNodeId())) {
         this.application.addNodeTab(sensorReadingMessage.getNodeId());
       }
-      if (!this.application.getNodeTab(sensorReadingMessage.getNodeId()).hasSensorPane(sensorReadingMessage.getSensorId())) {
+      if (!this.application
+              .getNodeTab(sensorReadingMessage.getNodeId())
+              .hasSensorPane(sensorReadingMessage.getSensorId())) {
         this.application
                 .getNodeTab(sensorReadingMessage.getNodeId())
                 .addSensorPane(
