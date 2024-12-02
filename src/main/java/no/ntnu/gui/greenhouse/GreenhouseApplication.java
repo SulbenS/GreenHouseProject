@@ -19,8 +19,8 @@ public class GreenhouseApplication extends Application {
   private Scene scene;
   private TabPane tabPane;
 
-  private int width = 500;
-  private int height = 600;
+  private int width = 600;
+  private int height = 700;
 
   private ControlPanel controlPanel;
   private List<NodeTab> nodeTabs;

@@ -42,9 +42,9 @@ public class ActuatorPane extends Pane {
 
     this.actuatorLabel = new Label(generateActuatorLabel());
     this.actuatorCheckbox = createActuatorCheckbox();
+    this.contentBox.getChildren().add(generateRemoveButton());
     this.contentBox.getChildren().add(actuatorLabel);
     this.contentBox.getChildren().add(actuatorCheckbox);
-    this.contentBox.getChildren().add(generateRemoveButton());
     this.contentBox.getStylesheets().add(
             Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
     actuatorLabel.getStyleClass().add("actuator-label");
@@ -53,8 +53,8 @@ public class ActuatorPane extends Pane {
   }
 
   private Button generateRemoveButton() {
-    Button removeButton = new Button("Remove");
-
+    Button removeButton = new Button("X");
+    removeButton.getStyleClass().add("remove-button");
     removeButton.setOnAction(e -> {
       Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION,
               "Are you sure you want to remove this actuator?", ButtonType.YES, ButtonType.NO);
@@ -72,13 +72,13 @@ public class ActuatorPane extends Pane {
     checkbox.setSelected(false);
     checkbox.setOnAction(event -> {
       this.actuatorState = checkbox.isSelected();
+      this.actuatorLabel.setText(generateActuatorLabel());
       if (this.listener != null) {
         this.listener.onActuatorStateChanged(this.nodeId, this.actuatorId, this.actuatorState);
       } else {
         System.out.println("No listener set for actuator state changes.");
       }
     });
-    // TODO: Add checkbox listener
     checkbox.getStylesheets().add(
             Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
     return checkbox;
