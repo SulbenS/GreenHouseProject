@@ -110,6 +110,21 @@ public class MessageHandler {
             + actuatorAddedInGui.getActuatorType();
   }
 
+  public static String serializeSensorAddedInGui(SensorAddedInGui sensorAddedInGui) {
+    return "Data=SensorAddedInGui;Node="
+            + sensorAddedInGui.getNodeId()
+            + ";SensorType="
+            + sensorAddedInGui.getSensorType();
+  }
+
+  public static SensorAddedInGui deserializeSensorAddedInGui(String rawMessage) {
+    Map<String, String> fields = parseFields(rawMessage);
+    int nodeId = Integer.parseInt(fields.get("Node"));
+    String sensorType = fields.get("SensorType");
+    String dataType = fields.get("Data");
+    return new SensorAddedInGui(dataType, nodeId, sensorType);
+  }
+
   public static String actuatorToString(Actuator actuator) {
     return "Data=Identifier;Node=" + actuator.getNodeId()
             + ";Actuator=" + actuator.getId()

@@ -57,15 +57,12 @@ public class ClientHandler extends Thread {
           sendDataToServer(message);
         } else if (message instanceof NodeCommand) {
           sendCommandToServer(message);
-<<<<<<< HEAD
         } else if (message instanceof ActuatorAddedInGui) {
           sendCommandToServer(message);
-=======
         } else if (message instanceof NodeIdentifier && message.getNodeId() == -1) {
           requestNodeInformation();
         } else if (message.getData().equals("Stop")) {
           this.server.stop();
->>>>>>> 5e0cd387920755b619eb96be74c5202e0cdd631a
         }
       }
     } catch (IOException e) {
@@ -137,6 +134,8 @@ public class ClientHandler extends Thread {
       this.hasNodeTab = true;
     } else if (message instanceof ActuatorAddedInGui) {
       this.writer.println(MessageHandler.serializeActuatorAddedInGui((ActuatorAddedInGui) message));
+    } else if (message instanceof SensorAddedInGui) {
+      this.writer.println(MessageHandler.serializeSensorAddedInGui((SensorAddedInGui) message));
     } else {
       throw new IllegalArgumentException("Could not transmit the message.");
     }

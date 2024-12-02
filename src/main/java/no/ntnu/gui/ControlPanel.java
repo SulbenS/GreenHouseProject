@@ -151,13 +151,17 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
   public void onActuatorAddedInGui(int nodeId, String actuatorType) {
     System.out.println("Controlpanel notified actuatorpane is added in GUI: " + actuatorType);
     writeMessage("Data=ActuatorAddedInGui;Node=" + nodeId + ";ActuatorType=" + actuatorType);
-    // receive the next message from the server that includes the actuatorId
-
-
   }
 
   @Override
   public void onSensorAddedInGui(int nodeId, String sensorType) {
+    System.out.println("Controlpanel notified sensorpane is added in GUI: " + sensorType);
+    writeMessage("Data=SensorAddedInGui;Node=" + nodeId + ";SensorType=" + sensorType);
+  }
 
+  public void addNodeTab(int nodeId) {
+    Platform.runLater(() -> {
+      this.application.addNodeTab(nodeId);
+    });
   }
 }

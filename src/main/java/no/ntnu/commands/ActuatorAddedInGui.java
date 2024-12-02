@@ -12,8 +12,4 @@ public class ActuatorAddedInGui extends Data {
   public String getActuatorType() {
     return this.actuatorType;
   }
-
-  public int getNodeId() {
-    return super.getNodeId();
-  }
 }
