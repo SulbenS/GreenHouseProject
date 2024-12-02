@@ -20,13 +20,35 @@ public class SensorState {
   }
 
   public synchronized void setActuatorState(String actuator, boolean state) {
-    actuators.put(actuator, state);
+    if (actuators.containsKey(actuator)) {
+      actuators.put(actuator, state);
+    } else {
+      System.err.println("Actuator not found: " + actuator);
+    }
+  }
+
+  public Map<String, Boolean> getActuators() {
+    return actuators;
   }
 
   public synchronized void updateRandomly() {
-    // Simulate changes in temperature and humidity
-    temperature += (Math.random() - 0.5) * 0.5;
-    humidity += (Math.random() - 0.5) * 1.0;
+    // Simulate temperature and humidity changes
+    if (actuators.get("heater")) {
+      temperature += 0.12; // Heaters gradually increase temperature
+    } else if (actuators.get("window")) {
+      temperature -= 0.11; // Open windows decrease temperature
+      humidity += 0.25; // Open windows increase humidity
+    }
+
+    if (actuators.get("fan")) {
+      humidity -= 0.15; // Fans decrease humidity
+    }
+
+    // Add minor random fluctuations
+    temperature += (Math.random() - 0.5) * 0.1;
+    humidity += (Math.random() - 0.5) * 0.2;
+
+    // Clamp values to realistic ranges
     temperature = Math.max(15, Math.min(30, temperature));
     humidity = Math.max(30, Math.min(70, humidity));
   }

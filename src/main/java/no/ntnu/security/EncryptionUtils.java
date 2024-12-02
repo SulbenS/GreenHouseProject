@@ -25,26 +25,10 @@ public class EncryptionUtils {
     return keyGen.generateKey();
   }
 
-  public static String secretKeyToString(SecretKey secretKey) {
-    return Base64.getEncoder().encodeToString(secretKey.getEncoded());
-  }
-
-  public static SecretKey stringToSecretKey(String encodedKey) {
-    byte[] decodedKey = Base64.getDecoder().decode(encodedKey);
-    return new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
-  }
-
   public static String encryptWithPublicKey(SecretKey aesKey, PublicKey publicKey) throws Exception {
     Cipher cipher = Cipher.getInstance("RSA");
     cipher.init(Cipher.ENCRYPT_MODE, publicKey);
     byte[] encryptedBytes = cipher.doFinal(aesKey.getEncoded());
-    return Base64.getEncoder().encodeToString(encryptedBytes);
-  }
-
-  public static String encryptWithRSA(String data, PublicKey publicKey) throws Exception {
-    Cipher cipher = Cipher.getInstance("RSA");
-    cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-    byte[] encryptedBytes = cipher.doFinal(data.getBytes());
     return Base64.getEncoder().encodeToString(encryptedBytes);
   }
 

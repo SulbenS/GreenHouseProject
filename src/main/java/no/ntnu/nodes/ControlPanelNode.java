@@ -1,11 +1,7 @@
 package no.ntnu.nodes;
 
-import no.ntnu.security.EncryptionUtils;
-
-import javax.crypto.SecretKey;
 import java.io.*;
-import java.net.Socket;
-import java.security.PublicKey;
+import java.net.*;
 
 public class ControlPanelNode {
   private static final int SERVER_PORT = 12345;
@@ -15,27 +11,17 @@ public class ControlPanelNode {
          BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
          PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
-      // Receive server's public key
-      String publicKeyString = in.readLine();
-      PublicKey serverPublicKey = EncryptionUtils.stringToPublicKey(publicKeyString);
+      // Example: Sending a command to toggle an actuator
+      String command = "COMMAND|1|toggle_heater";
+      out.println(command);
+      System.out.println("Sent: " + command);
 
-      // Generate AES key and send it encrypted with RSA
-      SecretKey aesKey = EncryptionUtils.generateAESKey();
-      String encryptedAESKey = EncryptionUtils.encryptWithRSA(
-          EncryptionUtils.secretKeyToString(aesKey), serverPublicKey
-      );
-      out.println(encryptedAESKey);
-
-      // Send encrypted command
-      String command = "COMMAND|1|heater=on";
-      String encryptedCommand = EncryptionUtils.encryptWithAES(command, aesKey);
-      out.println(encryptedCommand);
-
-      // Receive and decrypt response
-      String encryptedResponse = in.readLine();
-      String response = EncryptionUtils.decryptWithAES(encryptedResponse, aesKey);
-      System.out.println("Received (decrypted): " + response);
-    } catch (Exception e) {
+      // Listening for incoming data
+      String message;
+      while ((message = in.readLine()) != null) {
+        System.out.println("Received: " + message);
+      }
+    } catch (IOException e) {
       System.err.println("Control panel error: " + e.getMessage());
     }
   }

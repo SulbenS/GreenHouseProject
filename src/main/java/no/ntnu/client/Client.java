@@ -51,16 +51,21 @@ public class Client {
     });
   }
 
-  private void connect() throws Exception {
+  private void connect() throws IOException {
     socket = new Socket(host, port);
     out = new PrintWriter(socket.getOutputStream(), true);
 
     // Exchange keys with server (assuming server sends public key)
     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     String publicKeyString = in.readLine();
-    aesKey = EncryptionUtils.generateAESKey();
-    String encryptedAESKey = EncryptionUtils.encryptWithPublicKey(aesKey, EncryptionUtils.stringToPublicKey(publicKeyString));
-    out.println(encryptedAESKey);
+    try {
+      aesKey = EncryptionUtils.generateAESKey();
+      String encryptedAESKey = EncryptionUtils.encryptWithPublicKey(aesKey, EncryptionUtils.stringToPublicKey(publicKeyString));
+      out.println(encryptedAESKey);
+    } catch (Exception e) {
+      System.err.println("Failed to generate or encrypt AES key: " + e.getMessage());
+      return;
+    }
 
     // Start a thread to listen for server updates
     new Thread(() -> {
@@ -88,7 +93,7 @@ public class Client {
       try {
         String encryptedCommand = EncryptionUtils.encryptWithAES(command, aesKey);
         out.println(encryptedCommand);
-        System.out.println("Sent command: " + command); // Debug log
+        System.out.println("Sent encrypted command: " + encryptedCommand); // Debug log
       } catch (Exception e) {
         System.err.println("Encryption error: " + e.getMessage());
       }

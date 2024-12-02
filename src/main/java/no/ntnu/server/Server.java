@@ -26,8 +26,8 @@ public class Server {
   }
 
   public void start() {
-    // Generate RSA key pair
     try {
+      // Generate RSA key pair
       KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
       keyGen.initialize(2048);
       KeyPair keyPair = keyGen.generateKeyPair();
@@ -42,14 +42,12 @@ public class Server {
     sensorStates.put(1, new SensorState(1));
     sensorStates.put(2, new SensorState(2));
     sensorStates.put(3, new SensorState(3));
-    System.out.println("Initialized sensor states: " + sensorStates);
 
     // Start periodic sensor updates
     startSensorUpdates();
 
     try (ServerSocket serverSocket = new ServerSocket(PORT)) {
       System.out.println("Server is running on port " + PORT);
-
       while (true) {
         Socket clientSocket = serverSocket.accept();
         System.out.println("Client connected: " + clientSocket.getInetAddress());
@@ -114,7 +112,7 @@ public class Server {
         while ((message = in.readLine()) != null) {
           try {
             String decryptedMessage = EncryptionUtils.decryptWithAES(message, aesKey);
-            System.out.println("Received command: " + decryptedMessage);
+            System.out.println("Decrypted client command: " + decryptedMessage);
             if (decryptedMessage.startsWith("COMMAND|")) {
               processCommand(decryptedMessage);
             }
@@ -122,10 +120,8 @@ public class Server {
             System.err.println("Decryption error: " + e.getMessage());
           }
         }
-      } catch (IOException e) {
-        System.err.println("Client disconnected: " + e.getMessage());
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        System.err.println("Client disconnected: " + e.getMessage());
       } finally {
         disconnect();
       }
@@ -152,17 +148,19 @@ public class Server {
         return;
       }
 
-      // Handle multiple actuator updates in one command
-      for (int i = 2; i < parts.length; i++) {
-        String[] actuatorUpdate = parts[i].split("=");
-        if (actuatorUpdate.length == 2) {
-          String actuator = actuatorUpdate[0];
-          boolean state = actuatorUpdate[1].equalsIgnoreCase("on");
+      // Handle actuator update command
+      String[] actuatorUpdate = parts[2].split("=");
+      if (actuatorUpdate.length == 2) {
+        String actuator = actuatorUpdate[0];
+        boolean state = actuatorUpdate[1].equalsIgnoreCase("on");
+        if (sensorState.getActuators().containsKey(actuator)) {
           sensorState.setActuatorState(actuator, state);
           System.out.println("Updated actuator state for node " + nodeId + ": " + actuator + " -> " + state);
         } else {
-          System.err.println("Invalid actuator command: " + parts[i]);
+          System.err.println("Actuator not found: " + actuator);
         }
+      } else {
+        System.err.println("Invalid actuator command: " + parts[2]);
       }
 
       // Broadcast updated state to all clients
