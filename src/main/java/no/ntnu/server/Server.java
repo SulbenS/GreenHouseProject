@@ -2,24 +2,47 @@ package no.ntnu.server;
 
 import java.io.*;
 import java.net.*;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.*;
 import java.util.concurrent.*;
+import javax.crypto.SecretKey;
+
+import no.ntnu.nodes.SensorState;
+import no.ntnu.security.EncryptionUtils;
 
 public class Server {
   private static final int PORT = 12345;
   private final ExecutorService threadPool = Executors.newCachedThreadPool();
   private final Map<Integer, SensorState> sensorStates = new ConcurrentHashMap<>();
   private final List<ClientHandler> clients = Collections.synchronizedList(new ArrayList<>());
+  private PublicKey publicKey;
+  private PrivateKey privateKey;
 
   public static void main(String[] args) {
     new Server().start();
   }
 
   public void start() {
+    // Generate RSA key pair
+    try {
+      KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+      keyGen.initialize(2048);
+      KeyPair keyPair = keyGen.generateKeyPair();
+      publicKey = keyPair.getPublic();
+      privateKey = keyPair.getPrivate();
+    } catch (Exception e) {
+      System.err.println("Failed to generate key pair: " + e.getMessage());
+      return;
+    }
+
     // Initialize some sample sensor states
     sensorStates.put(1, new SensorState(1));
     sensorStates.put(2, new SensorState(2));
     sensorStates.put(3, new SensorState(3));
+    System.out.println("Initialized sensor states: " + sensorStates);
 
     // Start periodic sensor updates
     startSensorUpdates();
@@ -45,7 +68,8 @@ public class Server {
         for (SensorState state : sensorStates.values()) {
           state.updateRandomly(); // Simulate realistic updates
           String updateMessage = state.toUpdateMessage();
-          broadcastUpdate(updateMessage); // Broadcast updates to all clients
+          System.out.println("Broadcasting: " + updateMessage);
+          broadcastUpdate(updateMessage);
         }
       }
     }, 0, 1, TimeUnit.SECONDS);
@@ -61,6 +85,7 @@ public class Server {
   private class ClientHandler implements Runnable {
     private final Socket socket;
     private PrintWriter out;
+    private SecretKey aesKey;
 
     public ClientHandler(Socket socket) {
       this.socket = socket;
@@ -71,22 +96,36 @@ public class Server {
       try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
         out = new PrintWriter(socket.getOutputStream(), true);
 
+        // Send public key to client
+        out.println(Base64.getEncoder().encodeToString(publicKey.getEncoded()));
+
+        // Receive encrypted AES key from client
+        String encryptedAESKey = in.readLine();
+        aesKey = EncryptionUtils.decryptAESKeyWithPrivateKey(encryptedAESKey, privateKey);
+
         // Send initial sensor states to the client
         synchronized (sensorStates) {
           for (SensorState state : sensorStates.values()) {
-            out.println(state.toUpdateMessage());
+            sendMessage(state.toUpdateMessage());
           }
         }
 
         String message;
         while ((message = in.readLine()) != null) {
-          System.out.println("Received: " + message);
-          if (message.startsWith("COMMAND|")) {
-            processCommand(message);
+          try {
+            String decryptedMessage = EncryptionUtils.decryptWithAES(message, aesKey);
+            System.out.println("Received command: " + decryptedMessage);
+            if (decryptedMessage.startsWith("COMMAND|")) {
+              processCommand(decryptedMessage);
+            }
+          } catch (Exception e) {
+            System.err.println("Decryption error: " + e.getMessage());
           }
         }
       } catch (IOException e) {
         System.err.println("Client disconnected: " + e.getMessage());
+      } catch (Exception e) {
+        throw new RuntimeException(e);
       } finally {
         disconnect();
       }
@@ -131,9 +170,12 @@ public class Server {
       broadcastUpdate(updateMessage);
     }
 
-    private void send(String message) {
-      if (out != null) {
-        out.println(message);
+    public void sendMessage(String message) {
+      try {
+        String encryptedMessage = EncryptionUtils.encryptWithAES(message, aesKey);
+        out.println(encryptedMessage);
+      } catch (Exception e) {
+        System.err.println("Encryption error: " + e.getMessage());
       }
     }
 
@@ -144,86 +186,6 @@ public class Server {
       } catch (IOException e) {
         System.err.println("Error closing client socket: " + e.getMessage());
       }
-    }
-
-    public void sendMessage(String message) {
-      send(message);
-    }
-  }
-
-  private static class SensorState {
-    private final int nodeId;
-    private double temperature;
-    private double humidity;
-    private final Map<String, Boolean> actuators;
-
-    public SensorState(int nodeId) {
-      this.nodeId = nodeId;
-      this.temperature = 25.0; // Default temperature
-      this.humidity = 50.0; // Default humidity
-      this.actuators = new ConcurrentHashMap<>(); // Use ConcurrentHashMap for thread safety
-      actuators.put("heater", false);
-      actuators.put("window", false);
-      actuators.put("fan", false); // Ensure 'fan' is included
-    }
-
-    public synchronized void setActuatorState(String actuator, boolean state) {
-      actuators.put(actuator, state);
-    }
-
-    public synchronized boolean getActuatorState(String actuator) {
-      return actuators.getOrDefault(actuator, false);
-    }
-
-    public synchronized void updateRandomly() {
-      // Indoor baseline conditions
-      double indoorBaselineTemp = 22.0; // Comfortable indoor temperature
-      double indoorBaselineHumidity = 50.0; // Comfortable indoor humidity
-
-      // Outdoor influence (weaker indoors due to insulation)
-      double outdoorTemperature = 15.0; // Example outdoor temperature
-      double outdoorHumidity = 60.0; // Example outdoor humidity
-
-      // Simulate temperature changes
-      if (actuators.get("heater")) {
-        // Heater gradually increases temperature
-        temperature += 0.1 + Math.random() * 0.05; // Small, steady increments
-      } else if (actuators.get("window")) {
-        // Open windows cause temperature to drift toward outdoor temperature
-        temperature += (outdoorTemperature - temperature) * 0.05; // Slow convergence
-      } else {
-        // Natural cooling toward indoor baseline
-        temperature += (indoorBaselineTemp - temperature) * 0.02;
-      }
-
-      // Simulate humidity changes
-      if (actuators.get("window")) {
-        // Open windows lower humidity towards outdoor levels
-        humidity += (outdoorHumidity - humidity) * 0.1; // Faster convergence
-      } else if (actuators.get("fan")) {
-        // Fan lowers humidity toward the indoor baseline
-        humidity += (indoorBaselineHumidity - humidity) * 0.05;
-      } else {
-        // Gradual return to baseline
-        humidity += (indoorBaselineHumidity - humidity) * 0.01;
-      }
-
-      // Add minor natural fluctuations
-      temperature += (Math.random() - 0.5) * 0.05; // Very slight random noise
-      humidity += (Math.random() - 0.5) * 0.1; // Slight random noise
-
-      // Clamp values to realistic ranges
-      temperature = Math.max(15, Math.min(30, temperature)); // Indoors: 15°C to 30°C
-      humidity = Math.max(30, Math.min(70, humidity));       // Indoors: 30% to 70%
-    }
-
-    public synchronized String toUpdateMessage() {
-      return "UPDATE|nodeId=" + nodeId +
-          "|temperature=" + String.format("%.2f", temperature) +
-          "|humidity=" + String.format("%.2f", humidity) +
-          "|heater=" + (actuators.get("heater") ? "on" : "off") +
-          "|window=" + (actuators.get("window") ? "on" : "off") +
-          "|fan=" + (actuators.get("fan") ? "on" : "off");
     }
   }
 }

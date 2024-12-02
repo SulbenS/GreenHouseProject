@@ -1,7 +1,6 @@
 package no.ntnu.client;
 
 import javafx.application.Platform;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,6 +10,8 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import javax.crypto.SecretKey;
+import no.ntnu.security.EncryptionUtils;
 
 public class Client {
   private final String host;
@@ -20,6 +21,7 @@ public class Client {
   private final Queue<String> commandBuffer = new ConcurrentLinkedQueue<>();
   private volatile boolean isConnected = false;
   private ClientListener listener;
+  private SecretKey aesKey;
 
   public Client(String host, int port) {
     this.host = host;
@@ -49,18 +51,28 @@ public class Client {
     });
   }
 
-  private void connect() throws IOException {
+  private void connect() throws Exception {
     socket = new Socket(host, port);
     out = new PrintWriter(socket.getOutputStream(), true);
 
+    // Exchange keys with server (assuming server sends public key)
+    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    String publicKeyString = in.readLine();
+    aesKey = EncryptionUtils.generateAESKey();
+    String encryptedAESKey = EncryptionUtils.encryptWithPublicKey(aesKey, EncryptionUtils.stringToPublicKey(publicKeyString));
+    out.println(encryptedAESKey);
+
     // Start a thread to listen for server updates
     new Thread(() -> {
-      try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+      try (BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
         String message;
-        while ((message = in.readLine()) != null) {
-          if (listener != null) {
-            final String finalMessage = message;
-            Platform.runLater(() -> listener.onUpdateReceived(finalMessage));
+        while ((message = reader.readLine()) != null) {
+          try {
+            String decryptedMessage = EncryptionUtils.decryptWithAES(message, aesKey);
+            System.out.println("Decrypted server message: " + decryptedMessage);
+            Platform.runLater(() -> listener.onUpdateReceived(decryptedMessage));
+          } catch (Exception e) {
+            System.err.println("Decryption error: " + e.getMessage());
           }
         }
       } catch (IOException e) {
@@ -73,8 +85,13 @@ public class Client {
 
   public void sendCommand(String command) {
     if (isConnected && out != null) {
-      out.println(command);
-      System.out.println("Sent command: " + command); // Debug log
+      try {
+        String encryptedCommand = EncryptionUtils.encryptWithAES(command, aesKey);
+        out.println(encryptedCommand);
+        System.out.println("Sent command: " + command); // Debug log
+      } catch (Exception e) {
+        System.err.println("Encryption error: " + e.getMessage());
+      }
     } else {
       commandBuffer.add(command);
       System.err.println("Connection lost. Buffered command: " + command);

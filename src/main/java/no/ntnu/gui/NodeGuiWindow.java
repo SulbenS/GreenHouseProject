@@ -4,6 +4,7 @@ import no.ntnu.client.Client;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import no.ntnu.nodes.SensorActuatorNode;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,15 +13,11 @@ public class NodeGuiWindow extends VBox {
   private final Label temperatureLabel;
   private final Label humidityLabel;
   private final Client client;
-  private final VBox actuatorPane;
   private final Map<String, CheckBox> actuatorToggles = new HashMap<>();
 
   public NodeGuiWindow(SensorActuatorNode node, Client client) {
     this.node = node;
     this.client = client;
-
-    actuatorPane = new VBox();
-    actuatorPane.setSpacing(10);
 
     // Sensor display
     temperatureLabel = new Label("temperature: " + node.getFormattedTemperature());
@@ -29,6 +26,8 @@ public class NodeGuiWindow extends VBox {
     TitledPane sensorsPane = new TitledPane("Sensors", sensorBox);
 
     // Actuator controls
+    VBox actuatorPane = new VBox();
+    actuatorPane.setSpacing(10);
     for (String actuator : node.getActuators().keySet()) {
       CheckBox toggle = new CheckBox(actuator + ": off");
       actuatorToggles.put(actuator, toggle);
@@ -84,5 +83,4 @@ public class NodeGuiWindow extends VBox {
       }
     }
   }
-
 }

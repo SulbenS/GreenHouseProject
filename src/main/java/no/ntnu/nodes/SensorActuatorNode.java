@@ -14,7 +14,7 @@ public class SensorActuatorNode {
     this.actuators = new ConcurrentHashMap<>();
     actuators.put("heater", false);
     actuators.put("window", false);
-    actuators.put("fan", false); // Ensure 'fan' is included
+    actuators.put("fan", false);
   }
 
   public int getId() {
@@ -44,7 +44,7 @@ public class SensorActuatorNode {
   public void setActuatorState(String actuator, boolean state) {
     if (actuators.containsKey(actuator)) {
       actuators.put(actuator, state);
-    } else if (!"nodeId".equals(actuator)) { // Ignore "nodeId"
+    } else {
       System.err.println("Actuator not found: " + actuator);
     }
   }
