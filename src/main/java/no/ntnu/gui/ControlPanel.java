@@ -128,7 +128,13 @@ public class ControlPanel implements ActuatorListener {
   }
 
   public void closeApplication() {
-    // TODO: Implement this method
+    this.running = false;
+    try {
+      this.socket.close();
+    } catch (IOException e) {
+      System.out.println("Could not close the socket.");
+      System.out.println(e.getMessage());
+    }
   }
 
   public Node requestNode(int nodeId) {

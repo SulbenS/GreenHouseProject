@@ -322,7 +322,6 @@ public class Node {
     actuator.toggle();
   }
 
-
   private void notifySensorChanges() {
     for (SensorListener listener : sensorListeners) {
       listener.sensorsUpdated(sensors);
