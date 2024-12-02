@@ -56,11 +56,18 @@ public class NodeGuiWindow extends VBox {
               String value = keyValue[1];
 
               switch (key) {
+                case "nodeId" -> {
+                  // Do nothing, or you can log the nodeId for debugging purposes.
+                }
                 case "temperature" -> node.setTemperature(Double.parseDouble(value.replace(",", ".")));
                 case "humidity" -> node.setHumidity(Double.parseDouble(value.replace(",", ".")));
                 default -> { // Actuator state
-                  boolean state = value.equalsIgnoreCase("on");
-                  node.setActuatorState(key, state);
+                  if (node.getActuators().containsKey(key)) {
+                    boolean state = value.equalsIgnoreCase("on");
+                    node.setActuatorState(key, state);
+                  } else {
+                    System.err.println("Actuator not found: " + key);
+                  }
                 }
               }
             }
