@@ -52,7 +52,7 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
       }
       if (!this.application
               .getNodeTab(sensorIdentifier.getNodeId())
-              .hasActuatorPane(sensorIdentifier.getSensorId())) {
+              .hasSensorPane(sensorIdentifier.getSensorId())) {
         this.application
                 .getNodeTab(sensorIdentifier.getNodeId())
                 .addSensorPane(

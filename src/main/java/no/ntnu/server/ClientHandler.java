@@ -57,15 +57,12 @@ public class ClientHandler extends Thread {
           sendDataToServer(message);
         } else if (message instanceof NodeCommand) {
           sendCommandToServer(message);
-<<<<<<< HEAD
         } else if (message instanceof ActuatorAddedInGui) {
           sendCommandToServer(message);
-=======
         } else if (message instanceof NodeIdentifier && message.getNodeId() == -1) {
           requestNodeInformation();
         } else if (message.getData().equals("Stop")) {
           this.server.stop();
->>>>>>> 5e0cd387920755b619eb96be74c5202e0cdd631a
         }
       }
     } catch (IOException e) {
