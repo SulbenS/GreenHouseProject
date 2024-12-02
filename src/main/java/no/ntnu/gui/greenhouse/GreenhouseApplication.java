@@ -18,18 +18,9 @@ public class GreenhouseApplication extends Application {
   private Stage stage;
   private Scene scene;
   private TabPane tabPane;
-<<<<<<< HEAD
-
-  private int width = 600;
-  private int height = 700;
-
 
   private ControlPanel controlPanel;
-=======
->>>>>>> 5e0cd387920755b619eb96be74c5202e0cdd631a
   private List<NodeTab> nodeTabs;
-
-  private ControlPanel controlPanel;
 
   /**
    * Constructor for the GreenhouseApplication.
@@ -49,7 +40,7 @@ public class GreenhouseApplication extends Application {
   public void start(Stage stage) {
     this.stage = stage;
     this.tabPane = new TabPane();
-    this.scene = new Scene(this.tabPane, width, height);
+    this.scene = new Scene(this.tabPane, 600, 700);
     this.scene.getStylesheets().add(
             Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
     this.stage.setScene(this.scene);
