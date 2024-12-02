@@ -110,7 +110,9 @@ public class NodeTab extends VBox {
     });
 
     addNodeButton.setOnAction(e -> {
-      // Add logic for adding a node
+      if (observer != null) {
+        observer.addNodeTab(this.nodeId);
+      }
     });
 
     container.getChildren().addAll(AddActuatorButton, AddSensorButton, addNodeButton);
@@ -146,7 +148,6 @@ public class NodeTab extends VBox {
     HBox dialogLayout = new HBox(10);
     dialog.setTitle("Add Sensor");
     ComboBox<String> comboBox = new ComboBox<>();
-
     comboBox.getItems().addAll("Temperature", "Humidity", "Light");
     comboBox.setValue("Temperature");
     Button saveButton = new Button("Add");
@@ -155,6 +156,13 @@ public class NodeTab extends VBox {
       notifyObserverSensorAdded(this.nodeId, comboBox.getValue().toLowerCase());
       dialog.setResult("");
     });
+    close.setOnAction(e -> {
+      dialog.setResult("");
+      dialog.close();
+    });
+    dialogLayout.getChildren().addAll(comboBox, saveButton, close);
+    dialog.getDialogPane().setContent(dialogLayout);
+    dialog.showAndWait();
   }
 
   public void setObserver(ControlPanel observer) {

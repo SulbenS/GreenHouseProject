@@ -141,6 +141,8 @@ public class ClientHandler extends Thread {
       this.hasNodeTab = true;
     } else if (message instanceof ActuatorAddedInGui) {
       this.writer.println(MessageHandler.serializeActuatorAddedInGui((ActuatorAddedInGui) message));
+    } else if (message instanceof SensorAddedInGui) {
+      this.writer.println(MessageHandler.serializeSensorAddedInGui((SensorAddedInGui) message));
     } else {
       throw new IllegalArgumentException("Could not transmit the message.");
     }
