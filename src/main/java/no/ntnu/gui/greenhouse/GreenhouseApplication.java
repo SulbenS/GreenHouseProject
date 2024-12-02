@@ -17,15 +17,9 @@ public class GreenhouseApplication extends Application {
   private Stage stage;
   private Scene scene;
   private TabPane tabPane;
-
-<<<<<<< HEAD
-  private int width = 600;
-  private int height = 700;
-
-=======
->>>>>>> fadc84c20ec6481e9ef7050ab356f73156230e61
-  private ControlPanel controlPanel;
   private List<NodeTab> nodeTabs;
+
+  private ControlPanel controlPanel;
 
   /**
    * Constructor for the GreenhouseApplication.
