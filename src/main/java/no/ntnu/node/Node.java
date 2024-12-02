@@ -10,13 +10,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import no.ntnu.commands.ActuatorAddedInGui;
-import no.ntnu.commands.ActuatorCommand;
-import no.ntnu.commands.Data;
-import no.ntnu.commands.NodeCommand;
+
+import no.ntnu.commands.*;
 import no.ntnu.listeners.node.ActuatorListener;
 import no.ntnu.listeners.node.NodeStateListener;
 import no.ntnu.listeners.node.SensorListener;
+import no.ntnu.tools.DeviceFactory;
 import no.ntnu.tools.MessageHandler;
 
 /**
@@ -91,6 +90,8 @@ public class Node {
       if (dataType instanceof NodeCommand) {
         executeCommand(rawMessage);
       } else if (dataType instanceof ActuatorAddedInGui) {
+        executeCommand(rawMessage);
+      } else if (dataType instanceof SensorAddedInGui) {
         executeCommand(rawMessage);
       }
     }
@@ -196,8 +197,6 @@ public class Node {
       Actuator addedActuator =
               new Actuator(actuatorAddedInGui.getActuatorType(), actuatorAddedInGui.getNodeId());
       addActuator(addedActuator);
-      System.out.println("Actuator " + actuatorAddedInGui.getActuatorType() + " added to node "
-              + actuatorAddedInGui.getNodeId() + "asdgauydsg oA BSdgiuysavdauyGLDS");
       // send identifier back to the server and gui so that the gui can update the
       // actuator with correct actuatorId
       sendMessage("Data=Identifier"
@@ -205,6 +204,31 @@ public class Node {
               + ";Actuator=" + addedActuator.getId()
               + ";Type=" + addedActuator.getType()
               + ";State=" + addedActuator.isOn());
+    } else if (MessageHandler.getData(rawMessage).getData().equals("SensorAddedInGui")) {
+      SensorAddedInGui sensorAddedInGui =
+              (SensorAddedInGui) MessageHandler.getData(rawMessage);
+      if (sensorAddedInGui.getSensorType().equals("temperature")) {
+        System.out.println("Creating temperature sensor" + "xxxxxxxxxxxxxxxxxxxxxxx");
+        Sensor sensor = DeviceFactory.createTemperatureSensor(sensorAddedInGui.getNodeId());
+        addSensors(sensor, 1);
+        sendMessage("Data=Identifier"
+                + ";Node=" + sensorAddedInGui.getNodeId()
+                + ";Type=" + sensorAddedInGui.getSensorType()
+                + ";Sensor=" + sensor.getSensorId()
+                + ";Value=" + sensor.getReading().getValue());
+      } else if (sensorAddedInGui.getSensorType().equals("humidity")) {
+        System.out.println("Creating temperature sensor" + "yyyyyyyyyyyyyyyyyy");
+
+        Sensor sensor = DeviceFactory.createHumiditySensor(sensorAddedInGui.getNodeId());
+        addSensors(sensor, 1);
+        sendMessage("Data=Identifier"
+                + ";Node=" + sensorAddedInGui.getNodeId()
+                + ";Type=" + sensorAddedInGui.getSensorType()
+                + ";Sensor=" + sensor.getSensorId()
+                + ";Value=" + sensor.getReading().getValue());
+      } else {
+        System.out.println("Unknown sensor type: " + sensorAddedInGui.getSensorType());
+      }
     }
   }
 

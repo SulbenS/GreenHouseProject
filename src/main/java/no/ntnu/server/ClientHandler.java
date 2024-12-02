@@ -66,6 +66,8 @@ public class ClientHandler extends Thread {
           sendCommandToServer(message);
         } else if (message instanceof ActuatorAddedInGui) {
           sendCommandToServer(message);
+        } else if (message instanceof SensorAddedInGui) {
+          sendCommandToServer(message);
         } else if (message instanceof NodeIdentifier && message.getNodeId() == -1) {
           requestNodeInformation();
         } else if (message.getData().equals("Stop")) {
@@ -139,8 +141,7 @@ public class ClientHandler extends Thread {
       this.hasNodeTab = true;
     } else if (message instanceof ActuatorIdentifier) {
       this.writer.println(MessageHandler.serializeActuatorInformation(
-              (ActuatorIdentifier) message)
-      );
+              (ActuatorIdentifier) message));
       this.hasNodeTab = true;
     } else if (message instanceof ActuatorAddedInGui) {
       this.writer.println(MessageHandler.serializeActuatorAddedInGui((ActuatorAddedInGui) message));

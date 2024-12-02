@@ -173,20 +173,6 @@ public class MessageHandler {
   /**
    * Serialize the sensor reading message.
    *
-   * @param rawMessage The sensor reading message to serialize.
-   * @return The serialized sensor reading message.
-   */
-  public static ActuatorAddedInGui deserializeActuatorAddedInGui(String rawMessage) {
-    Map<String, String> fields = parseFields(rawMessage);
-    int nodeId = Integer.parseInt(fields.get("Node"));
-    String actuatorType = fields.get("ActuatorType");
-    String dataType = fields.get("Data");
-    return new ActuatorAddedInGui(dataType, nodeId, actuatorType);
-  }
-
-  /**
-   * Serialize the sensor reading message.
-   *
    * @param actuatorAddedInGui The sensor reading message to serialize.
    * @return The serialized sensor reading message.
    */
@@ -208,6 +194,20 @@ public class MessageHandler {
             + sensorAddedInGui.getNodeId()
             + ";SensorType="
             + sensorAddedInGui.getSensorType();
+  }
+
+  /**
+   * Serialize the sensor reading message.
+   *
+   * @param rawMessage The sensor reading message to serialize.
+   * @return The serialized sensor reading message.
+   */
+  public static ActuatorAddedInGui deserializeActuatorAddedInGui(String rawMessage) {
+    Map<String, String> fields = parseFields(rawMessage);
+    int nodeId = Integer.parseInt(fields.get("Node"));
+    String actuatorType = fields.get("ActuatorType");
+    String dataType = fields.get("Data");
+    return new ActuatorAddedInGui(dataType, nodeId, actuatorType);
   }
 
   /**
@@ -295,6 +295,7 @@ public class MessageHandler {
         case "ActuatorCommand" -> deserializeActuatorCommand(rawMessage);
         case "NodeCommand" -> deserializeNodeCommand(rawMessage);
         case "ActuatorAddedInGui" -> deserializeActuatorAddedInGui(rawMessage);
+        case "SensorAddedInGui" -> deserializeSensorAddedInGui(rawMessage);
         case "Identifier" -> {
           if (fields.containsKey("Actuator")) {
             yield deserializeActuatorInformation(rawMessage);
