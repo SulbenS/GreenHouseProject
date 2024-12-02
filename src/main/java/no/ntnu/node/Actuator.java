@@ -119,24 +119,6 @@ public class Actuator {
   }
 
   /**
-   * Turn on the actuator.
-   */
-  public void turnOn() {
-    if (!on) {
-      on = true;
-    }
-  }
-
-  /**
-   * Turn off the actuator.
-   */
-  public void turnOff() {
-    if (on) {
-      on = false;
-    }
-  }
-
-  /**
    * Get the ID of the actuator.
    *
    * @return An ID which is guaranteed to be unique at a node level, not necessarily unique at
@@ -156,10 +138,6 @@ public class Actuator {
    * @param on Turn on when true, turn off when false
    */
   public void setState(boolean on) {
-    if (on) {
-      turnOn();
-    } else {
-      turnOff();
-    }
+    this.on = on;
   }
 }

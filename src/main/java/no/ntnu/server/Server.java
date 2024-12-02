@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import no.ntnu.commands.ActuatorIdentifier;
 import no.ntnu.node.Node;
 import no.ntnu.commands.Data;
 import no.ntnu.tools.MessageHandler;

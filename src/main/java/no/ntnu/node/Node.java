@@ -159,8 +159,7 @@ public class Node {
    * @param rawMessage The message given.
    */
   public void executeCommand(String rawMessage) {
-    System.out.println("Executing command: dfghjklækøjhgfxdgchjkløæ" +
-            "lkjhgfchjkløæ " + rawMessage);
+    System.out.println("Executing command: " + rawMessage);
     if (MessageHandler.getData(rawMessage).getData().equals("NodeCommand")) {
       NodeCommand nodeCommand = (NodeCommand) MessageHandler.getData(rawMessage);
       if (nodeCommand.getAction().equals("Off")) {

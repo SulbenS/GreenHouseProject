@@ -172,12 +172,16 @@ public class NodeTab extends VBox {
   private void notifyObserverActuatorAdded(int nodeId, String actuatorType) {
     if (observer != null) {
       observer.onActuatorAddedInGui(nodeId, actuatorType);
+    } else {
+      System.out.println("Observer is null");
     }
   }
 
   private void notifyObserverSensorAdded(int nodeId, String sensorType) {
     if (observer != null) {
       observer.onSensorAddedInGui(nodeId, sensorType);
+    } else {
+      System.out.println("Observer is null");
     }
   }
 

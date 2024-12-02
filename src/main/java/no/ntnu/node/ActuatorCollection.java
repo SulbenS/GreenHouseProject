@@ -16,7 +16,7 @@ public class ActuatorCollection implements Iterable<Actuator> {
   //public void debugPrint() {
     //for (Actuator actuator : actuators.values()) {
       //System.out.println(" " + actuator.getType() + "[" + actuator.getId() + "]"
-        //  + (actuator.isOn() ? " ON" : " off"));
+        //  + (actuator.isOn() ? " On" : " Off"));
 //    }
   //}
 

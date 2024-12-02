@@ -135,10 +135,10 @@ public class ControlPanel implements ActuatorListener, NodeTabObserver {
     System.out.println("Actuator " + actuatorId
             + " NodeId " + nodeId
             + " state changed to "
-            + (newState ? "ON" : "OFF"));
+            + (newState ? "On" : "Off"));
     writeMessage("Data=ActuatorCommand;Node=" + nodeId
             + ";Actuator=" + actuatorId + ";Action="
-            + (newState ? "ON" : "OFF"));
+            + (newState ? "On" : "Off"));
   }
 
   public void writeMessage(String message) {

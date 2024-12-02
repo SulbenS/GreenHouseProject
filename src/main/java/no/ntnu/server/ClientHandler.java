@@ -46,7 +46,7 @@ public class ClientHandler extends Thread {
       while (true) {
         Data message = receive();
         if (message instanceof NodeCommand nodeCommand && !(message instanceof ActuatorCommand)) {
-          if (nodeCommand.getAction().equals("off")) {
+          if (nodeCommand.getAction().equals("Off")) {
             this.socket.close();
             return;
           }
